@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SUPABASE_URL</key>
+	<string>YOUR_SUPABASE_PROJECT_URL</string>
+	<key>SUPABASE_ANON_KEY</key>
+	<string>YOUR_SUPABASE_ANON_KEY</string>
+	<key>API_VERSION</key>
+	<string>v1</string>
+	<key>ENVIRONMENT</key>
+	<string>development</string>
+	<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+	<string>18.0</string>
+	<key>SUPPORTED_PLATFORMS</key>
+	<array>
+		<string>iphoneos</string>
+		<string>iphonesimulator</string>
+	</array>
+	<key>SWIFT_VERSION</key>
+	<string>5.0</string>
+</dict>
+</plist> 

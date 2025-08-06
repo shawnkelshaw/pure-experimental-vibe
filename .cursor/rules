@@ -1,0 +1,18 @@
+name: iOS Native App Guidelines
+description: |
+  Use Swift 5+ and SwiftUI to build a native iOS application.
+  Follow Apple's iOS 17 Human Interface Guidelines (HIG).
+  Favor native Apple components, views, and transitions.
+
+rules:
+  - Use Swift 5.9+ and SwiftUI for all interface development.
+  - Follow Apple's iOS 17 Human Interface Guidelines for layout, navigation, and visual style.
+  - Use native SwiftUI controls unless Apple's frameworks cannot meet the design intent.
+  - Avoid third-party libraries unless explicitly allowed or required.
+  - Structure code using MVVM architecture with clearly separated responsibilities.
+  - Group related views, view models, and models into logical folders.
+  - Use semantic system colors (e.g., `.primary`, `.background`) and dynamic type fonts.
+  - Apply accessibility modifiers to all views and interactive elements.
+  - Add inline comments where logic or naming decisions might be unclear.
+  - Ask before implementing navigation structure, routing, or state management logic.
+  - Do not hardcode sizes, colors, or fonts — follow system conventions.

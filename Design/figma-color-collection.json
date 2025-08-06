@@ -1,0 +1,139 @@
+{
+  "name": "VehiclePassport - Apple Semantic Colors",
+  "description": "Apple semantic color system collection for VehiclePassport iOS app",
+  "version": "2.0.0",
+  "semanticColors": [
+    {
+      "name": "System Background",
+      "semantic": "Color(.systemBackground)",
+      "description": "Primary background - adapts automatically to light/dark mode",
+      "usage": "Main app background, primary surfaces"
+    },
+    {
+      "name": "Secondary System Background", 
+      "semantic": "Color(.secondarySystemBackground)",
+      "description": "Secondary background for cards and containers",
+      "usage": "Card backgrounds, secondary surfaces"
+    },
+    {
+      "name": "Grouped Background",
+      "semantic": "Color(.systemGroupedBackground)",
+      "description": "Grouped background for lists and grouped content",
+      "usage": "List backgrounds, grouped sections"
+    },
+    {
+      "name": "Primary Text",
+      "semantic": "Color.primary",
+      "description": "Primary text color - automatically adapts to light/dark mode", 
+      "usage": "Main text content, titles"
+    },
+    {
+      "name": "Secondary Text",
+      "semantic": "Color.secondary", 
+      "description": "Secondary text color - automatically adapts to light/dark mode",
+      "usage": "Subtitles, secondary information"
+    },
+    {
+      "name": "Label",
+      "semantic": "Color(.label)",
+      "description": "Primary label color for text",
+      "usage": "Form labels, important text"
+    },
+    {
+      "name": "Secondary Label",
+      "semantic": "Color(.secondaryLabel)",
+      "description": "Secondary label color for less important text",
+      "usage": "Descriptive text, less important labels"
+    },
+    {
+      "name": "Accent Color",
+      "semantic": "Color.accentColor",
+      "description": "Primary brand color - uses user's accent color preference",
+      "usage": "Primary buttons, selected states, brand elements"
+    },
+    {
+      "name": "System Green",
+      "semantic": "Color(.systemGreen)",
+      "description": "Success/active status color",
+      "usage": "Success indicators, active status"
+    },
+    {
+      "name": "System Red", 
+      "semantic": "Color(.systemRed)",
+      "description": "Error/inactive status color",
+      "usage": "Error indicators, inactive status"
+    },
+    {
+      "name": "System Orange",
+      "semantic": "Color(.systemOrange)", 
+      "description": "Warning status color",
+      "usage": "Warning indicators, alerts"
+    },
+    {
+      "name": "System Blue",
+      "semantic": "Color(.systemBlue)",
+      "description": "Info status color",
+      "usage": "Information indicators, links"
+    },
+    {
+      "name": "Separator",
+      "semantic": "Color(.separator)",
+      "description": "Separator color for borders and dividers",
+      "usage": "Borders, dividers, glass borders"
+    },
+    {
+      "name": "Tertiary System Background",
+      "semantic": "Color(.tertiarySystemBackground)",
+      "description": "Tertiary background for selected states",
+      "usage": "Selected tab backgrounds, highlighted sections"
+    }
+  ],
+  "customColors": [
+    {
+      "name": "Brand Blue",
+      "description": "Custom brand blue for specific use cases",
+      "hex": "#0088FF",
+      "rgb": {
+        "r": 0,
+        "g": 0.533,
+        "b": 1.0,
+        "a": 1
+      },
+      "usage": "Specific brand elements that need consistent blue"
+    }
+  ],
+  "metadata": {
+    "designSystem": "Apple Human Interface Guidelines + Liquid Glass",
+    "colorSystem": "Apple Semantic Colors",
+    "platform": "iOS 17+",
+    "framework": "SwiftUI",
+    "version": "2.0.0",
+    "materials": [
+      ".regularMaterial",
+      ".thinMaterial", 
+      ".ultraThinMaterial",
+      ".glassBackground() (iOS 26+)"
+    ],
+    "benefits": [
+      "Automatic light/dark mode adaptation",
+      "Respects user accessibility preferences",
+      "Integrates with user's chosen accent color",
+      "Better contrast ratios for readability",
+      "Consistent with iOS system appearance"
+    ],
+    "migration": [
+      "Replace custom RGB colors with semantic equivalents",
+      "Use .accentColor for brand elements",
+      "Leverage system status colors (.systemGreen, .systemRed, etc.)",
+      "Apply .separator for borders and dividers",
+      "Use system backgrounds for proper layering"
+    ],
+    "notes": [
+      "Semantic colors automatically adapt between light and dark modes",
+      "Liquid glass effects use native materials for better performance",
+      "Primary and secondary colors follow Apple's accessibility guidelines",
+      "Glass borders use .separator for consistent appearance",
+      "Custom brand blue available for specific use cases"
+    ]
+  }
+} 

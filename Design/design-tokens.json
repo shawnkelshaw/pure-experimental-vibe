@@ -1,0 +1,297 @@
+{
+  "tokens": {
+    "color": {
+      "semantic": {
+        "background": {
+          "primary": {
+            "value": "Color(.systemBackground)",
+            "type": "semantic",
+            "description": "Primary background - adapts automatically to light/dark mode"
+          },
+          "secondary": {
+            "value": "Color(.secondarySystemBackground)",
+            "type": "semantic", 
+            "description": "Secondary background for cards and containers"
+          },
+          "grouped": {
+            "value": "Color(.systemGroupedBackground)",
+            "type": "semantic",
+            "description": "Grouped background for lists and grouped content"
+          },
+          "secondaryGrouped": {
+            "value": "Color(.secondarySystemGroupedBackground)",
+            "type": "semantic",
+            "description": "Secondary grouped background for nested content"
+          },
+          "tertiary": {
+            "value": "Color(.tertiarySystemBackground)",
+            "type": "semantic",
+            "description": "Tertiary background for selected states"
+          }
+        },
+        "text": {
+          "primary": {
+            "value": "Color.primary",
+            "type": "semantic",
+            "description": "Primary text color - automatically adapts to light/dark mode"
+          },
+          "secondary": {
+            "value": "Color.secondary",
+            "type": "semantic",
+            "description": "Secondary text color - automatically adapts to light/dark mode"
+          },
+          "label": {
+            "value": "Color(.label)",
+            "type": "semantic",
+            "description": "Primary label color"
+          },
+          "secondaryLabel": {
+            "value": "Color(.secondaryLabel)",
+            "type": "semantic",
+            "description": "Secondary label color"
+          },
+          "tertiaryLabel": {
+            "value": "Color(.tertiaryLabel)",
+            "type": "semantic",
+            "description": "Tertiary label color"
+          },
+          "quaternaryLabel": {
+            "value": "Color(.quaternaryLabel)",
+            "type": "semantic",
+            "description": "Quaternary label color"
+          }
+        },
+        "brand": {
+          "primary": {
+            "value": "Color.accentColor",
+            "type": "semantic",
+            "description": "Primary brand color - uses user's accent color preference"
+          },
+          "blue": {
+            "value": "#0088FF",
+            "type": "color",
+            "description": "Custom brand blue for specific use cases"
+          }
+        },
+        "status": {
+          "success": {
+            "value": "Color(.systemGreen)",
+            "type": "semantic",
+            "description": "Success/active status color"
+          },
+          "error": {
+            "value": "Color(.systemRed)",
+            "type": "semantic", 
+            "description": "Error/inactive status color"
+          },
+          "warning": {
+            "value": "Color(.systemOrange)",
+            "type": "semantic",
+            "description": "Warning status color"
+          },
+          "info": {
+            "value": "Color(.systemBlue)",
+            "type": "semantic",
+            "description": "Info status color"
+          }
+        },
+        "ui": {
+          "separator": {
+            "value": "Color(.separator)",
+            "type": "semantic",
+            "description": "Separator color for borders and dividers"
+          },
+          "opaqueSeparator": {
+            "value": "Color(.opaqueSeparator)",
+            "type": "semantic",
+            "description": "Opaque separator color"
+          },
+          "link": {
+            "value": "Color(.link)",
+            "type": "semantic",
+            "description": "Link color"
+          },
+          "placeholderText": {
+            "value": "Color(.placeholderText)",
+            "type": "semantic",
+            "description": "Placeholder text color"
+          }
+        },
+        "tabBar": {
+          "selected": {
+            "value": "Color.accentColor",
+            "type": "semantic",
+            "description": "Selected tab item color"
+          },
+          "unselected": {
+            "value": "Color(.secondaryLabel)",
+            "type": "semantic",
+            "description": "Unselected tab item color"
+          },
+          "background": {
+            "value": "Color(.tertiarySystemBackground)",
+            "type": "semantic",
+            "description": "Tab bar background color"
+          }
+        }
+      },
+      "legacy": {
+        "note": "Legacy custom colors - prefer semantic colors above",
+        "glass": {
+          "border": {
+            "value": "Color(.separator)",
+            "type": "semantic",
+            "description": "Glass border - now using semantic separator"
+          },
+          "highlight": {
+            "value": "Color(.quaternaryLabel)",
+            "type": "semantic", 
+            "description": "Glass highlight - now using semantic quaternary label"
+          },
+          "background": {
+            "value": "Color(.systemBackground).opacity(0.3)",
+            "type": "semantic",
+            "description": "Glass background - now using semantic system background"
+          }
+        }
+      }
+    },
+    "spacing": {
+      "xs": {
+        "value": "4px",
+        "type": "spacing",
+        "description": "Extra small spacing"
+      },
+      "sm": {
+        "value": "8px",
+        "type": "spacing",
+        "description": "Small spacing"
+      },
+      "md": {
+        "value": "16px",
+        "type": "spacing",
+        "description": "Medium spacing"
+      },
+      "lg": {
+        "value": "24px",
+        "type": "spacing",
+        "description": "Large spacing"
+      },
+      "xl": {
+        "value": "32px",
+        "type": "spacing",
+        "description": "Extra large spacing"
+      }
+    },
+    "borderRadius": {
+      "sm": {
+        "value": "8px",
+        "type": "borderRadius",
+        "description": "Small border radius"
+      },
+      "md": {
+        "value": "12px",
+        "type": "borderRadius",
+        "description": "Medium border radius"
+      },
+      "lg": {
+        "value": "20px",
+        "type": "borderRadius",
+        "description": "Large border radius"
+      },
+      "xl": {
+        "value": "24px",
+        "type": "borderRadius",
+        "description": "Extra large border radius"
+      }
+    },
+    "typography": {
+      "fontSize": {
+        "xs": {
+          "value": "10px",
+          "type": "fontSize",
+          "description": "Extra small font size"
+        },
+        "sm": {
+          "value": "12px",
+          "type": "fontSize",
+          "description": "Small font size"
+        },
+        "md": {
+          "value": "14px",
+          "type": "fontSize",
+          "description": "Medium font size"
+        },
+        "lg": {
+          "value": "18px",
+          "type": "fontSize",
+          "description": "Large font size"
+        },
+        "xl": {
+          "value": "24px",
+          "type": "fontSize",
+          "description": "Extra large font size"
+        }
+      },
+      "fontWeight": {
+        "regular": {
+          "value": "400",
+          "type": "fontWeight",
+          "description": "Regular font weight"
+        },
+        "medium": {
+          "value": "500",
+          "type": "fontWeight",
+          "description": "Medium font weight"
+        },
+        "semibold": {
+          "value": "600",
+          "type": "fontWeight",
+          "description": "Semibold font weight"
+        },
+        "bold": {
+          "value": "700",
+          "type": "fontWeight",
+          "description": "Bold font weight"
+        }
+      }
+    },
+    "materials": {
+      "regular": {
+        "value": "regularMaterial",
+        "type": "string",
+        "description": "Regular material for liquid glass effects"
+      },
+      "thin": {
+        "value": "thinMaterial",
+        "type": "string",
+        "description": "Thin material for subtle liquid glass effects"
+      },
+      "ultraThin": {
+        "value": "ultraThinMaterial",
+        "type": "string",
+        "description": "Ultra thin material for minimal liquid glass effects"
+      }
+    }
+  },
+      "metadata": {
+    "name": "VehiclePassport Design Tokens",
+    "version": "2.0.0",
+    "description": "Apple semantic color system-based design tokens for VehiclePassport iOS app",
+    "platform": "iOS 17+",
+    "framework": "SwiftUI",
+    "designSystem": "Apple Human Interface Guidelines + Liquid Glass",
+    "colorSystem": "Apple Semantic Colors",
+    "author": "VehiclePassport Team",
+    "created": "2024",
+    "updated": "2024",
+    "notes": [
+      "Uses Apple's semantic color system for automatic light/dark mode adaptation",
+      "Prefers system colors over custom colors for accessibility and user preference compliance",
+      "Liquid glass effects use native materials (.regularMaterial, .thinMaterial, etc.)",
+      "Spacing and typography follow iOS 17+ Human Interface Guidelines", 
+      "Brand colors use accent color for user preference integration",
+      "Legacy custom colors maintained for fallback scenarios"
+    ]
+  }
+} 
