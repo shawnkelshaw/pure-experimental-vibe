@@ -158,7 +158,7 @@ struct AuthenticationView: View {
                 }
             }
         }
-        .frame(width: 402, height: 874)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     // Remove forced color scheme - let system handle theme adaptation
         .alert("Error", isPresented: .constant(authService.errorMessage != nil)) {
             Button("OK") {
@@ -388,8 +388,18 @@ struct PasswordResetView: View {
 
 struct AuthenticationView_Previews: PreviewProvider {
     static var previews: some View {
-        AuthenticationView()
-            .environmentObject(AuthService(isPreview: true))
-            .previewLayout(.fixed(width: 402, height: 874))
+        Group {
+            // iPhone Preview
+            AuthenticationView()
+                .environmentObject(AuthService(isPreview: true))
+                .previewDevice("iPhone 15 Pro")
+                .previewDisplayName("iPhone - Authentication")
+            
+            // iPad Preview
+            AuthenticationView()
+                .environmentObject(AuthService(isPreview: true))
+                .previewDevice("iPad Pro (12.9-inch) (6th generation)")
+                .previewDisplayName("iPad - Authentication")
+        }
     }
 } 

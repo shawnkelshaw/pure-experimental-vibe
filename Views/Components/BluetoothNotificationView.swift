@@ -318,7 +318,7 @@ struct BluetoothNotificationView_Previews: PreviewProvider {
             onConfirm: {},
             onDismiss: {}
         )
-        .previewLayout(.fixed(width: 402, height: 874))
+        .previewDevice("iPhone 15 Pro")
         .previewDisplayName("Bluetooth Notification")
     }
 } 

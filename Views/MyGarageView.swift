@@ -5,6 +5,8 @@ struct MyGarageView: View {
     @EnvironmentObject var notificationService: NotificationService
     @EnvironmentObject var authService: AuthService
     @State private var showingAddPassport = false
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.verticalSizeClass) var verticalSizeClass
     
     var body: some View {
         NavigationStack {
@@ -42,40 +44,32 @@ struct MyGarageView: View {
                         }
                         .padding(.horizontal, 20)
                     } else {
-                        // Vehicle Passport Content
-                        VStack(spacing: 16) {
-                            // Vehicle Card
-                            VehicleCardView()
-                            
-                            // Quick Options Section
-                            VStack(spacing: 0) {
-                                // Section Header
-                                HStack {
-                                    Text("Quick options")
-                                        .font(.system(size: 17, weight: .semibold))
-                                        .foregroundColor(.secondary)
-                                    Spacer()
-                                }
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 10)
+                        // Vehicle Passport Content - Adaptive Layout
+                        if horizontalSizeClass == .regular && verticalSizeClass == .regular {
+                            // iPad: Structured layout
+                            VStack(spacing: 16) {
+                                // Vehicle Card spans full width
+                                VehicleCardView()
                                 
-                                // Quick Options Items
-                                VStack(spacing: 0) {
-                                    QuickOptionRow(
-                                        title: "Photo Album (12)",
-                                        action: "Manage",
-                                        actionColor: .blue
-                                    )
-                                    
-                                    QuickOptionRow(
-                                        title: "Service History (0)",
-                                        action: "Manage",
-                                        actionColor: .blue
-                                    )
+                                // Two-column grid for additional cards
+                                HStack(spacing: 16) {
+                                    QuickOptionsCardView()
+                                    StatisticsCardView()
                                 }
                             }
+                            .padding(.horizontal, 32)
+                            .padding(.bottom, 40)
+                        } else {
+                            // iPhone: Single column layout
+                            VStack(spacing: 16) {
+                                // Vehicle Card
+                                VehicleCardView()
+                                
+                                // Quick Options Section
+                                QuickOptionsCardView()
+                            }
+                            .padding(.bottom, 100) // Space for tab bar
                         }
-                        .padding(.bottom, 100) // Space for tab bar
                     }
                 }
                 .padding(.vertical, 20)
@@ -248,6 +242,8 @@ struct BluetoothLoadingView: View {
 
 // MARK: - Vehicle Card View
 struct VehicleCardView: View {
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
@@ -320,6 +316,113 @@ struct VehicleCardView: View {
             }
             .padding(24)
         }
+        .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 20)
+    }
+}
+
+// MARK: - Quick Options Card View
+struct QuickOptionsCardView: View {
+    var body: some View {
+        VStack(spacing: 0) {
+            // Section Header
+            HStack {
+                Text("Quick options")
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundColor(.secondary)
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            
+            // Quick Options Items
+            VStack(spacing: 0) {
+                QuickOptionRow(
+                    title: "Photo Album (12)",
+                    action: "Manage",
+                    actionColor: .blue
+                )
+                
+                QuickOptionRow(
+                    title: "Service History (0)",
+                    action: "Manage",
+                    actionColor: .blue
+                )
+            }
+        }
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(.regularMaterial)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.glassBorder, lineWidth: 1)
+                )
+        )
+        .padding(.horizontal, 20)
+    }
+}
+
+// MARK: - Statistics Card View
+struct StatisticsCardView: View {
+    var body: some View {
+        VStack(spacing: 16) {
+            HStack {
+                Text("Vehicle Stats")
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundColor(.primary)
+                Spacer()
+            }
+            
+            VStack(spacing: 12) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Total Miles")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(.secondary)
+                        Text("12,450")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.primary)
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing, spacing: 4) {
+                        Text("Efficiency")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(.secondary)
+                        Text("4.2 mi/kWh")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.green)
+                    }
+                }
+                
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Last Service")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(.secondary)
+                        Text("Oct 15, 2023")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.primary)
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing, spacing: 4) {
+                        Text("Next Service")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(.secondary)
+                        Text("Jan 15, 2024")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.orange)
+                    }
+                }
+            }
+        }
+        .padding(24)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(.regularMaterial)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.glassBorder, lineWidth: 1)
+                )
+        )
         .padding(.horizontal, 20)
     }
 }

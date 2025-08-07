@@ -16,13 +16,20 @@ struct VehiclePassportApp: App {
     
     var body: some Scene {
         WindowGroup {
-            Homeview() // Temporarily changed from HomeView to WelcomeView
+            ContentView()
                 .environmentObject(authService)
                 .environmentObject(notificationService)
                 .environmentObject(garageViewModel)
                 .environmentObject(themeManager)
                 .preferredColorScheme(themeManager.colorScheme)
+                // Enable all device orientations for proper adaptivity
+                .onAppear {
+                    // This allows the app to rotate on all devices
+                    UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+                }
         }
+        // Support all orientations on iPad, portrait on iPhone
+        .windowResizability(.contentSize)
     }
 }
 

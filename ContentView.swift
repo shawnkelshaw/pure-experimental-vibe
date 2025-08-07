@@ -8,10 +8,29 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
-            .environmentObject(AuthService(isPreview: true))
-            .environmentObject(NotificationService())
-            .previewLayout(.fixed(width: 402, height: 874))
-            .previewDisplayName("Vehicle Passport App")
+        Group {
+            // iPhone Preview
+            ContentView()
+                .environmentObject(AuthService(isPreview: true))
+                .environmentObject(NotificationService())
+                .previewDevice("iPhone 15 Pro")
+                .previewDisplayName("iPhone 15 Pro")
+            
+            // iPad Preview
+            ContentView()
+                .environmentObject(AuthService(isPreview: true))
+                .environmentObject(NotificationService())
+                .previewDevice("iPad Pro (12.9-inch) (6th generation)")
+                .previewDisplayName("iPad Pro")
+                .previewInterfaceOrientation(.portrait)
+            
+            // iPad Landscape Preview
+            ContentView()
+                .environmentObject(AuthService(isPreview: true))
+                .environmentObject(NotificationService())
+                .previewDevice("iPad Pro (12.9-inch) (6th generation)")
+                .previewDisplayName("iPad Pro Landscape")
+                .previewInterfaceOrientation(.landscapeLeft)
+        }
     }
 } 

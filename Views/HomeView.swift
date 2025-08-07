@@ -61,7 +61,7 @@ struct HomeView: View {
                 }
             }
         }
-        .frame(width: 402, height: 874)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         // Remove forced dark mode - let system handle theme
         .onAppear {
             // Check real authentication state
@@ -95,10 +95,20 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView()
-            .environmentObject(AuthService())
-            .environmentObject(NotificationService())
-            .previewLayout(.fixed(width: 402, height: 874))
-            .previewDisplayName("Home View - Dark Theme")
+        Group {
+            // iPhone Preview
+            HomeView()
+                .environmentObject(AuthService())
+                .environmentObject(NotificationService())
+                .previewDevice("iPhone 15 Pro")
+                .previewDisplayName("iPhone - Home View")
+            
+            // iPad Preview
+            HomeView()
+                .environmentObject(AuthService())
+                .environmentObject(NotificationService())
+                .previewDevice("iPad Pro (12.9-inch) (6th generation)")
+                .previewDisplayName("iPad - Home View")
+        }
     }
 } 
