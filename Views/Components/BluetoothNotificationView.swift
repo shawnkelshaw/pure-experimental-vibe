@@ -62,12 +62,12 @@ struct BluetoothNotificationView: View {
                     VStack(spacing: 12) {
                         Text(notification.title)
                             .font(.system(size: 24, weight: .semibold, design: .rounded))
-                            .foregroundColor(.white)
+                            .foregroundColor(.primary)
                             .multilineTextAlignment(.center)
                         
                         Text(notification.message)
                             .font(.system(size: 16, weight: .regular))
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                             .multilineTextAlignment(.center)
                             .lineSpacing(2)
                             .padding(.horizontal, 8)
@@ -98,12 +98,16 @@ struct BluetoothNotificationView: View {
                                 Text(isProcessing ? "Accepting..." : "Accept")
                                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                             }
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
                             .background(
                                 RoundedRectangle(cornerRadius: 25)
-                                    .fill(.white)
+                                    .fill(.thinMaterial)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 25)
+                                            .stroke(Color.blue.opacity(0.3), lineWidth: 1)
+                                    )
                             )
                         }
                         .disabled(isProcessing)
@@ -126,12 +130,12 @@ struct BluetoothNotificationView: View {
                                 Text("Dismiss")
                                     .font(.system(size: 16, weight: .medium, design: .rounded))
                             }
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
                             .background(
                                 RoundedRectangle(cornerRadius: 25)
-                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                                    .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
                             )
                         }
                         .disabled(isProcessing)
@@ -144,12 +148,12 @@ struct BluetoothNotificationView: View {
                 .padding(.vertical, 32)
                 .background(
                     RoundedRectangle(cornerRadius: 24)
-                        .fill(Color.black.opacity(0.9))
+                        .fill(.regularMaterial)
                         .overlay(
                             RoundedRectangle(cornerRadius: 24)
                                 .stroke(Color.blue.opacity(0.3), lineWidth: 1)
                         )
-                        .shadow(color: Color.blue.opacity(0.1), radius: 20, x: 0, y: 10)
+                        .shadow(color: Color.primary.opacity(0.1), radius: 20, x: 0, y: 10)
                 )
                 .padding(.horizontal, 20)
                 .scaleEffect(isAnimating ? 1.0 : 0.8)
@@ -158,7 +162,7 @@ struct BluetoothNotificationView: View {
                 Spacer()
             }
         }
-        .preferredColorScheme(.dark)
+
         .onAppear {
             withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                 isAnimating = true
@@ -232,12 +236,12 @@ struct GenericNotificationView: View {
                     VStack(spacing: 12) {
                         Text(notification.title)
                             .font(.system(size: 20, weight: .semibold, design: .rounded))
-                            .foregroundColor(.white)
+                            .foregroundColor(.primary)
                             .multilineTextAlignment(.center)
                         
                         Text(notification.message)
                             .font(.system(size: 16, weight: .regular))
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                             .multilineTextAlignment(.center)
                             .lineSpacing(2)
                     }
@@ -251,12 +255,12 @@ struct GenericNotificationView: View {
                         }) {
                             Text("Dismiss")
                                 .font(.system(size: 16, weight: .medium, design: .rounded))
-                                .foregroundColor(.gray)
+                                .foregroundColor(.secondary)
                                 .padding(.vertical, 12)
                                 .frame(maxWidth: .infinity)
                                 .background(
                                     RoundedRectangle(cornerRadius: 20)
-                                        .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                                        .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
                                 )
                         }
                         .buttonStyle(PlainButtonStyle())
@@ -268,12 +272,16 @@ struct GenericNotificationView: View {
                         }) {
                             Text("OK")
                                 .font(.system(size: 16, weight: .semibold, design: .rounded))
-                                .foregroundColor(.black)
+                                .foregroundColor(.primary)
                                 .padding(.vertical, 12)
                                 .frame(maxWidth: .infinity)
                                 .background(
                                     RoundedRectangle(cornerRadius: 20)
-                                        .fill(.white)
+                                        .fill(.thinMaterial)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 20)
+                                                .stroke(Color.orange.opacity(0.3), lineWidth: 1)
+                                        )
                                 )
                         }
                         .buttonStyle(PlainButtonStyle())
@@ -283,7 +291,7 @@ struct GenericNotificationView: View {
                 .padding(.vertical, 28)
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .fill(Color.black.opacity(0.9))
+                        .fill(.regularMaterial)
                         .overlay(
                             RoundedRectangle(cornerRadius: 20)
                                 .stroke(Color.orange.opacity(0.3), lineWidth: 1)
@@ -296,7 +304,7 @@ struct GenericNotificationView: View {
                 Spacer()
             }
         }
-        .preferredColorScheme(.dark)
+
         .onAppear {
             withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                 isAnimating = true

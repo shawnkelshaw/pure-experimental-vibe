@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 struct MyGarageView: View {
     @EnvironmentObject var garageViewModel: GarageViewModel
@@ -7,6 +8,13 @@ struct MyGarageView: View {
     @State private var showingAddPassport = false
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.verticalSizeClass) var verticalSizeClass
+    
+    // MARK: - Notification Timing State
+    @State private var firstNotificationTimer: Timer?
+    @State private var secondNotificationTimer: Timer?
+    @State private var hasShownNotificationThisSession = false
+    @State private var hasDismissedNotificationThisSession = false
+    @State private var hasAcceptedFirstNotification = false
     
     var body: some View {
         NavigationStack {
@@ -102,8 +110,13 @@ struct MyGarageView: View {
             .onAppear {
                 Task {
                     await garageViewModel.loadInitialData()
-                    await triggerBluetoothNotificationOnVisit()
+                    startBluetoothNotificationCountdown()
                 }
+            }
+            .onDisappear {
+                // Reset session state when leaving the view
+                resetNotificationTimers()
+                resetSessionState()
             }
             .refreshable {
                 await garageViewModel.loadGarageData()
@@ -128,10 +141,10 @@ struct MyGarageView: View {
                     NotificationOverlayView(
                         notification: notification,
                         onConfirm: {
-                            await notificationService.confirmNotification(notification)
+                            await handleNotificationAcceptance(notification)
                         },
                         onDismiss: {
-                            await notificationService.dismissNotification(notification)
+                            await handleNotificationDismissal(notification)
                         }
                     )
                     .zIndex(999)
@@ -142,14 +155,33 @@ struct MyGarageView: View {
     
     // MARK: - Private Methods
     
-    private func triggerBluetoothNotificationOnVisit() async {
-        print("🔔 === BLUETOOTH NOTIFICATION TRIGGER START ===")
-        print("🔔 Auth state: isAuthenticated=\(authService.isAuthenticated)")
-        print("🔔 User: \(authService.user?.preferredDisplayName ?? "NO USER")")
-        print("🔔 Previously dismissed: \(notificationService.bluetoothNotificationDismissed)")
-        print("🔔 Has vehicle passports: \(garageViewModel.hasVehiclePassports)")
+    private func startBluetoothNotificationCountdown() {
+        print("🔔 === BLUETOOTH NOTIFICATION COUNTDOWN START ===")
+        print("🔔 Session state: shown=\(hasShownNotificationThisSession), dismissed=\(hasDismissedNotificationThisSession)")
         
-        // For preview/testing, create a mock user if needed
+        // Only start countdown if we haven't shown or dismissed notification this session
+        guard !hasShownNotificationThisSession && !hasDismissedNotificationThisSession else {
+            print("🔔 ❌ BLOCKED: Already shown or dismissed this session")
+            return
+        }
+        
+        print("🔔 ✅ Starting 5-second countdown timer")
+        
+        // Start 5-second countdown
+        firstNotificationTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { _ in
+            Task { @MainActor in
+                await self.showFirstBluetoothNotification()
+            }
+        }
+    }
+    
+    private func showFirstBluetoothNotification() async {
+        print("🔔 ⏰ 5-second timer fired - showing first notification")
+        
+        // Mark as shown this session
+        hasShownNotificationThisSession = true
+        
+        // Get user info
         let userId: UUID
         let userName: String
         if let authUser = authService.user {
@@ -162,38 +194,95 @@ struct MyGarageView: View {
             userName = "Preview User"
         }
         
-        // Trigger if: No passports OR notification was previously dismissed
-        let shouldTrigger = !garageViewModel.hasVehiclePassports || notificationService.bluetoothNotificationDismissed
+        print("🔔 Creating first Bluetooth notification for user \(userName)")
         
-        if shouldTrigger {
-            print("🔔 ✅ TRIGGERING: Bluetooth notification for user \(userName)")
-            print("🔔 User ID: \(userId)")
-            
-            // Clear any existing notifications first (skip Supabase calls in preview)
-            if authService.isAuthenticated {
-                for notification in notificationService.pendingNotifications {
-                    if notification.type == .bluetoothPassportPush {
-                        await notificationService.deleteNotification(notification)
-                    }
-                }
-            } else {
-                print("🔔 🎭 PREVIEW: Skipping notification cleanup")
+        // Create and show notification immediately (no delay)
+        let notification = PendingNotification.bluetoothPassportPush(
+            userId: userId,
+            vehicleName: "Alan Subran"
+        )
+        
+        await notificationService.createNotification(notification)
+        notificationService.showNotification(notification)
+    }
+    
+    private func startSecondNotificationCountdown() {
+        print("🔔 ✅ Starting 10-second countdown for second notification")
+        
+        // Start 10-second countdown
+        secondNotificationTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { _ in
+            Task { @MainActor in
+                await self.showSecondBluetoothNotification()
             }
-            
-            // Trigger 5-second bluetooth notification as requested
-            notificationService.triggerBluetoothPassportNotification(
-                userId: userId,
-                vehicleName: "Alan Subran",
-                delay: 5.0
-            )
-            
-            print("🔔 ✅ Notification triggered - 5 second delay started")
+        }
+    }
+    
+    private func showSecondBluetoothNotification() async {
+        print("🔔 ⏰ 10-second timer fired - showing second notification")
+        
+        // Get user info
+        let userId: UUID
+        let userName: String
+        if let authUser = authService.user {
+            userId = authUser.id
+            userName = authUser.preferredDisplayName
         } else {
-            print("🔔 ❌ BLOCKED: User has passports and notification wasn't dismissed")
-            print("🔔 Reason: hasVehiclePassports=\(garageViewModel.hasVehiclePassports), dismissed=\(notificationService.bluetoothNotificationDismissed)")
+            print("🔔 🎭 PREVIEW MODE: Using mock user data")
+            userId = UUID()
+            userName = "Preview User"
         }
         
-        print("🔔 === BLUETOOTH NOTIFICATION TRIGGER END ===")
+        print("🔔 Creating second Bluetooth notification for user \(userName)")
+        
+        // Create and show second notification immediately
+        let notification = PendingNotification.bluetoothPassportPush(
+            userId: userId,
+            vehicleName: "Maria Rodriguez"  // Different sender for second notification
+        )
+        
+        await notificationService.createNotification(notification)
+        notificationService.showNotification(notification)
+    }
+    
+    private func handleNotificationAcceptance(_ notification: PendingNotification) async {
+        print("✅ User ACCEPTED notification: \(notification.type.displayName)")
+        
+        // Add vehicle passport to the garage
+        await garageViewModel.addVehiclePassportFromNotification(notification)
+        
+        // Mark notification as confirmed
+        await notificationService.confirmNotification(notification)
+        
+        // If this was the first acceptance, start countdown for second notification
+        if !hasAcceptedFirstNotification {
+            hasAcceptedFirstNotification = true
+            startSecondNotificationCountdown()
+        }
+    }
+    
+    private func handleNotificationDismissal(_ notification: PendingNotification) async {
+        print("🚫 User DISMISSED notification: \(notification.type.displayName)")
+        
+        // Mark as dismissed this session (prevents re-showing)
+        hasDismissedNotificationThisSession = true
+        
+        // Dismiss the notification
+        await notificationService.dismissNotification(notification)
+    }
+    
+    private func resetNotificationTimers() {
+        print("🔔 Resetting notification timers")
+        firstNotificationTimer?.invalidate()
+        secondNotificationTimer?.invalidate()
+        firstNotificationTimer = nil
+        secondNotificationTimer = nil
+    }
+    
+    private func resetSessionState() {
+        print("🔔 Resetting session state for fresh view visit")
+        hasShownNotificationThisSession = false
+        hasDismissedNotificationThisSession = false
+        hasAcceptedFirstNotification = false
     }
 }
 

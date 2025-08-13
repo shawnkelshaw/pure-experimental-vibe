@@ -37,7 +37,7 @@ struct VehiclePassportApp: App {
 class ThemeManager: ObservableObject {
     @Published var colorScheme: ColorScheme?
     
-    @Published var displayMode: DisplayMode = .automatic {
+    @Published var displayMode: DisplayMode = .dark {
         didSet {
             UserDefaults.standard.set(displayMode.rawValue, forKey: "displayMode")
             updateColorScheme()
@@ -47,15 +47,13 @@ class ThemeManager: ObservableObject {
     init() {
         // Load saved preferences
         if let savedMode = UserDefaults.standard.object(forKey: "displayMode") as? String {
-            self.displayMode = DisplayMode(rawValue: savedMode) ?? .automatic
+            self.displayMode = DisplayMode(rawValue: savedMode) ?? .dark
         }
         updateColorScheme()
     }
     
     private func updateColorScheme() {
         switch displayMode {
-        case .automatic:
-            colorScheme = nil // Use system setting
         case .light:
             colorScheme = .light
         case .dark:
@@ -65,24 +63,20 @@ class ThemeManager: ObservableObject {
     
     func toggleMode() {
         switch displayMode {
-        case .automatic:
-            displayMode = .light
         case .light:
             displayMode = .dark
         case .dark:
-            displayMode = .automatic
+            displayMode = .light
         }
     }
 }
 
 enum DisplayMode: String, CaseIterable {
-    case automatic = "automatic"
     case light = "light"
     case dark = "dark"
     
     var displayName: String {
         switch self {
-        case .automatic: return "Automatic"
         case .light: return "Light Mode"
         case .dark: return "Dark Mode"
         }
@@ -90,7 +84,6 @@ enum DisplayMode: String, CaseIterable {
     
     var iconName: String {
         switch self {
-        case .automatic: return "circle.lefthalf.filled"
         case .light: return "sun.max.fill"
         case .dark: return "moon.fill"
         }
@@ -98,7 +91,6 @@ enum DisplayMode: String, CaseIterable {
     
     var description: String {
         switch self {
-        case .automatic: return "Follows system setting"
         case .light: return "Always light appearance"
         case .dark: return "Always dark appearance"
         }

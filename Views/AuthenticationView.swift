@@ -110,19 +110,23 @@ struct AuthenticationView: View {
                                 HStack {
                                     if authService.isLoading {
                                         ProgressView()
-                                            .progressViewStyle(CircularProgressViewStyle(tint: .black))
+                                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
                                             .scaleEffect(0.8)
                                     }
                                     
                                     Text(isSignUpMode ? "Create Account" : "Sign In")
                                         .font(.system(size: 16, weight: .semibold, design: .rounded))
                                 }
-                                .foregroundColor(.black)
+                                .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 50)
                                 .background(
                                     RoundedRectangle(cornerRadius: 12)
-                                        .fill(.white)
+                                        .fill(Color.accentColor)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .stroke(Color.accentColor, lineWidth: 1)
+                                        )
                                 )
                             }
                             .disabled(authService.isLoading || !isFormValid)
@@ -135,9 +139,9 @@ struct AuthenticationView: View {
                                     clearForm()
                                 }
                             }) {
-                                Text(isSignUpMode ? "Already have an account? Sign In" : "Don't have an account? Sign Up")
-                                    .font(.system(size: 14, weight: .medium))
-                                    .foregroundColor(.gray)
+                                                            Text(isSignUpMode ? "Already have an account? Sign In" : "Don't have an account? Sign Up")
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundColor(Color(.link))
                             }
                             
                             // Forgot Password (Sign In Only)
@@ -145,9 +149,9 @@ struct AuthenticationView: View {
                                 Button(action: {
                                     showingPasswordReset = true
                                 }) {
-                                    Text("Forgot Password?")
-                                        .font(.system(size: 14, weight: .medium))
-                                        .foregroundColor(.blue)
+                                                                    Text("Forgot Password?")
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(Color(.link))
                                 }
                             }
                         }
@@ -238,7 +242,7 @@ struct AuthTextField: View {
         HStack(spacing: 12) {
             Image(systemName: icon)
                 .font(.system(size: 16, weight: .medium))
-                .foregroundColor(.gray)
+                .foregroundColor(Color(.secondaryLabel))
                 .frame(width: 20)
             
             Group {
@@ -254,7 +258,7 @@ struct AuthTextField: View {
             .autocapitalization(.none)
             .disableAutocorrection(true)
             .font(.system(size: 16, weight: .medium))
-            .foregroundColor(.white)
+            .foregroundColor(Color(.label))
             
             // Password visibility toggle button (only show for secure fields)
             if isSecure {
@@ -263,7 +267,7 @@ struct AuthTextField: View {
                 }) {
                     Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
                         .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color(.secondaryLabel))
                         .frame(width: 20)
                 }
             }
@@ -272,10 +276,10 @@ struct AuthTextField: View {
         .padding(.vertical, 14)
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .fill(Color.gray.opacity(0.1))
+                .fill(Color(.secondarySystemBackground))
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                        .stroke(Color(.separator), lineWidth: 1)
                 )
         )
     }

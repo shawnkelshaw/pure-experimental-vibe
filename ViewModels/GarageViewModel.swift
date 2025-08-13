@@ -281,6 +281,45 @@ class GarageViewModel: ObservableObject {
         }
     }
     
+    // MARK: - Bluetooth Notification Handling
+    
+    func addVehiclePassportFromNotification(_ notification: PendingNotification) async {
+        print("📱 Adding vehicle passport from notification: \(notification.title)")
+        
+        // Extract vehicle name from notification metadata or message
+        let vehicleName = notification.metadata?["sender_name"] ?? "Unknown Vehicle"
+        
+        // Create a demo vehicle passport with incremental numbering
+        let passportNumber = vehiclePassports.count + 1
+        let passportTitle = "Demo Vehicle #\(passportNumber)"
+        
+        let newPassport = VehiclePassport(
+            id: UUID(),
+            vehicleId: UUID(), // Demo vehicle ID
+            userId: notification.userId,
+            title: passportTitle,
+            notes: "Vehicle passport received via Bluetooth from \(vehicleName)",
+            purchaseDate: Date(),
+            purchasePrice: nil,
+            currentValue: nil,
+            isActive: true,
+            qrCode: generateQRCode(),
+            documents: [],
+            maintenanceRecords: [],
+            createdAt: Date(),
+            updatedAt: Date()
+        )
+        
+        // Add to local array immediately for UI responsiveness
+        vehiclePassports.append(newPassport)
+        
+        print("📱 Vehicle passport added: \(passportTitle) (Total: \(vehiclePassports.count))")
+        print("📱 hasVehiclePassports is now: \(hasVehiclePassports)")
+        
+        // Note: In a real app, you would also persist this to Supabase
+        // For demo purposes, we're keeping it local
+    }
+    
     // MARK: - Computed Properties
     
     var hasVehiclePassports: Bool {

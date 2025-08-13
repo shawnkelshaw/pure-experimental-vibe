@@ -41,7 +41,46 @@ struct RootTabView: View {
                     .tabViewStyle(.tabBarOnly)
                     
                     // iOS 26 Native Liquid Glass Tab Bar
-                    AdaptiveTabBar(selectedTab: $selectedTab, horizontalSizeClass: horizontalSizeClass)
+                    VStack(spacing: 0) {
+                        // Tab Bar Container with iOS 26 Liquid Glass
+                        HStack(spacing: 0) {
+                            // Market Tab
+                            CustomTabBarButton(
+                                icon: "chart.line.uptrend.xyaxis",
+                                title: "The Market",
+                                isSelected: selectedTab == 0,
+                                action: { selectedTab = 0 }
+                            )
+                            
+                            // My Garage Tab
+                            CustomTabBarButton(
+                                icon: "car.fill",
+                                title: "My Garage", 
+                                isSelected: selectedTab == 1,
+                                action: { selectedTab = 1 }
+                            )
+                            
+                            // More Tab
+                            CustomTabBarButton(
+                                icon: "ellipsis.circle",
+                                title: "More",
+                                isSelected: selectedTab == 2,
+                                action: { selectedTab = 2 }
+                            )
+                        }
+                        .padding(.horizontal, horizontalSizeClass == .compact ? 20 : 32)
+                        .padding(.top, 12)
+                        .padding(.bottom, 28) // Account for home indicator
+                        .background(
+                            RoundedRectangle(cornerRadius: 32)
+                                .fill(.ultraThinMaterial)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 32)
+                                        .stroke(Color.glassBorder.opacity(0.5), lineWidth: 0.5)
+                                )
+                                .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
+                        )
+                    }
                 }
             }
         }
@@ -118,81 +157,29 @@ struct SidebarItem: View {
     }
 }
 
-// MARK: - Adaptive Tab Bar
-struct AdaptiveTabBar: View {
-    @Binding var selectedTab: Int
-    let horizontalSizeClass: UserInterfaceSizeClass?
-    
-    var body: some View {
-        VStack(spacing: 0) {
-            // Tab Bar Container with iOS 26 Liquid Glass
-            HStack(spacing: 0) {
-                // Market Tab
-                CustomTabBarButton(
-                    icon: "chart.line.uptrend.xyaxis",
-                    title: "The Market",
-                    isSelected: selectedTab == 0,
-                    action: { selectedTab = 0 },
-                    sizeClass: horizontalSizeClass
-                )
-                
-                // My Garage Tab
-                CustomTabBarButton(
-                    icon: "car.fill",
-                    title: "My Garage", 
-                    isSelected: selectedTab == 1,
-                    action: { selectedTab = 1 },
-                    sizeClass: horizontalSizeClass
-                )
-                
-                // More Tab
-                CustomTabBarButton(
-                    icon: "ellipsis.circle",
-                    title: "More",
-                    isSelected: selectedTab == 2,
-                    action: { selectedTab = 2 },
-                    sizeClass: horizontalSizeClass
-                )
-            }
-            .padding(.horizontal, horizontalSizeClass == .compact ? 20 : 32)
-            .padding(.top, 12)
-            .padding(.bottom, 28) // Account for home indicator
-            .background(
-                RoundedRectangle(cornerRadius: 32)
-                    .fill(.ultraThinMaterial)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 32)
-                            .stroke(Color.glassBorder.opacity(0.5), lineWidth: 0.5)
-                    )
-                    .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
-            )
-        }
-    }
-}
 
 struct CustomTabBarButton: View {
     let icon: String
     let title: String
     let isSelected: Bool
     let action: () -> Void
-    let sizeClass: UserInterfaceSizeClass?
     
     var body: some View {
         Button(action: action) {
             VStack(spacing: 4) {
                 // Icon with iOS 26 styling
                 Image(systemName: icon)
-                    .font(.system(size: sizeClass == .compact ? 18 : 20, weight: isSelected ? .semibold : .medium))
+                    .font(.system(size: 18, weight: isSelected ? .semibold : .medium))
                     .foregroundColor(isSelected ? Color.tabBarSelectedText : Color.tabBarUnselectedText)
-                    .frame(height: sizeClass == .compact ? 24 : 28)
+                    .frame(height: 24)
                     .scaleEffect(isSelected ? 1.1 : 1.0)
                 
                 // Text label with proper iOS 26 typography
                 Text(title)
-                    .font(.system(size: sizeClass == .compact ? 11 : 12, weight: isSelected ? .semibold : .medium))
+                    .font(.system(size: 11, weight: isSelected ? .semibold : .medium))
                     .foregroundColor(isSelected ? Color.tabBarSelectedText : Color.tabBarUnselectedText)
                     .lineLimit(1)
-                    .frame(height: sizeClass == .compact ? 14 : 16)
+                    .frame(height: 14)
             }
         }
         .frame(maxWidth: .infinity)
@@ -228,16 +215,34 @@ struct RootTabView_Previews: PreviewProvider {
         let authService = AuthService(isPreview: true)
         
         Group {
-            // iPhone Preview
+            // iPhone SE - Smallest screen
+            RootTabView()
+                .environmentObject(authService)
+                .environmentObject(NotificationService())
+                .environmentObject(GarageViewModel(authService: authService))
+                .previewDevice("iPhone SE (3rd generation)")
+                .previewDisplayName("iPhone SE - Figma Tab Bar")
+                .preferredColorScheme(.light)
+            
+            // iPhone 15 Pro - Standard size
             RootTabView()
                 .environmentObject(authService)
                 .environmentObject(NotificationService())
                 .environmentObject(GarageViewModel(authService: authService))
                 .previewDevice("iPhone 15 Pro")
-                .previewDisplayName("iPhone - Light Mode")
+                .previewDisplayName("iPhone 15 Pro - Figma Tab Bar")
                 .preferredColorScheme(.light)
             
-            // iPad Preview
+            // iPhone 15 Pro Max - Largest screen
+            RootTabView()
+                .environmentObject(authService)
+                .environmentObject(NotificationService())
+                .environmentObject(GarageViewModel(authService: authService))
+                .previewDevice("iPhone 15 Pro Max")
+                .previewDisplayName("iPhone 15 Pro Max - Figma Tab Bar")
+                .preferredColorScheme(.light)
+            
+            // iPad Preview - Sidebar Navigation
             RootTabView()
                 .environmentObject(authService)
                 .environmentObject(NotificationService())
@@ -246,13 +251,13 @@ struct RootTabView_Previews: PreviewProvider {
                 .previewDisplayName("iPad - Sidebar Navigation")
                 .preferredColorScheme(.light)
             
-            // Dark mode preview
+            // Dark mode test
             RootTabView()
                 .environmentObject(authService)
                 .environmentObject(NotificationService())
                 .environmentObject(GarageViewModel(authService: authService))
                 .previewDevice("iPhone 15 Pro")
-                .previewDisplayName("iPhone - Dark Mode")
+                .previewDisplayName("iPhone 15 Pro - Dark Mode")
                 .preferredColorScheme(.dark)
         }
     }
