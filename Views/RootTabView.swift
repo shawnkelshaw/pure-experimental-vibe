@@ -213,52 +213,58 @@ struct CustomTabBarButton: View {
 struct RootTabView_Previews: PreviewProvider {
     static var previews: some View {
         let authService = AuthService(isPreview: true)
+        let themeManager = ThemeManager()
         
         Group {
-            // iPhone SE - Smallest screen
+            // iPhone SE - Default Dark Mode
             RootTabView()
                 .environmentObject(authService)
                 .environmentObject(NotificationService())
                 .environmentObject(GarageViewModel(authService: authService))
+                .environmentObject(themeManager)
                 .previewDevice("iPhone SE (3rd generation)")
-                .previewDisplayName("iPhone SE - Figma Tab Bar")
-                .preferredColorScheme(.light)
-            
-            // iPhone 15 Pro - Standard size
-            RootTabView()
-                .environmentObject(authService)
-                .environmentObject(NotificationService())
-                .environmentObject(GarageViewModel(authService: authService))
-                .previewDevice("iPhone 15 Pro")
-                .previewDisplayName("iPhone 15 Pro - Figma Tab Bar")
-                .preferredColorScheme(.light)
-            
-            // iPhone 15 Pro Max - Largest screen
-            RootTabView()
-                .environmentObject(authService)
-                .environmentObject(NotificationService())
-                .environmentObject(GarageViewModel(authService: authService))
-                .previewDevice("iPhone 15 Pro Max")
-                .previewDisplayName("iPhone 15 Pro Max - Figma Tab Bar")
-                .preferredColorScheme(.light)
-            
-            // iPad Preview - Sidebar Navigation
-            RootTabView()
-                .environmentObject(authService)
-                .environmentObject(NotificationService())
-                .environmentObject(GarageViewModel(authService: authService))
-                .previewDevice("iPad Pro (12.9-inch) (6th generation)")
-                .previewDisplayName("iPad - Sidebar Navigation")
-                .preferredColorScheme(.light)
-            
-            // Dark mode test
-            RootTabView()
-                .environmentObject(authService)
-                .environmentObject(NotificationService())
-                .environmentObject(GarageViewModel(authService: authService))
-                .previewDevice("iPhone 15 Pro")
-                .previewDisplayName("iPhone 15 Pro - Dark Mode")
+                .previewDisplayName("iPhone SE - Dark Mode Default")
                 .preferredColorScheme(.dark)
+            
+            // iPhone 15 Pro - Default Dark Mode
+            RootTabView()
+                .environmentObject(authService)
+                .environmentObject(NotificationService())
+                .environmentObject(GarageViewModel(authService: authService))
+                .environmentObject(themeManager)
+                .previewDevice("iPhone 15 Pro")
+                .previewDisplayName("iPhone 15 Pro - Dark Mode Default")
+                .preferredColorScheme(.dark)
+            
+            // iPhone 15 Pro Max - Default Dark Mode
+            RootTabView()
+                .environmentObject(authService)
+                .environmentObject(NotificationService())
+                .environmentObject(GarageViewModel(authService: authService))
+                .environmentObject(themeManager)
+                .previewDevice("iPhone 15 Pro Max")
+                .previewDisplayName("iPhone 15 Pro Max - Dark Mode Default")
+                .preferredColorScheme(.dark)
+            
+            // iPad Preview - Default Dark Mode
+            RootTabView()
+                .environmentObject(authService)
+                .environmentObject(NotificationService())
+                .environmentObject(GarageViewModel(authService: authService))
+                .environmentObject(themeManager)
+                .previewDevice("iPad Pro (12.9-inch) (6th generation)")
+                .previewDisplayName("iPad - Dark Mode Sidebar")
+                .preferredColorScheme(.dark)
+            
+            // Light mode comparison
+            RootTabView()
+                .environmentObject(authService)
+                .environmentObject(NotificationService())
+                .environmentObject(GarageViewModel(authService: authService))
+                .environmentObject(themeManager)
+                .previewDevice("iPhone 15 Pro")
+                .previewDisplayName("iPhone 15 Pro - Light Mode")
+                .preferredColorScheme(.light)
         }
     }
 } 

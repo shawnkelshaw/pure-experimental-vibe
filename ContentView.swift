@@ -8,29 +8,37 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
+        let themeManager = ThemeManager()
+        
         Group {
-            // iPhone Preview
+            // iPhone Preview - Dark Mode Default
             ContentView()
                 .environmentObject(AuthService(isPreview: true))
                 .environmentObject(NotificationService())
+                .environmentObject(themeManager)
                 .previewDevice("iPhone 15 Pro")
-                .previewDisplayName("iPhone 15 Pro")
+                .previewDisplayName("iPhone 15 Pro - Dark Default")
+                .preferredColorScheme(.dark)
             
-            // iPad Preview
+            // iPad Preview - Dark Mode Default
             ContentView()
                 .environmentObject(AuthService(isPreview: true))
                 .environmentObject(NotificationService())
+                .environmentObject(themeManager)
                 .previewDevice("iPad Pro (12.9-inch) (6th generation)")
-                .previewDisplayName("iPad Pro")
+                .previewDisplayName("iPad Pro - Dark Default")
                 .previewInterfaceOrientation(.portrait)
+                .preferredColorScheme(.dark)
             
-            // iPad Landscape Preview
+            // iPad Landscape Preview - Dark Mode Default
             ContentView()
                 .environmentObject(AuthService(isPreview: true))
                 .environmentObject(NotificationService())
+                .environmentObject(themeManager)
                 .previewDevice("iPad Pro (12.9-inch) (6th generation)")
-                .previewDisplayName("iPad Pro Landscape")
+                .previewDisplayName("iPad Pro Landscape - Dark Default")
                 .previewInterfaceOrientation(.landscapeLeft)
+                .preferredColorScheme(.dark)
         }
     }
 } 

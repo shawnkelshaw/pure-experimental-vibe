@@ -45,9 +45,22 @@ class ThemeManager: ObservableObject {
     }
     
     init() {
-        // Load saved preferences
-        if let savedMode = UserDefaults.standard.object(forKey: "displayMode") as? String {
-            self.displayMode = DisplayMode(rawValue: savedMode) ?? .dark
+        // TEMPORARY: Clear any cached automatic mode preference
+        if let savedMode = UserDefaults.standard.object(forKey: "displayMode") as? String,
+           savedMode == "automatic" {
+            UserDefaults.standard.removeObject(forKey: "displayMode")
+        }
+        
+        // Always start with dark mode as default
+        self.displayMode = .dark
+        
+        // Load saved preferences only if they exist and are valid
+        if let savedMode = UserDefaults.standard.object(forKey: "displayMode") as? String,
+           let mode = DisplayMode(rawValue: savedMode) {
+            self.displayMode = mode
+        } else {
+            // Ensure dark mode is set as default
+            self.displayMode = .dark
         }
         updateColorScheme()
     }
@@ -68,6 +81,13 @@ class ThemeManager: ObservableObject {
         case .dark:
             displayMode = .light
         }
+    }
+    
+    /// Reset to dark mode default (useful for debugging)
+    func resetToDefault() {
+        UserDefaults.standard.removeObject(forKey: "displayMode")
+        displayMode = .dark
+        updateColorScheme()
     }
 }
 
