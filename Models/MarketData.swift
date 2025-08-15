@@ -50,6 +50,16 @@ struct VehicleResaleValue: Codable, Identifiable {
     let trendDirection: TrendDirection
     let lastUpdated: Date
     
+    // Vehicle information from passport/vehicle data (matches My Garage display)
+    let vehicleDisplayName: String
+    let vehicleYear: Int
+    let vehicleMake: String
+    let vehicleModel: String
+    let vehicleColor: String?
+    let vehicleSpecs: String? // Engine/motor info
+    let vehicleVin: String? // VIN (matches My Garage VehicleCardView)
+    let vehicleMileage: Int? // Mileage (matches My Garage VehicleCardView)
+    
     // Market factors affecting resale value
     let mileageImpact: Double
     let ageImpact: Double
@@ -213,23 +223,53 @@ class MarketDataService {
         return mockData
     }
     
-    // Mock resale value data for State 2
-    func generateMockResaleValue(for vehicle: VehiclePassport) -> VehicleResaleValue {
-        let baseValue = calculateMockBaseValue(vehicle: vehicle)
-        let trendDirection = TrendDirection.allCases.randomElement() ?? .stable
+    // Generate resale value using real vehicle passport data
+    func generateResaleValue(for passport: VehiclePassport, with vehicleData: Vehicle? = nil) -> VehicleResaleValue {
+        // Extract vehicle info from passport title (fallback if no vehicle data)
+        let vehicleInfo = extractVehicleInfo(from: passport, with: vehicleData)
+        
+        // Calculate realistic base value using actual vehicle data
+        let baseValue = calculateRealisticBaseValue(
+            make: vehicleInfo.make,
+            model: vehicleInfo.model,
+            year: vehicleInfo.year,
+            purchasePrice: passport.purchasePrice
+        )
+        
+        // Calculate market factors based on vehicle age and type
+        let marketFactors = calculateMarketFactors(
+            year: vehicleInfo.year,
+            make: vehicleInfo.make,
+            mileage: vehicleData?.mileage
+        )
+        
+        let trendDirection = determineTrendDirection(for: vehicleInfo.make, year: vehicleInfo.year)
         let projectedValues = generateProjectedValues(baseValue: baseValue, trend: trendDirection)
         
         return VehicleResaleValue(
             id: UUID(),
-            vehiclePassportId: vehicle.id,
+            vehiclePassportId: passport.id,
             currentValue: baseValue,
             projectedValues: projectedValues,
             trendDirection: trendDirection,
             lastUpdated: Date(),
-            mileageImpact: Double.random(in: (-0.15)...0.05),
-            ageImpact: Double.random(in: (-0.20)...(-0.05)),
-            marketConditionImpact: Double.random(in: (-0.10)...0.15)
+            vehicleDisplayName: vehicleInfo.displayName,
+            vehicleYear: vehicleInfo.year,
+            vehicleMake: vehicleInfo.make,
+            vehicleModel: vehicleInfo.model,
+            vehicleColor: vehicleInfo.color,
+            vehicleSpecs: vehicleInfo.specs,
+            vehicleVin: vehicleInfo.vin,
+            vehicleMileage: vehicleInfo.mileage,
+            mileageImpact: marketFactors.mileageImpact,
+            ageImpact: marketFactors.ageImpact,
+            marketConditionImpact: marketFactors.marketConditionImpact
         )
+    }
+    
+    // Legacy method for backward compatibility
+    func generateMockResaleValue(for vehicle: VehiclePassport) -> VehicleResaleValue {
+        return generateResaleValue(for: vehicle, with: nil)
     }
     
     private func calculateMockBaseValue(vehicle: VehiclePassport) -> Double {
@@ -265,6 +305,193 @@ class MarketDataService {
         }
         
         return values
+    }
+    
+    // MARK: - Real Vehicle Data Processing
+    
+    private struct VehicleInfo {
+        let displayName: String
+        let make: String
+        let model: String
+        let year: Int
+        let color: String?
+        let specs: String?
+        let vin: String?
+        let mileage: Int?
+    }
+    
+    private struct MarketFactors {
+        let mileageImpact: Double
+        let ageImpact: Double
+        let marketConditionImpact: Double
+    }
+    
+    private func extractVehicleInfo(from passport: VehiclePassport, with vehicleData: Vehicle?) -> VehicleInfo {
+        if let vehicle = vehicleData {
+            // Use EXACT vehicle data to match My Garage display
+            print("📊 Using actual vehicle data: \(vehicle.year) \(vehicle.make) \(vehicle.model)")
+            return VehicleInfo(
+                displayName: vehicle.displayName,
+                make: vehicle.make,
+                model: vehicle.model,
+                year: vehicle.year,
+                color: vehicle.color,
+                specs: vehicle.engineSize,
+                vin: vehicle.vin,
+                mileage: vehicle.mileage
+            )
+        } else {
+            // Fallback: Parse from passport title (should only happen for legacy/incomplete data)
+            print("⚠️ No vehicle data available, parsing from passport title: \(passport.title ?? "Unknown")")
+            let title = passport.title ?? "Unknown Vehicle"
+            let components = title.components(separatedBy: " ")
+            
+            if components.count >= 3 {
+                let year = Int(components[0]) ?? 2020
+                let make = components[1]
+                let model = components.dropFirst(2).joined(separator: " ")
+                
+                return VehicleInfo(
+                    displayName: title,
+                    make: make,
+                    model: model,
+                    year: year,
+                    color: nil,
+                    specs: nil,
+                    vin: nil,
+                    mileage: nil
+                )
+            } else {
+                return VehicleInfo(
+                    displayName: title,
+                    make: "Unknown",
+                    model: "Unknown",
+                    year: 2020,
+                    color: nil,
+                    specs: nil,
+                    vin: nil,
+                    mileage: nil
+                )
+            }
+        }
+    }
+    
+    private func calculateRealisticBaseValue(make: String, model: String, year: Int, purchasePrice: Decimal?) -> Double {
+        // Base MSRP lookup table for common makes/models
+        let basePrices: [String: [String: Double]] = [
+            "Tesla": [
+                "Model 3": 45000,
+                "Model S": 75000,
+                "Model X": 85000,
+                "Model Y": 52000
+            ],
+            "Honda": [
+                "Civic": 24000,
+                "Accord": 28000,
+                "CR-V": 32000,
+                "Pilot": 38000
+            ],
+            "RAM": [
+                "1500": 38000,
+                "2500": 45000,
+                "3500": 50000
+            ],
+            "Jeep": [
+                "Wrangler": 36000,
+                "Grand Cherokee": 42000,
+                "Cherokee": 34000
+            ],
+            "Land Rover": [
+                "Range Rover": 95000,
+                "Range Rover Sport": 75000,
+                "Discovery": 58000
+            ]
+        ]
+        
+        // Get base price or use purchase price as fallback
+        let basePrice: Double
+        if let makeDict = basePrices[make], let modelPrice = makeDict[model] {
+            basePrice = modelPrice
+        } else if let purchasePrice = purchasePrice {
+            basePrice = Double(truncating: purchasePrice as NSNumber)
+        } else {
+            basePrice = 35000 // Default fallback
+        }
+        
+        // Apply depreciation based on vehicle age
+        let currentYear = Calendar.current.component(.year, from: Date())
+        let vehicleAge = max(0, currentYear - year)
+        
+        // Different depreciation rates by brand
+        let depreciationRate: Double
+        switch make.lowercased() {
+        case "tesla":
+            depreciationRate = 0.12 // Tesla holds value better
+        case "honda", "toyota":
+            depreciationRate = 0.15 // Reliable brands
+        case "land rover", "bmw", "audi":
+            depreciationRate = 0.20 // Luxury brands depreciate faster
+        default:
+            depreciationRate = 0.18 // Average
+        }
+        
+        let depreciationFactor = max(0.3, 1.0 - (Double(vehicleAge) * depreciationRate))
+        return basePrice * depreciationFactor
+    }
+    
+    private func calculateMarketFactors(year: Int, make: String, mileage: Int?) -> MarketFactors {
+        let currentYear = Calendar.current.component(.year, from: Date())
+        let vehicleAge = max(0, currentYear - year)
+        
+        // Age impact (more negative for older vehicles)
+        let ageImpact = -Double(vehicleAge) * 0.025 // -2.5% per year
+        
+        // Mileage impact (if available)
+        let mileageImpact: Double
+        if let mileage = mileage {
+            let averageMilesPerYear = 12000
+            let expectedMileage = vehicleAge * averageMilesPerYear
+            let mileageDifference = mileage - expectedMileage
+            mileageImpact = -Double(mileageDifference) / 100000.0 // -1% per 10k excess miles
+        } else {
+            mileageImpact = Double.random(in: (-0.15)...0.05) // Random for unknown mileage
+        }
+        
+        // Market condition impact (brand-specific)
+        let marketConditionImpact: Double
+        switch make.lowercased() {
+        case "tesla":
+            marketConditionImpact = 0.10 // EV market is hot
+        case "honda", "toyota":
+            marketConditionImpact = 0.05 // Reliable brands in demand
+        case "jeep":
+            marketConditionImpact = 0.08 // SUVs popular
+        default:
+            marketConditionImpact = Double.random(in: (-0.05)...0.10)
+        }
+        
+        return MarketFactors(
+            mileageImpact: mileageImpact,
+            ageImpact: ageImpact,
+            marketConditionImpact: marketConditionImpact
+        )
+    }
+    
+    private func determineTrendDirection(for make: String, year: Int) -> TrendDirection {
+        let currentYear = Calendar.current.component(.year, from: Date())
+        let vehicleAge = currentYear - year
+        
+        // Newer vehicles and popular brands tend to hold value better
+        switch make.lowercased() {
+        case "tesla":
+            return vehicleAge < 3 ? .increasing : .stable
+        case "honda", "toyota":
+            return vehicleAge < 5 ? .stable : .decreasing
+        case "land rover", "bmw":
+            return vehicleAge < 2 ? .stable : .decreasing
+        default:
+            return vehicleAge < 3 ? .stable : .decreasing
+        }
     }
 }
 

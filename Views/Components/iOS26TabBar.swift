@@ -41,8 +41,8 @@ struct iOS26TabBar: View {
                             lineWidth: 0.5
                         )
                 )
-                .shadow(color: Color.black.opacity(0.08), radius: 16, x: 0, y: 8)
-                .shadow(color: Color.black.opacity(0.04), radius: 4, x: 0, y: 2)
+                .shadow(color: .primary.opacity(0.08), radius: 16, x: 0, y: 8)
+                .shadow(color: .primary.opacity(0.04), radius: 4, x: 0, y: 2)
         )
     }
 }
@@ -124,16 +124,16 @@ struct PremiumGlassTabBar: View {
             ZStack {
                 // Base material
                 RoundedRectangle(cornerRadius: 32)
-                    .fill(.regularMaterial)
+                    .fill(.ultraThinMaterial)
                 
                 // Enhanced glass effect
                 RoundedRectangle(cornerRadius: 32)
                     .fill(
                         LinearGradient(
                             gradient: Gradient(stops: [
-                                .init(color: Color.white.opacity(0.1), location: 0),
+                                .init(color: Color.primary.opacity(0.1), location: 0),
                                 .init(color: Color.clear, location: 0.5),
-                                .init(color: Color.black.opacity(0.05), location: 1)
+                                .init(color: Color.primary.opacity(0.05), location: 1)
                             ]),
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
@@ -149,7 +149,7 @@ struct PremiumGlassTabBar: View {
                     .stroke(
                         LinearGradient(
                             gradient: Gradient(colors: [
-                                Color.white.opacity(0.2),
+                                Color.primary.opacity(0.2),
                                 Color.clear
                             ]),
                             startPoint: .top,
@@ -159,8 +159,8 @@ struct PremiumGlassTabBar: View {
                     )
                     .blur(radius: 0.5)
             }
-            .shadow(color: Color.black.opacity(0.12), radius: 20, x: 0, y: 10)
-            .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 3)
+            .shadow(color: .primary.opacity(0.12), radius: 20, x: 0, y: 10)
+            .shadow(color: .primary.opacity(0.06), radius: 6, x: 0, y: 3)
         )
     }
 }

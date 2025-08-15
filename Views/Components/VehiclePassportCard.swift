@@ -94,7 +94,7 @@ struct VehiclePassportCard: View {
             }
         }
         .padding(16)
-        .liquidGlassEffect(cornerRadius: 20, material: .regularMaterial)
+        .liquidGlassEffect(cornerRadius: 20, material: .ultraThinMaterial)
     }
 }
 

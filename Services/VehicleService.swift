@@ -18,6 +18,133 @@ class VehicleService {
         return response
     }
     
+    func fetchVehicleById(_ vehicleId: UUID) async throws -> Vehicle {
+        print("🔧 VehicleService: Fetching vehicle by ID: \(vehicleId)")
+        
+        let response: [VehicleAssetData] = try await supabase
+            .from("vehicle_asset")
+            .select("""
+                id,
+                vin,
+                exterior_color,
+                interior_color,
+                original_purchase_date,
+                created_at,
+                vehicle_variant!inner(
+                    id,
+                    engine_cylinders,
+                    engine_displacement_l,
+                    motor_count,
+                    battery_kwh,
+                    drive,
+                    transmission,
+                    transmission_gears,
+                    fuel,
+                    model_year!inner(
+                        id,
+                        year,
+                        body,
+                        doors,
+                        model!inner(
+                            id,
+                            name,
+                            make!inner(
+                                id,
+                                name
+                            )
+                        )
+                    )
+                )
+            """)
+            .eq("id", value: vehicleId.uuidString)
+            .execute()
+            .value
+        
+        guard let assetData = response.first else {
+            throw VehicleServiceError.vehicleNotFound
+        }
+        
+        return transformToVehicle(assetData)
+    }
+    
+    func fetchAllVehicles() async throws -> [Vehicle] {
+        print("🔧 VehicleService: Fetching all vehicles from new schema")
+        
+        do {
+            // First, let's try a simple query to see if we can reach the table
+            print("🔧 Testing simple vehicle_asset query...")
+            struct SimpleVehicleTest: Codable {
+                let id: UUID
+                let vin: String
+            }
+            let simpleTest: [SimpleVehicleTest] = try await supabase
+                .from("vehicle_asset")
+                .select("id, vin")
+                .limit(5)
+                .execute()
+                .value
+            print("🔧 Simple test returned \(simpleTest.count) rows")
+            
+            // Query the new normalized schema with joins
+            let response: [VehicleAssetData] = try await supabase
+                .from("vehicle_asset")
+                .select("""
+                    id,
+                    vin,
+                    exterior_color,
+                    interior_color,
+                    original_purchase_date,
+                    created_at,
+                    vehicle_variant!inner(
+                        id,
+                        engine_cylinders,
+                        engine_displacement_l,
+                        motor_count,
+                        battery_kwh,
+                        drive,
+                        transmission,
+                        transmission_gears,
+                        fuel,
+                        model_year!inner(
+                            id,
+                            year,
+                            body,
+                            doors,
+                            model!inner(
+                                id,
+                                name,
+                                make!inner(
+                                    id,
+                                    name
+                                )
+                            )
+                        )
+                    )
+                """)
+                .order("created_at", ascending: false)
+                .execute()
+                .value
+            
+            print("🔧 Complex query returned \(response.count) VehicleAssetData objects")
+            
+            // Transform to Vehicle models
+            let vehicles = response.map { assetData in
+                transformToVehicle(assetData)
+            }
+            
+            print("🔧 VehicleService: Successfully fetched \(vehicles.count) vehicles")
+            return vehicles
+            
+        } catch {
+            print("🔧 VehicleService: ❌ Error fetching vehicles: \(error)")
+            print("🔧 VehicleService: ❌ Error type: \(type(of: error))")
+            if let decodingError = error as? DecodingError {
+                print("🔧 VehicleService: ❌ Decoding error: \(decodingError)")
+            }
+            throw error
+        }
+    }
+    
     func createVehicle(_ vehicle: Vehicle) async throws -> Vehicle {
         let response: [Vehicle] = try await supabase
             .from("vehicles")
@@ -337,6 +464,134 @@ class VehicleService {
     }
 }
 
+    // MARK: - Data Transformation
+    
+    private func transformToVehicle(_ assetData: VehicleAssetData) -> Vehicle {
+        // Extract nested data
+        let variant = assetData.vehicleVariant
+        let modelYear = variant.modelYear
+        let model = modelYear.model
+        let make = model.make
+        
+        // Map fuel type
+        let fuelType: FuelType? = {
+            switch variant.fuel?.lowercased() {
+            case "gas": return .gasoline
+            case "diesel": return .diesel
+            case "ev": return .electric
+            case "hybrid": return .hybrid
+            case "phev": return .pluginHybrid
+            case "ethanol": return .ethanol
+            default: return nil
+            }
+        }()
+        
+        // Map transmission type
+        let transmissionType: TransmissionType? = {
+            switch variant.transmission?.lowercased() {
+            case "mt": return .manual
+            case "at": return .automatic
+            case "cvt": return .cvt
+            case "dct": return .semiAutomatic
+            case "1spd": return .automatic // Tesla single-speed treated as automatic
+            default: return nil
+            }
+        }()
+        
+        // Build engine size string
+        let engineSize: String? = {
+            if let cylinders = variant.engineCylinders, let displacement = variant.engineDisplacementL {
+                return "\(displacement)L V\(cylinders)"
+            } else if let motorCount = variant.motorCount, variant.fuel?.lowercased() == "ev" {
+                return "\(motorCount) Motor\(motorCount > 1 ? "s" : "")"
+            }
+            return nil
+        }()
+        
+        return Vehicle(
+            id: assetData.id,
+            userId: UUID(), // We'll need to handle user assignment separately
+            make: make.name,
+            model: model.name,
+            year: modelYear.year,
+            vin: assetData.vin,
+            licensePlate: nil, // Not in current schema
+            color: assetData.exteriorColor,
+            mileage: nil, // This would come from a separate mileage tracking table
+            fuelType: fuelType,
+            transmission: transmissionType,
+            engineSize: engineSize,
+            imageUrl: nil, // Would come from photo table
+            createdAt: assetData.createdAt,
+            updatedAt: assetData.createdAt // Using created_at as fallback
+        )
+    }
+
+// MARK: - Data Structures for New Schema
+
+struct VehicleAssetData: Codable {
+    let id: UUID
+    let vin: String
+    let exteriorColor: String?
+    let interiorColor: String?
+    let originalPurchaseDate: String?
+    let createdAt: Date
+    let vehicleVariant: VehicleVariantData
+    
+    enum CodingKeys: String, CodingKey {
+        case id, vin
+        case exteriorColor = "exterior_color"
+        case interiorColor = "interior_color"
+        case originalPurchaseDate = "original_purchase_date"
+        case createdAt = "created_at"
+        case vehicleVariant = "vehicle_variant"
+    }
+}
+
+struct VehicleVariantData: Codable {
+    let id: Int64
+    let engineCylinders: Int?
+    let engineDisplacementL: Double?
+    let motorCount: Int?
+    let batteryKwh: Double?
+    let drive: String?
+    let transmission: String?
+    let transmissionGears: Int?
+    let fuel: String?
+    let modelYear: ModelYearData
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case engineCylinders = "engine_cylinders"
+        case engineDisplacementL = "engine_displacement_l"
+        case motorCount = "motor_count"
+        case batteryKwh = "battery_kwh"
+        case drive, transmission
+        case transmissionGears = "transmission_gears"
+        case fuel
+        case modelYear = "model_year"
+    }
+}
+
+struct ModelYearData: Codable {
+    let id: Int64
+    let year: Int
+    let body: String?
+    let doors: Int?
+    let model: ModelData
+}
+
+struct ModelData: Codable {
+    let id: Int64
+    let name: String
+    let make: MakeData
+}
+
+struct MakeData: Codable {
+    let id: Int64
+    let name: String
+}
+
 // MARK: - Errors
 
 enum VehicleServiceError: Error, LocalizedError {
@@ -345,6 +600,7 @@ enum VehicleServiceError: Error, LocalizedError {
     case deletionFailed
     case fetchFailed
     case uploadFailed
+    case vehicleNotFound
     
     var errorDescription: String? {
         switch self {
@@ -358,6 +614,8 @@ enum VehicleServiceError: Error, LocalizedError {
             return "Failed to fetch data"
         case .uploadFailed:
             return "Failed to upload file"
+        case .vehicleNotFound:
+            return "Vehicle not found"
         }
     }
 } 

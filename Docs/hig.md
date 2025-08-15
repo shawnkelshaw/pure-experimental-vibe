@@ -1,94 +1,62 @@
-# Apple Human Interface Guidelines (HIG) Reference – iOS 26
+# Human Interface Guidelines – iOS 26 (SwiftUI, Liquid Glass)
 
-This document reflects Apple’s latest guidance for native iOS app design using SwiftUI, including **Liquid Glass UI** features introduced in iOS 26 (iOS 18 public beta).
+This document defines the design and development expectations for this app, which targets **iOS 26** (public beta of iOS 18), using **SwiftUI** and **Apple's native iOS UI components**.
 
 📚 Reference:  
 🔗 https://developer.apple.com/design/human-interface-guidelines  
-🔗 https://developer.apple.com/documentation/swiftui/view/glassbackground()
+🔗 https://developer.apple.com/documentation/swiftui/view/glassbackground/
+
+---
+
+## 🎯 Project Intent
+
+This is a **native iOS application** using only **Apple’s official SwiftUI controls**, built to comply with the latest **Human Interface Guidelines** and optimized for the **Liquid Glass UI introduced in iOS 26**.
+
+- Use **Apple-native layout patterns** — no custom navigation or component libraries
+- Prioritize **clarity, depth, deference**, and **accessibility**
+- Incorporate **Liquid Glass styling** using `.glassBackgroundEffect()` where appropriate
+- Target **iPhone 16 Pro layout** (393x852) as default preview resolution
+- Respect all system standards for **font scaling**, **semantic colors**, and **material rendering**
 
 ---
 
 ## 🧭 Core Principles
 
-Apple’s design system emphasizes:
+Apple’s design language follows three key principles:
 
-- **Clarity** – Interfaces are legible, precise, and easy to understand.
-- **Deference** – UI supports the content without competing with it.
-- **Depth** – Realistic transitions, layering, and motion convey hierarchy.
+- **Clarity** – Interfaces are precise and easy to understand
+- **Deference** – UI supports the content without overpowering it
+- **Depth** – Transitions and visual hierarchy reinforce navigation and context
 
 ---
 
 ## 🧱 Layout & Navigation
 
-- Use **safe areas**, **adaptive layout containers**, and **system spacing**
-- Leverage native containers: `NavigationStack`, `TabView`, `Form`, `List`
-- Present content via **sheets**, **modals**, or **detail views** using new iOS 26 transitions
-- Avoid fixed positions — support **dynamic layout** and **compact/regular environments**
+- Use SwiftUI-native containers: `NavigationStack`, `TabView`, `Form`, `List`
+- Apply system spacing and safe areas using `padding()`, `Spacer()`, and `.containerRelativeFrame()`
+- Avoid absolute positioning or fixed frames
+- Support modal and sheet-based presentation with system transitions
+- Use adaptive layouts that work in both compact and regular environments
 
 ---
 
-## 🎨 Visual Style (Updated for iOS 26)
+## 🎨 Visual Style (iOS 26 UI + Liquid Glass)
 
-- Use system-provided **blur materials**: `.glassBackground()` (iOS 26+ only)
-- Avoid `ZStack` overlays that suppress transparency or blur
-- Use **semantic colors**: `.primary`, `.secondary`, `.background`, `.label`
-- Full support for **light/dark mode** and **adaptive contrast**
-- Use `.background()` sparingly to preserve depth and compositing
+- Use `.glassBackgroundEffect()` for surfaces and system containers (iOS 26+ only)
+- Always wrap iOS 26-specific features in:
+  ```swift
+  if #available(iOS 26, *) {
+    // iOS 26 UI logic
+  }
 
-### 🧊 Liquid Glass Best Practices
+  ---
 
-| Rule | Description |
-|------|-------------|
-| ✅ Use `.glassBackground()` | For tab bars, cards, modals, and surfaces |
-| 🔒 Wrap in `if #available(iOS 26, *)` | Prevent crashes on older iOS versions |
-| 🚫 Avoid `.background(Color.white)` | Kills the blur and visual depth |
-| ✅ Use layered transparency | Ensures depth and hierarchy render correctly |
-| 🎨 Border hinting | Use 15% opacity borders for contrast when needed |
+  ### 🌗 Light & Dark Mode Support
 
----
-
-## 🔤 Typography
-
-- Use system fonts and roles: `.largeTitle`, `.title2`, `.body`, `.caption`
-- Support **Dynamic Type** and **Accessibility sizes**
-- Avoid fixed font sizes and custom font scaling
-
----
-
-## 🧑‍🦽 Accessibility
-
-- Add `.accessibilityLabel()`, `.accessibilityHint()`, and roles for interactive elements
-- Ensure minimum touch targets (44×44 pt)
-- Use `.accessibilitySortPriority()` when controlling element order
-- Test with VoiceOver and Dynamic Type enabled
-
----
-
-## 🧱 Components
-
-- Use system-native SwiftUI controls:
-  - `Button`, `TextField`, `Toggle`, `Form`, `List`, `ScrollView`, `DatePicker`
-- Adopt iOS 26 refinements:
-  - `formStyle(.automatic)` or `.grouped`
-  - Native `sheet` behavior with full-screen blur
-- Enable swipe actions, drag-and-drop, and haptics when relevant
-
----
-
-## ✅ View Checklist
-
-For each new screen or component:
-- [ ] Uses SwiftUI and Swift 5.10
-- [ ] Targets iOS 26+ features via `#available` checks
-- [ ] Respects layout margins and system spacing
-- [ ] Uses `.glassBackground()` where appropriate
-- [ ] Avoids conflicting `.background()` or `.opacity()` calls
-- [ ] Uses semantic system colors and fonts
-- [ ] Supports light/dark mode and Dynamic Type
-- [ ] Includes accessibility labels and roles
-- [ ] Previews on iPhone 16 Pro simulator
-- [ ] Follows MVVM architecture with clean separation of concerns
-
----
-
-> ℹ️ _Update this document as iOS 26 matures or new UI guidance is released. Refer to Apple’s [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines) regularly when introducing new views or patterns._
+- All views must support **automatic theme switching**
+- Use only **semantic colors** (`.primary`, `.background`, `.label`, etc.)
+- Avoid hardcoded `Color.white` or `Color.black` — they do not adapt
+- Glass surfaces must maintain visual contrast:
+  - Light Mode → use subtle dark borders
+  - Dark Mode → use subtle light borders (15% opacity recommended)
+- All effects, shadows, and glass layers must appear natural in both modes

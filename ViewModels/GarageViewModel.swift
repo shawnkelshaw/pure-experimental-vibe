@@ -16,7 +16,8 @@ class GarageViewModel: ObservableObject {
     
     init(authService: AuthService) {
         self.authService = authService
-        setupNotificationObservers()
+        // Temporarily disable old notification observers to avoid conflicts
+        // setupNotificationObservers()
     }
     
     deinit {
@@ -286,38 +287,130 @@ class GarageViewModel: ObservableObject {
     func addVehiclePassportFromNotification(_ notification: PendingNotification) async {
         print("📱 Adding vehicle passport from notification: \(notification.title)")
         
-        // Extract vehicle name from notification metadata or message
-        let vehicleName = notification.metadata?["sender_name"] ?? "Unknown Vehicle"
+        // Extract vehicle ID from notification metadata
+        guard let vehicleIdString = notification.metadata?["vehicle_id"] else {
+            print("📱 ❌ No vehicle ID found in notification metadata")
+            return
+        }
         
-        // Create a demo vehicle passport with incremental numbering
-        let passportNumber = vehiclePassports.count + 1
-        let passportTitle = "Demo Vehicle #\(passportNumber)"
+        print("📱 Processing vehicle ID: \(vehicleIdString)")
         
-        let newPassport = VehiclePassport(
-            id: UUID(),
-            vehicleId: UUID(), // Demo vehicle ID
-            userId: notification.userId,
-            title: passportTitle,
-            notes: "Vehicle passport received via Bluetooth from \(vehicleName)",
-            purchaseDate: Date(),
-            purchasePrice: nil,
-            currentValue: nil,
-            isActive: true,
-            qrCode: generateQRCode(),
-            documents: [],
-            maintenanceRecords: [],
-            createdAt: Date(),
-            updatedAt: Date()
-        )
+        do {
+            // Handle index-based vehicle fetching
+            let fetchedVehicle: Vehicle
+            
+            print("📱 🔍 DEBUG: vehicleIdString = '\(vehicleIdString)'")
+            
+            // Check for index-based fetching (new system)
+            if vehicleIdString.hasPrefix("FETCH_VEHICLE_AT_INDEX_") {
+                let indexString = String(vehicleIdString.dropFirst("FETCH_VEHICLE_AT_INDEX_".count))
+                if let index = Int(indexString) {
+                    print("📱 Fetching vehicle at index \(index) from database")
+                    fetchedVehicle = try await fetchAnyAvailableVehicle(index: index)
+                } else {
+                    print("📱 ❌ Invalid index format: \(indexString)")
+                    return
+                }
+            }
+            // Legacy demo IDs (for backward compatibility)
+            else if vehicleIdString == "FETCH_FIRST_AVAILABLE" {
+                print("📱 Fetching first available vehicle from database (legacy)")
+                fetchedVehicle = try await fetchAnyAvailableVehicle(index: 0)
+            } else if vehicleIdString == "FETCH_SECOND_AVAILABLE" {
+                print("📱 Fetching second available vehicle from database (legacy)")
+                fetchedVehicle = try await fetchAnyAvailableVehicle(index: 1)
+            }
+            // Real UUID handling
+            else if let vehicleId = UUID(uuidString: vehicleIdString) {
+                print("📱 Fetching specific vehicle from Supabase for vehicle ID: \(vehicleId)")
+                fetchedVehicle = try await fetchVehicleFromSupabase(vehicleId: vehicleId)
+            } else {
+                print("📱 ❌ Invalid vehicle ID format: \(vehicleIdString)")
+                return
+            }
+            
+            // Create vehicle passport with real vehicle data
+            let newPassport = VehiclePassport(
+                id: UUID(),
+                vehicleId: fetchedVehicle.id,
+                userId: notification.userId,
+                title: "\(fetchedVehicle.year) \(fetchedVehicle.make) \(fetchedVehicle.model)",
+                notes: "Vehicle passport received via Bluetooth - VIN: \(fetchedVehicle.vin)",
+                purchaseDate: Date(),
+                purchasePrice: nil,
+                currentValue: nil,
+                isActive: true,
+                qrCode: generateQRCode(),
+                documents: [],
+                maintenanceRecords: [],
+                createdAt: Date(),
+                updatedAt: Date()
+            )
+            
+            // Add to local array for UI responsiveness
+            vehiclePassports.append(newPassport)
+            
+            // Also store the vehicle data for the card display
+            if !vehicles.contains(where: { $0.id == fetchedVehicle.id }) {
+                vehicles.append(fetchedVehicle)
+            }
+            
+            print("📱 ✅ Vehicle passport added: \(String(describing: newPassport.title ?? "Unknown")) (Total: \(vehiclePassports.count))")
+            print("📱 Vehicle data: \(fetchedVehicle.year) \(fetchedVehicle.make) \(fetchedVehicle.model)")
+            
+        } catch {
+            print("📱 ❌ Error fetching vehicle from Supabase: \(error)")
+            errorMessage = "Failed to load vehicle data: \(error.localizedDescription)"
+        }
+    }
+    
+    // MARK: - Supabase Vehicle Fetching
+    
+    private func fetchVehicleFromSupabase(vehicleId: UUID) async throws -> Vehicle {
+        print("📱 Fetching vehicle from Supabase with ID: \(vehicleId)")
         
-        // Add to local array immediately for UI responsiveness
-        vehiclePassports.append(newPassport)
+        // Query Supabase for vehicle data through VehicleService
+        let vehicle = try await vehicleService.fetchVehicleById(vehicleId)
         
-        print("📱 Vehicle passport added: \(passportTitle) (Total: \(vehiclePassports.count))")
-        print("📱 hasVehiclePassports is now: \(hasVehiclePassports)")
+        print("📱 ✅ Vehicle fetched successfully: \(vehicle.year) \(vehicle.make) \(vehicle.model)")
+        return vehicle
+    }
+    
+    private func fetchAnyAvailableVehicle(index: Int) async throws -> Vehicle {
+        print("📱 Fetching any available vehicle from database (index: \(index))")
         
-        // Note: In a real app, you would also persist this to Supabase
-        // For demo purposes, we're keeping it local
+        do {
+            // Get all available vehicles from Supabase
+            let vehicles = try await vehicleService.fetchAllVehicles()
+            print("📱 Found \(vehicles.count) vehicles in database")
+            
+            if vehicles.isEmpty {
+                print("📱 ❌ No vehicles found in database")
+                print("📱 ❌ This likely means the vehicle_asset table is empty or the query failed")
+                throw NSError(domain: "NoVehiclesFound", code: 404, userInfo: [
+                    NSLocalizedDescriptionKey: "No vehicles found in database. Check if vehicle_asset table has data."
+                ])
+            }
+            
+            // Log all vehicles for debugging
+            for (i, vehicle) in vehicles.enumerated() {
+                print("📱 Vehicle \(i): \(vehicle.year) \(vehicle.make) \(vehicle.model) - ID: \(vehicle.id)")
+            }
+            
+            // Return vehicle at specified index, or first one if index is out of bounds
+            let selectedVehicle = vehicles.indices.contains(index) ? vehicles[index] : vehicles[0]
+            
+            print("📱 ✅ Selected vehicle: \(selectedVehicle.year) \(selectedVehicle.make) \(selectedVehicle.model)")
+            return selectedVehicle
+            
+        } catch {
+            print("📱 ❌ Error fetching vehicles: \(error)")
+            print("📱 ❌ Error details: \(error.localizedDescription)")
+            if let decodingError = error as? DecodingError {
+                print("📱 ❌ Decoding error details: \(decodingError)")
+            }
+            throw error
+        }
     }
     
     // MARK: - Computed Properties

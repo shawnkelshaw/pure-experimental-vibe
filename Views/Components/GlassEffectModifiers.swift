@@ -7,7 +7,7 @@ extension View {
     func glassEffect(
         cornerRadius: CGFloat = 20,
         borderWidth: CGFloat = 1,
-        material: Material = .regularMaterial
+        material: Material = .ultraThinMaterial
     ) -> some View {
         self
             .background(
@@ -189,7 +189,7 @@ struct GlassCard<Content: View>: View {
     
     init(
         cornerRadius: CGFloat = 20,
-        material: Material = .regularMaterial,
+        material: Material = .ultraThinMaterial,
         @ViewBuilder content: () -> Content
     ) {
         self.cornerRadius = cornerRadius

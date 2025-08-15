@@ -33,7 +33,7 @@ struct MoreView: View {
                                 // Profile Avatar
                                 ZStack {
                                     Circle()
-                                        .fill(.regularMaterial)
+                                        .fill(.ultraThinMaterial)
                                         .frame(width: 60, height: 60)
                                         .overlay(
                                             Circle()
@@ -72,7 +72,7 @@ struct MoreView: View {
                         .padding(.vertical, 16)
                         .background(
                             RoundedRectangle(cornerRadius: 16)
-                                .fill(.regularMaterial)
+                                .fill(.ultraThinMaterial)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 16)
                                         .stroke(Color.glassBorder, lineWidth: 1)
@@ -97,7 +97,7 @@ struct MoreView: View {
                                 // Theme Icon
                                 ZStack {
                                     Circle()
-                                        .fill(.regularMaterial)
+                                        .fill(.ultraThinMaterial)
                                         .frame(width: 40, height: 40)
                                         .overlay(
                                             Circle()
@@ -132,7 +132,7 @@ struct MoreView: View {
                         .padding(.vertical, 16)
                         .background(
                             RoundedRectangle(cornerRadius: 16)
-                                .fill(.regularMaterial)
+                                .fill(.ultraThinMaterial)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 16)
                                         .stroke(Color.glassBorder, lineWidth: 1)
@@ -183,7 +183,7 @@ struct MoreView: View {
                         }
                         .background(
                             RoundedRectangle(cornerRadius: 16)
-                                .fill(.regularMaterial)
+                                .fill(.ultraThinMaterial)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 16)
                                         .stroke(Color.glassBorder, lineWidth: 1)
@@ -223,7 +223,7 @@ struct MoreView: View {
                             .padding(.vertical, 16)
                             .background(
                                 RoundedRectangle(cornerRadius: 16)
-                                    .fill(.regularMaterial)
+                                    .fill(.ultraThinMaterial)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 16)
                                             .stroke(Color.glassBorder, lineWidth: 1)
@@ -276,7 +276,7 @@ struct SettingsRow: View {
                 // Icon
                 ZStack {
                     Circle()
-                        .fill(.regularMaterial)
+                        .fill(.ultraThinMaterial)
                         .frame(width: 40, height: 40)
                         .overlay(
                             Circle()

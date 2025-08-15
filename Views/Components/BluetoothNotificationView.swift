@@ -10,8 +10,8 @@ struct BluetoothNotificationView: View {
     
     var body: some View {
         ZStack {
-            // Semi-transparent dark background
-            Color.black.opacity(0.7)
+            // Semi-transparent background
+            Color(.systemBackground).opacity(0.7)
                 .ignoresSafeArea(.all)
                 .onTapGesture {
                     // Prevent dismissal on background tap for important notifications
@@ -89,7 +89,7 @@ struct BluetoothNotificationView: View {
                                 if isProcessing {
                                     ProgressView()
                                         .scaleEffect(0.8)
-                                        .progressViewStyle(CircularProgressViewStyle(tint: .black))
+                                        .progressViewStyle(CircularProgressViewStyle(tint: .primary))
                                 } else {
                                     Image(systemName: "checkmark.circle.fill")
                                         .font(.system(size: 16, weight: .semibold))
@@ -148,7 +148,7 @@ struct BluetoothNotificationView: View {
                 .padding(.vertical, 32)
                 .background(
                     RoundedRectangle(cornerRadius: 24)
-                        .fill(.regularMaterial)
+                        .fill(.ultraThinMaterial)
                         .overlay(
                             RoundedRectangle(cornerRadius: 24)
                                 .stroke(Color.blue.opacity(0.3), lineWidth: 1)
@@ -208,8 +208,8 @@ struct GenericNotificationView: View {
     
     var body: some View {
         ZStack {
-            // Semi-transparent dark background
-            Color.black.opacity(0.7)
+            // Semi-transparent background
+            Color(.systemBackground).opacity(0.7)
                 .ignoresSafeArea(.all)
             
             VStack {
@@ -291,7 +291,7 @@ struct GenericNotificationView: View {
                 .padding(.vertical, 28)
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .fill(.regularMaterial)
+                        .fill(.ultraThinMaterial)
                         .overlay(
                             RoundedRectangle(cornerRadius: 20)
                                 .stroke(Color.orange.opacity(0.3), lineWidth: 1)

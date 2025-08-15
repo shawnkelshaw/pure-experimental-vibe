@@ -43,7 +43,7 @@ struct GlassEffectDemoView: View {
                             }
                         }
                         .padding()
-                        .glassEffect(cornerRadius: 16, material: .regularMaterial)
+                        .glassEffect(cornerRadius: 16, material: .ultraThinMaterial)
                     }
                     
                     // Liquid Glass Effect
@@ -140,7 +140,7 @@ struct GlassEffectDemoView: View {
                             .font(.headline)
                             .foregroundColor(.textPrimary)
                         
-                        GlassCard(cornerRadius: 24, material: .regularMaterial) {
+                        GlassCard(cornerRadius: 24, material: .ultraThinMaterial) {
                             VStack(alignment: .leading, spacing: 12) {
                                 HStack {
                                     Image(systemName: "car.fill")

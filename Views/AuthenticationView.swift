@@ -110,14 +110,14 @@ struct AuthenticationView: View {
                                 HStack {
                                     if authService.isLoading {
                                         ProgressView()
-                                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                            .progressViewStyle(CircularProgressViewStyle(tint: .primary))
                                             .scaleEffect(0.8)
                                     }
                                     
                                     Text(isSignUpMode ? "Create Account" : "Sign In")
                                         .font(.system(size: 16, weight: .semibold, design: .rounded))
                                 }
-                                .foregroundColor(.white)
+                                .foregroundStyle(.white)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 50)
                                 .background(
@@ -296,7 +296,7 @@ struct PasswordResetView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.black.ignoresSafeArea()
+                Color(.systemBackground).ignoresSafeArea()
                 
                 VStack(spacing: 24) {
                     if emailSent {
@@ -307,7 +307,7 @@ struct PasswordResetView: View {
                             
                             Text("Reset Email Sent")
                                 .font(.system(size: 20, weight: .medium))
-                                .foregroundColor(.white)
+                                .foregroundStyle(.primary)
                             
                             Text("Check your email for password reset instructions.")
                                 .font(.system(size: 14))
@@ -318,7 +318,7 @@ struct PasswordResetView: View {
                         VStack(spacing: 20) {
                             Text("Reset Password")
                                 .font(.system(size: 24, weight: .medium))
-                                .foregroundColor(.white)
+                                .foregroundStyle(.primary)
                             
                             Text("Enter your email address and we'll send you instructions to reset your password.")
                                 .font(.system(size: 14))
@@ -343,19 +343,19 @@ struct PasswordResetView: View {
                                 HStack {
                                     if authService.isLoading {
                                         ProgressView()
-                                            .progressViewStyle(CircularProgressViewStyle(tint: .black))
+                                            .progressViewStyle(CircularProgressViewStyle(tint: .primary))
                                             .scaleEffect(0.8)
                                     }
                                     
                                     Text("Send Reset Email")
                                         .font(.system(size: 16, weight: .semibold))
                                 }
-                                .foregroundColor(.black)
+                                .foregroundStyle(.primary)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 50)
                                 .background(
                                     RoundedRectangle(cornerRadius: 12)
-                                        .fill(.white)
+                                        .fill(.background)
                                 )
                             }
                             .disabled(authService.isLoading || resetEmail.isEmpty || !resetEmail.contains("@"))
@@ -371,7 +371,7 @@ struct PasswordResetView: View {
                     Button("Done") {
                         dismiss()
                     }
-                    .foregroundColor(.white)
+                    .foregroundStyle(.primary)
                 }
             }
         }
