@@ -15,44 +15,35 @@ struct RootTabView: View {
                     selectedContentView
                 }
             } else {
-                // iPhone: Use bottom tab navigation
-                ZStack(alignment: .bottom) {
-                    // Background for content to blur behind tab bar
-                    Color.appBackground
-                        .ignoresSafeArea(.all)
+                // iPhone: Use native iOS 18 tab navigation with glass effects
+                TabView(selection: $selectedTab) {
+                    // Tab 0: The Market
+                    MarketView()
+                        .tabItem {
+                            Image(systemName: "chart.line.uptrend.xyaxis")
+                            Text("The Market")
+                        }
+                        .tag(0)
                     
-                    // Main content area
-                    TabView(selection: $selectedTab) {
-                        // Tab 0: The Market
-                        MarketView()
-                            .tabItem { EmptyView() }
-                            .tag(0)
-                        
-                        // Tab 1: My Garage (Default)
-                        MyGarageView()
-                            .tabItem { EmptyView() }
-                            .tag(1)
-                        
-                        // Tab 2: More
-                        MoreView()
-                            .tabItem { EmptyView() }
-                            .tag(2)
-                    }
-                    .tabViewStyle(.tabBarOnly)
+                    // Tab 1: My Garage (Default)
+                    MyGarageView()
+                        .tabItem {
+                            Image(systemName: "car.fill")
+                            Text("My Garage")
+                        }
+                        .tag(1)
                     
-                    // Premium Glass Tab Bar with Enhanced Effects
-                    VStack(spacing: 0) {
-                        PremiumGlassTabBar(
-                            selectedIndex: $selectedTab,
-                            items: [
-                                (icon: "chart.line.uptrend.xyaxis", title: "The Market"),
-                                (icon: "car.fill", title: "My Garage"),
-                                (icon: "ellipsis.circle", title: "More")
-                            ]
-                        )
-                        .padding(.bottom, 28) // Account for home indicator
-                    }
+                    // Tab 2: More
+                    MoreView()
+                        .tabItem {
+                            Image(systemName: "ellipsis.circle")
+                            Text("More")
+                        }
+                        .tag(2)
                 }
+                .tint(Color.accentColor) // Use semantic accent color
+                .toolbarBackground(.ultraThinMaterial, for: .tabBar) // iOS 18 glass effect
+                .toolbarColorScheme(.dark, for: .tabBar) // Ensure proper contrast
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

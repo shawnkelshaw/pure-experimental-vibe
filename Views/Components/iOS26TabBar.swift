@@ -108,7 +108,7 @@ struct PremiumGlassTabBar: View {
     let items: [(icon: String, title: String)]
     
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: -10) { // Exact Figma spacing: -10px horizontal gap
             ForEach(Array(items.enumerated()), id: \.offset) { index, item in
                 PremiumTabBarButton(
                     icon: item.icon,
@@ -118,16 +118,16 @@ struct PremiumGlassTabBar: View {
                 )
             }
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 12)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
         .background(
             ZStack {
                 // Base material
-                RoundedRectangle(cornerRadius: 32)
+                RoundedRectangle(cornerRadius: 28)
                     .fill(.ultraThinMaterial)
                 
                 // Enhanced glass effect
-                RoundedRectangle(cornerRadius: 32)
+                RoundedRectangle(cornerRadius: 28)
                     .fill(
                         LinearGradient(
                             gradient: Gradient(stops: [
@@ -141,11 +141,11 @@ struct PremiumGlassTabBar: View {
                     )
                 
                 // Subtle border
-                RoundedRectangle(cornerRadius: 32)
+                RoundedRectangle(cornerRadius: 28)
                     .stroke(Color.glassBorder.opacity(0.6), lineWidth: 0.5)
                 
                 // Inner glow
-                RoundedRectangle(cornerRadius: 32)
+                RoundedRectangle(cornerRadius: 28)
                     .stroke(
                         LinearGradient(
                             gradient: Gradient(colors: [
@@ -174,30 +174,11 @@ struct PremiumTabBarButton: View {
     var body: some View {
         Button(action: action) {
             VStack(spacing: 3) {
-                ZStack {
-                    if isSelected {
-                        // Premium selected background
-                        RoundedRectangle(cornerRadius: 18)
-                            .fill(.thinMaterial)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 18)
-                                    .fill(Color.tabBarSelectedText.opacity(0.08))
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 18)
-                                    .stroke(Color.tabBarSelectedText.opacity(0.25), lineWidth: 1)
-                            )
-                            .frame(width: 48, height: 36)
-                            .shadow(color: Color.tabBarSelectedText.opacity(0.1), radius: 4, x: 0, y: 2)
-                    }
-                    
-                    Image(systemName: icon)
-                        .font(.system(size: 19, weight: isSelected ? .semibold : .medium, design: .rounded))
-                        .foregroundColor(isSelected ? Color.tabBarSelectedText : Color.tabBarUnselectedText)
-                        .symbolRenderingMode(.hierarchical)
-                        .scaleEffect(isSelected ? 1.05 : 0.95)
-                }
-                .frame(height: 36)
+                Image(systemName: icon)
+                    .font(.system(size: 19, weight: isSelected ? .semibold : .medium, design: .rounded))
+                    .foregroundColor(isSelected ? Color.tabBarSelectedText : Color.tabBarUnselectedText)
+                    .symbolRenderingMode(.hierarchical)
+                    .scaleEffect(isSelected ? 1.05 : 0.95)
                 
                 Text(title)
                     .font(.system(size: 10, weight: isSelected ? .semibold : .regular, design: .rounded))
@@ -205,8 +186,21 @@ struct PremiumTabBarButton: View {
                     .lineLimit(1)
                     .opacity(isSelected ? 1.0 : 0.7)
             }
+            .frame(width: 102, height: 54) // Exact Figma dimensions: 102px × 54px
+            .background(
+                Group {
+                    if isSelected {
+                        // Active state pill background - encompasses icon AND text
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color(.tertiarySystemFill)) // Using system tertiary fill
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(Color.primary.opacity(0.05)) // "Plus lighter" appearance
+                            )
+                    }
+                }
+            )
         }
-        .frame(maxWidth: .infinity)
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: isSelected)
     }
 }

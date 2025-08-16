@@ -1,4 +1,5 @@
 import SwiftUI
+import Charts
 
 struct MarketView: View {
     @EnvironmentObject var garageViewModel: GarageViewModel
@@ -7,7 +8,7 @@ struct MarketView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(spacing: .medium) {
                     if garageViewModel.vehiclePassports.isEmpty {
                         // STATE 1: No passports
                         EmptyMarketView()
@@ -27,7 +28,7 @@ struct MarketView: View {
 // MARK: - Empty State
 struct EmptyMarketView: View {
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: .regular) {
             Image(systemName: "chart.line.uptrend.xyaxis")
                 .font(.system(size: 48))
                 .foregroundColor(.secondary)
@@ -56,30 +57,45 @@ struct VehicleMarketView: View {
             // Single card - no carousel needed
             if let passport = garageViewModel.vehiclePassports.first,
                let vehicle = garageViewModel.vehicles.first(where: { $0.id == passport.vehicleId }) {
-                VehicleMarketCard(vehicle: vehicle, passport: passport)
-                    .padding(.horizontal) // System spacing for consistent width
+                VehicleMarketList(vehicle: vehicle, passport: passport)
+                    .padding(.horizontal)
             }
-        } else {
-            // Multiple cards - show carousel (HIG-compliant)
-            TabView {
-                ForEach(Array(garageViewModel.vehiclePassports.enumerated()), id: \.offset) { index, passport in
-                    if let vehicle = garageViewModel.vehicles.first(where: { $0.id == passport.vehicleId }) {
-                        VehicleMarketCard(vehicle: vehicle, passport: passport)
-                            .padding(.horizontal) // System spacing for consistent width
-                    } else {
-                        LoadingMarketCard(passport: passport)
-                            .padding(.horizontal) // System spacing for consistent width
+        } else if passportCount > 1 {
+            // Multiple vehicles - carousel with dots outside
+            VStack(spacing: .medium) {
+                TabView {
+                    ForEach(Array(garageViewModel.vehiclePassports.enumerated()), id: \.offset) { index, passport in
+                        if let vehicle = garageViewModel.vehicles.first(where: { $0.id == passport.vehicleId }) {
+                            VehicleMarketList(vehicle: vehicle, passport: passport)
+                                .padding(.horizontal)
+                        } else {
+                            LoadingMarketCard(passport: passport)
+                                .padding(.horizontal)
+                        }
                     }
                 }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .frame(height: 420) // Fixed height to ensure cards are visible
+                
+                // Page indicators outside the content
+                HStack(spacing: 8) {
+                    ForEach(0..<passportCount, id: \.self) { index in
+                        Circle()
+                            .fill(Color.primary.opacity(0.3))
+                            .frame(width: 6, height: 6)
+                    }
+                }
+                .padding(.bottom)
             }
-            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
-            .frame(height: 420) // Content-only height for HIG compliance
+        } else {
+            // Empty state
+            EmptyMarketView()
         }
     }
 }
 
-// MARK: - Vehicle Market Card
-struct VehicleMarketCard: View {
+// MARK: - Vehicle Market List
+struct VehicleMarketList: View {
     let vehicle: Vehicle
     let passport: VehiclePassport
     
@@ -95,20 +111,21 @@ struct VehicleMarketCard: View {
         return age < 3 ? "↗ +2.1%" : age < 6 ? "→ -0.5%" : "↘ -3.2%"
     }
     
+    // Mock data for chart
+    private var chartData: [TrendDataPoint] {
+        [
+            TrendDataPoint(month: "Jan", depreciation: 0.95, demand: 1.02),
+            TrendDataPoint(month: "Feb", depreciation: 0.92, demand: 0.98),
+            TrendDataPoint(month: "Mar", depreciation: 0.89, demand: 1.05),
+        ]
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(.ultraThinMaterial)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color.glassBorder, lineWidth: 1)
-                    )
-                
-                VStack(alignment: .leading, spacing: 20) {
-                // Vehicle Header (matching My Garage style)
+            VStack(alignment: .leading, spacing: .medium) {
+                // Vehicle Header
                 HStack {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: .extraTight) {
                         Text(vehicle.make)
                             .font(.system(size: 22, weight: .semibold))
                             .foregroundColor(.primary)
@@ -125,158 +142,138 @@ struct VehicleMarketCard: View {
                         .foregroundColor(.secondary)
                 }
                 
-                // Vehicle Data Fields (matching My Garage layout)
-                VStack(spacing: 16) {
-                    // Top row: Year and VIN
-                    HStack(spacing: 20) {
-                        VStack(spacing: 4) {
-                            Text("\(String(vehicle.year))")
-                                .font(.system(size: 18, weight: .semibold))
-                                .foregroundColor(.primary)
-                            
-                            Text("Year")
-                                .font(.system(size: 12, weight: .medium))
-                                .foregroundColor(.secondary)
-                        }
-                        
-                        Rectangle()
-                            .fill(Color.glassBorder)
-                            .frame(width: 1)
-                            .frame(maxHeight: 30)
-                        
-                        VStack(spacing: 4) {
-                            Text(formatVIN(vehicle.vin ?? "Unknown"))
-                                .font(.system(size: 14, weight: .semibold))
-                                .foregroundColor(.primary)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.8)
-                            
-                            Text("VIN")
-                                .font(.system(size: 12, weight: .medium))
-                                .foregroundColor(.secondary)
-                        }
-                        .frame(maxWidth: .infinity)
+                // Market Value and Trend
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: .extraTight) {
+                        Text("Market Value")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Text(NumberFormatter.currency.string(from: NSNumber(value: currentValuation)) ?? "$0")
+                            .font(.title2.weight(.semibold))
+                            .foregroundStyle(.primary)
                     }
                     
-                    // Bottom row: Model and Mileage
-                    HStack(spacing: 20) {
-                        VStack(spacing: 4) {
-                            Text(vehicle.model)
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundColor(.blue)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.8)
-                            
-                            Text("Model")
-                                .font(.system(size: 12, weight: .medium))
-                                .foregroundColor(.secondary)
-                        }
-                        .frame(maxWidth: .infinity)
-                        
-                        Rectangle()
-                            .fill(Color.glassBorder)
-                            .frame(width: 1)
-                            .frame(maxHeight: 30)
-                        
-                        VStack(spacing: 4) {
-                            Text(formatMileage(vehicle.mileage))
-                                .font(.system(size: 18, weight: .semibold))
-                                .foregroundColor(.green)
-                            
-                            Text("Mileage")
-                                .font(.system(size: 12, weight: .medium))
-                                .foregroundColor(.secondary)
-                        }
-                    }
+                    Spacer()
                     
-                    // Market Valuation Section
-                    VStack(spacing: 12) {
-                        // Current Value and Trend
-                        HStack {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Market Value")
-                                    .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(.secondary)
-                                
-                                Text(formatCurrency(currentValuation))
-                                    .font(.system(size: 20, weight: .bold))
-                                    .foregroundColor(.primary)
-                            }
-                            
-                            Spacer()
-                            
-                            VStack(alignment: .trailing, spacing: 4) {
-                                Text("3-Month Trend")
-                                    .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(.secondary)
-                                
-                                Text(valuationTrend)
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundColor(valuationTrend.contains("↗") ? .green : 
-                                                   valuationTrend.contains("→") ? .orange : .red)
-                            }
-                        }
-                        
-                        // Trend Chart
-                        TrendChartView()
-                            .frame(height: 80)
+                    VStack(alignment: .trailing, spacing: .extraTight) {
+                        Text("3-Month Trend")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Text(valuationTrend)
+                            .font(.title3.weight(.medium))
+                            .foregroundStyle(valuationTrend.contains("+") ? .green : .red)
                     }
-                    .padding(.top, 8)
-                    
-                    // Action Buttons
-                    HStack(spacing: 12) {
-                        Button(action: {}) {
-                            Text("Sell Now")
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundStyle(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 12)
-                                .background(Color.blue)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                        }
-                        
-                        Button(action: {}) {
-                            Text("Get Quote")
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundStyle(.blue)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 12)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .fill(.ultraThinMaterial)
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 8)
-                                                .stroke(Color.blue.opacity(0.3), lineWidth: 1)
-                                        )
-                                )
-                        }
-                    }
-                    .padding(.top, 8)
                 }
+                
+                // Swift Charts
+                VStack(alignment: .leading, spacing: .tight) {
+                    Chart(chartData) { dataPoint in
+                        LineMark(
+                            x: .value("Month", dataPoint.month),
+                            y: .value("Depreciation", dataPoint.depreciation)
+                        )
+                        .foregroundStyle(.red)
+                        .symbol(.circle)
+                        
+                        LineMark(
+                            x: .value("Month", dataPoint.month),
+                            y: .value("Demand", dataPoint.demand)
+                        )
+                        .foregroundStyle(.green)
+                        .symbol(.square)
+                    }
+                    .frame(height: 120)
+                    .chartYScale(domain: 0.8...1.1)
+                    
+                    // Legend
+                    HStack(spacing: .regular) {
+                        Label("Depreciation", systemImage: "circle.fill")
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                        
+                        Label("Market Demand", systemImage: "square.fill")
+                            .font(.caption)
+                            .foregroundStyle(.green)
+                    }
                 }
-                .padding(24)
+                
+                // Action Buttons
+                HStack(spacing: .mediumTight) {
+                    Button(action: {}) {
+                        Text("Sell Now")
+                            .font(.headline)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, .mediumTight)
+                            .background(.blue, in: RoundedRectangle(cornerRadius: 12))
+                    }
+                    
+                    Button(action: {}) {
+                        Text("Get Quote")
+                            .font(.headline)
+                            .foregroundStyle(.blue)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, .mediumTight)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+                    }
+                }
             }
+            .padding(.loose)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(.ultraThinMaterial)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color.glassBorder, lineWidth: 1)
+                    )
+            )
             
             Spacer(minLength: 0)
         }
     }
     
     private func formatVIN(_ vin: String) -> String {
-        return vin.count > 6 ? "..." + String(vin.suffix(6)) : vin
+        vin.count > 6 ? "..." + String(vin.suffix(6)) : vin
     }
     
     private func formatMileage(_ mileage: Int?) -> String {
         guard let mileage = mileage else { return "Unknown" }
-        return NumberFormatter.localizedString(from: NSNumber(value: mileage), number: .decimal)
+        return NumberFormatter.localizedString(from: NSNumber(value: mileage), number: .decimal) + " mi"
     }
+}
+
+// MARK: - Supporting Views
+struct DetailRow: View {
+    let label: String
+    let value: String
     
-    private func formatCurrency(_ value: Double) -> String {
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.body)
+                .foregroundStyle(.secondary)
+            Spacer()
+            Text(value)
+                .font(.body.weight(.medium))
+                .foregroundStyle(.primary)
+        }
+    }
+}
+
+struct TrendDataPoint: Identifiable {
+    let id = UUID()
+    let month: String
+    let depreciation: Double
+    let demand: Double
+}
+
+extension NumberFormatter {
+    static let currency: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.currencyCode = "USD"
-        formatter.maximumFractionDigits = 0
-        return formatter.string(from: NSNumber(value: value)) ?? "$0"
-    }
+        return formatter
+    }()
 }
 
 // MARK: - Loading State Card
@@ -284,98 +281,31 @@ struct LoadingMarketCard: View {
     let passport: VehiclePassport
     
     var body: some View {
-        VStack(spacing: 16) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(passport.title ?? "Vehicle")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.primary)
-                    
-                    Text("Loading market data...")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+        List {
+            Section("Loading Market Data") {
+                VStack(spacing: .regular) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: .extraTight) {
+                            Text(passport.title ?? "Vehicle")
+                                .font(.title2.weight(.semibold))
+                                .foregroundColor(.primary)
+                            
+                            Text("Loading market analysis...")
+                                .font(.body)
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        Spacer()
+                        
+                        ProgressView()
+                    }
                 }
-                
-                Spacer()
-                
-                ProgressView()
-                    .scaleEffect(0.8)
+                .listRowBackground(Color.clear)
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(color: .primary.opacity(0.1), radius: 4, x: 0, y: 2)
-    }
-}
-
-// MARK: - Trend Chart (Mock Implementation)
-struct TrendChartView: View {
-    var body: some View {
-        ZStack {
-            // Chart background
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Color(.systemGray6))
-            
-            VStack(spacing: 8) {
-                // Chart title
-                HStack {
-                    Text("Market Trends")
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .foregroundColor(.secondary)
-                    
-                    Spacer()
-                }
-                
-                // Mock chart lines
-                ZStack {
-                    // Depreciation line (downward trend)
-                    Path { path in
-                        path.move(to: CGPoint(x: 0, y: 30))
-                        path.addLine(to: CGPoint(x: 100, y: 45))
-                        path.addLine(to: CGPoint(x: 200, y: 60))
-                    }
-                    .stroke(Color.red, style: StrokeStyle(lineWidth: 2, lineCap: .round))
-                    
-                    // Market demand line (variable trend)
-                    Path { path in
-                        path.move(to: CGPoint(x: 0, y: 40))
-                        path.addLine(to: CGPoint(x: 100, y: 35))
-                        path.addLine(to: CGPoint(x: 200, y: 45))
-                    }
-                    .stroke(Color.green, style: StrokeStyle(lineWidth: 2, lineCap: .round))
-                }
-                .frame(height: 60)
-                
-                // Legend
-                HStack(spacing: 16) {
-                    HStack(spacing: 4) {
-                        Circle()
-                            .fill(Color.red)
-                            .frame(width: 8, height: 8)
-                            .scaleEffect(1.0)
-                        Text("Depreciation")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    HStack(spacing: 4) {
-                        Circle()
-                            .fill(Color.green)
-                            .frame(width: 8, height: 8)
-                            .scaleEffect(1.0)
-                        Text("Market Demand")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    Spacer()
-                }
-            }
-            .padding(8)
-        }
+        .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .background(.ultraThinMaterial)
     }
 }
 

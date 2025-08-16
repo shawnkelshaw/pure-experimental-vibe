@@ -16,9 +16,9 @@ struct MoreView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                LazyVStack(spacing: 24) {
+                LazyVStack(spacing: .loose) {
                     // Profile Section
-                    VStack(spacing: 16) {
+                    VStack(spacing: .regular) {
                         HStack {
                             Text("Profile")
                                 .font(.system(size: 20, weight: .medium, design: .rounded))
@@ -28,24 +28,23 @@ struct MoreView: View {
                         .padding(.horizontal, 20)
                         
                         // Profile Card
-                        VStack(spacing: 16) {
-                            HStack(spacing: 16) {
+                        VStack(spacing: .regular) {
+                            HStack(spacing: .regular) {
                                 // Profile Avatar
-                                ZStack {
-                                    Circle()
-                                        .fill(.ultraThinMaterial)
-                                        .frame(width: 60, height: 60)
-                                        .overlay(
-                                            Circle()
-                                                .stroke(Color.glassBorder, lineWidth: 1)
-                                        )
-                                    
-                                    Image(systemName: "person.fill")
-                                        .font(.system(size: 28, weight: .light))
-                                        .foregroundColor(.primary)
-                                }
+                                Image(systemName: "person.fill")
+                                    .font(.system(size: 28, weight: .light))
+                                    .foregroundColor(.primary)
+                                    .frame(width: 60, height: 60)
+                                    .background(
+                                        Circle()
+                                            .fill(.ultraThinMaterial)
+                                            .overlay(
+                                                Circle()
+                                                    .stroke(Color.glassBorder, lineWidth: 1)
+                                            )
+                                    )
                                 
-                                VStack(alignment: .leading, spacing: 4) {
+                                VStack(alignment: .leading, spacing: .extraTight) {
                                     Text(authService.user?.preferredDisplayName ?? "User")
                                         .font(.system(size: 20, weight: .medium, design: .rounded))
                                         .foregroundColor(.primary)
@@ -82,7 +81,7 @@ struct MoreView: View {
                     }
                     
                     // Appearance Section
-                    VStack(spacing: 16) {
+                    VStack(spacing: .regular) {
                         HStack {
                             Text("Appearance")
                                 .font(.system(size: 20, weight: .medium, design: .rounded))
@@ -92,24 +91,23 @@ struct MoreView: View {
                         .padding(.horizontal, 20)
                         
                         // Theme Card
-                        VStack(spacing: 16) {
-                            HStack(spacing: 16) {
+                        VStack(spacing: .regular) {
+                            HStack(spacing: .regular) {
                                 // Theme Icon
-                                ZStack {
-                                    Circle()
-                                        .fill(.ultraThinMaterial)
-                                        .frame(width: 40, height: 40)
-                                        .overlay(
-                                            Circle()
-                                                .stroke(Color.glassBorder, lineWidth: 1)
-                                        )
-                                    
-                                    Image(systemName: "paintbrush.fill")
-                                        .font(.system(size: 18, weight: .medium))
-                                        .foregroundColor(.primary)
-                                }
+                                Image(systemName: "paintbrush.fill")
+                                    .font(.system(size: 18, weight: .medium))
+                                    .foregroundColor(.primary)
+                                    .frame(width: 40, height: 40)
+                                    .background(
+                                        Circle()
+                                            .fill(.ultraThinMaterial)
+                                            .overlay(
+                                                Circle()
+                                                    .stroke(Color.glassBorder, lineWidth: 1)
+                                            )
+                                    )
                                 
-                                VStack(alignment: .leading, spacing: 4) {
+                                VStack(alignment: .leading, spacing: .extraTight) {
                                     Text("Theme")
                                         .font(.system(size: 16, weight: .medium))
                                         .foregroundColor(.primary)
@@ -142,7 +140,7 @@ struct MoreView: View {
                     }
                     
                     // Settings Section
-                    VStack(spacing: 16) {
+                    VStack(spacing: .regular) {
                         HStack {
                             Text("Settings")
                                 .font(.system(size: 20, weight: .medium, design: .rounded))
@@ -152,7 +150,7 @@ struct MoreView: View {
                         .padding(.horizontal, 20)
                         
                         // Settings Items
-                        VStack(spacing: 0) {
+                        VStack(spacing: 0) { // Keep 0 for seamless list items
                             SettingsRow(
                                 icon: "bell.fill",
                                 title: "Notifications",
@@ -193,7 +191,7 @@ struct MoreView: View {
                     }
                     
                     // Account Section
-                    VStack(spacing: 16) {
+                    VStack(spacing: .regular) {
                         HStack {
                             Text("Account")
                                 .font(.system(size: 20, weight: .medium, design: .rounded))
@@ -274,19 +272,18 @@ struct SettingsRow: View {
         Button(action: action) {
             HStack(spacing: 16) {
                 // Icon
-                ZStack {
-                    Circle()
-                        .fill(.ultraThinMaterial)
-                        .frame(width: 40, height: 40)
-                        .overlay(
-                            Circle()
-                                .stroke(Color.glassBorder, lineWidth: 1)
-                        )
-                    
-                    Image(systemName: icon)
-                        .font(.system(size: 18, weight: .medium))
-                        .foregroundColor(.primary)
-                }
+                Image(systemName: icon)
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundColor(.primary)
+                    .frame(width: 40, height: 40)
+                    .background(
+                        Circle()
+                            .fill(.ultraThinMaterial)
+                            .overlay(
+                                Circle()
+                                    .stroke(Color.glassBorder, lineWidth: 1)
+                            )
+                    )
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)

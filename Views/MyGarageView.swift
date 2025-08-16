@@ -19,7 +19,7 @@ struct MyGarageView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                LazyVStack(spacing: 16) {
+                LazyVStack(spacing: .regular) {
                     if garageViewModel.isBluetoothLoading {
                         // Bluetooth Loading State
                         BluetoothLoadingView()
@@ -29,14 +29,14 @@ struct MyGarageView: View {
                             ))
                     } else if !garageViewModel.hasVehiclePassports {
                         // Empty State
-                        VStack(spacing: 24) {
+                        VStack(spacing: .loose) {
                             // Empty state content
-                            VStack(spacing: 20) {
+                            VStack(spacing: .medium) {
                                 Image(systemName: "car.fill")
                                     .font(.system(size: 48, weight: .light))
                                     .foregroundColor(.secondary)
                                 
-                                VStack(spacing: 8) {
+                                VStack(spacing: .tight) {
                                     Text("No Passports")
                                         .font(.system(size: 24, weight: .medium))
                                         .foregroundColor(.primary)
@@ -55,7 +55,7 @@ struct MyGarageView: View {
                         // Vehicle Passport Content - Adaptive Layout
                         if horizontalSizeClass == .regular && verticalSizeClass == .regular {
                             // iPad: Structured layout
-                            VStack(spacing: 16) {
+                            VStack(spacing: .regular) {
                                 // Vehicle Cards with carousel logic
                                 VehicleCarouselView()
                             }
@@ -63,11 +63,11 @@ struct MyGarageView: View {
                             .padding(.bottom, 40)
                         } else {
                             // iPhone: Single column layout
-                            VStack(spacing: 16) {
+                            VStack(spacing: .regular) {
                                 // Vehicle Cards with carousel logic (Photo Album and Service History now integrated)
                                 VehicleCarouselView()
                             }
-                            .padding(.bottom, 100) // Space for tab bar
+
                         }
                     }
                 }
@@ -82,20 +82,19 @@ struct MyGarageView: View {
                     Button(action: {
                         showingAddPassport = true
                     }) {
-                        ZStack {
-                            Circle()
-                                .fill(.ultraThinMaterial)
-                                .frame(width: horizontalSizeClass == .regular ? 44 : 36, 
-                                       height: horizontalSizeClass == .regular ? 44 : 36)
-                                .overlay(
-                                    Circle()
-                                        .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
-                                )
-                            
                             Image(systemName: "plus")
                                 .font(.system(size: 16, weight: .medium))
                                 .foregroundColor(.primary)
-                        }
+                            .frame(width: horizontalSizeClass == .regular ? 44 : 36, 
+                                   height: horizontalSizeClass == .regular ? 44 : 36)
+                            .background(
+                                Circle()
+                                    .fill(.ultraThinMaterial)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
+                                    )
+                            )
                     }
                 }
             }
@@ -253,9 +252,9 @@ struct AddPassportView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 24) {
+            VStack(spacing: .loose) {
                 // Header
-                VStack(spacing: 12) {
+                VStack(spacing: .mediumTight) {
                     Image(systemName: "car.fill")
                         .font(.system(size: 48, weight: .light))
                         .foregroundColor(.blue)
@@ -273,22 +272,21 @@ struct AddPassportView: View {
                 .padding(.top, 40)
                 
                 // Method Selection Buttons
-                VStack(spacing: 16) {
+                VStack(spacing: .regular) {
                     // QR Scanner Button (Primary)
                     Button(action: {
                         showingQRScanner = true
                     }) {
-                        HStack(spacing: 16) {
-                            ZStack {
-                                Circle()
-                                    .fill(.blue.opacity(0.1))
-                                    .frame(width: horizontalSizeClass == .regular ? 56 : 48, 
-                                           height: horizontalSizeClass == .regular ? 56 : 48)
-                            
-                                Image(systemName: "qrcode.viewfinder")
-                                    .font(.system(size: 24, weight: .medium))
-                                    .foregroundColor(.blue)
-                            }
+                        HStack(spacing: .regular) {
+                            Image(systemName: "qrcode.viewfinder")
+                                .font(.system(size: 24, weight: .medium))
+                                .foregroundColor(.blue)
+                                .frame(width: horizontalSizeClass == .regular ? 56 : 48, 
+                                       height: horizontalSizeClass == .regular ? 56 : 48)
+                                .background(
+                                    Circle()
+                                        .fill(.blue.opacity(0.1))
+                                )
                             
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Scan Vehicle QR Code")
@@ -319,17 +317,16 @@ struct AddPassportView: View {
                     Button(action: {
                         // Coming soon
                     }) {
-                        HStack(spacing: 16) {
-                            ZStack {
-                                Circle()
-                                    .fill(.gray.opacity(0.1))
-                                    .frame(width: horizontalSizeClass == .regular ? 56 : 48, 
-                                           height: horizontalSizeClass == .regular ? 56 : 48)
-                            
-                                Image(systemName: "pencil")
-                                    .font(.system(size: 24, weight: .medium))
-                                    .foregroundColor(.gray)
-                            }
+                        HStack(spacing: .regular) {
+                            Image(systemName: "pencil")
+                                .font(.system(size: 24, weight: .medium))
+                                .foregroundColor(.gray)
+                                .frame(width: horizontalSizeClass == .regular ? 56 : 48, 
+                                       height: horizontalSizeClass == .regular ? 56 : 48)
+                                .background(
+                                    Circle()
+                                        .fill(.gray.opacity(0.1))
+                                )
                             
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Manual Entry")
@@ -393,14 +390,14 @@ struct QRScannerView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
+            VStack(spacing: .medium) {
                 // Scanner UI with auto-simulation
                 ZStack {
                     Rectangle()
                         .fill(.background.opacity(0.8))
                         .frame(height: 300)
                     
-                    VStack(spacing: 16) {
+                    VStack(spacing: .regular) {
                         // Animated scanning viewfinder
                         ZStack {
                             Image(systemName: "qrcode.viewfinder")
@@ -485,26 +482,25 @@ struct BluetoothLoadingView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: .loose) {
             // Bluetooth Icon with animation
-            ZStack {
-                Circle()
-                    .fill(.ultraThinMaterial)
-                    .frame(width: horizontalSizeClass == .regular ? 100 : 80, 
-                           height: horizontalSizeClass == .regular ? 100 : 80)
-                    .overlay(
-                        Circle()
-                            .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
-                    )
-                
                 Image(systemName: "bluetooth")
                     .font(.system(size: 32, weight: .light))
                     .foregroundColor(.blue)
                     .scaleEffect(isAnimating ? 1.2 : 1.0)
                     .animation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true), value: isAnimating)
-            }
+                .frame(width: horizontalSizeClass == .regular ? 100 : 80, 
+                       height: horizontalSizeClass == .regular ? 100 : 80)
+                .background(
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .overlay(
+                            Circle()
+                                .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
+                        )
+                )
             
-            VStack(spacing: 8) {
+            VStack(spacing: .tight) {
                 Text("Connecting...")
                     .font(.system(size: 20, weight: .medium))
                     .foregroundColor(.primary)
@@ -530,55 +526,132 @@ struct VehicleCarouselView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     
     var body: some View {
-        let vehicleCount = garageViewModel.vehicles.count
+        let passportCount = garageViewModel.vehiclePassports.count
         
-        if vehicleCount == 0 {
-            // Empty state - show placeholder card
-            VehicleCardView(vehicle: nil)
-        } else if vehicleCount == 1 {
+        if passportCount == 1 {
             // Single card - no carousel needed
-            if let vehicle = garageViewModel.vehicles.first {
+            if let passport = garageViewModel.vehiclePassports.first,
+               let vehicle = garageViewModel.vehicles.first(where: { $0.id == passport.vehicleId }) {
                 VehicleCardView(vehicle: vehicle)
-                    .padding(.horizontal) // System spacing for consistent width
+                    .padding(.horizontal)
+            } else if let passport = garageViewModel.vehiclePassports.first {
+                // Loading state when passport exists but vehicle data isn't loaded
+                LoadingGarageCard(passport: passport)
+                    .padding(.horizontal)
+            }
+        } else if passportCount > 1 {
+            // Multiple vehicles - carousel with dots outside
+            VStack(spacing: .medium) {
+                TabView {
+                    ForEach(Array(garageViewModel.vehiclePassports.enumerated()), id: \.offset) { index, passport in
+                        if let vehicle = garageViewModel.vehicles.first(where: { $0.id == passport.vehicleId }) {
+                            VehicleCardView(vehicle: vehicle)
+                                .padding(.horizontal)
+                        } else {
+                            LoadingGarageCard(passport: passport)
+                                .padding(.horizontal)
+                        }
+                    }
+                }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .frame(height: 420) // Fixed height to ensure cards are visible
+                
+                // Page indicators outside the content
+                HStack(spacing: 8) {
+                    ForEach(0..<passportCount, id: \.self) { index in
+                        Circle()
+                            .fill(Color.primary.opacity(0.3))
+                            .frame(width: 6, height: 6)
+                    }
+                }
+                .padding(.bottom)
             }
         } else {
-            // Multiple cards - show carousel (HIG-compliant)
-            TabView {
-                ForEach(Array(garageViewModel.vehicles.enumerated()), id: \.offset) { index, vehicle in
-                    VehicleCardView(vehicle: vehicle)
-                        .padding(.horizontal) // System spacing for consistent width
+            // Empty state
+            EmptyGarageView()
+        }
+    }
+}
+
+// MARK: - Loading Garage Card
+struct LoadingGarageCard: View {
+    let passport: VehiclePassport
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: .medium) {
+                HStack {
+                    VStack(alignment: .leading, spacing: .extraTight) {
+                        Text(passport.title ?? "Vehicle")
+                            .font(.system(size: 22, weight: .semibold))
+                            .foregroundColor(.primary)
+                        
+                        Text("Loading vehicle data...")
+                            .font(.system(size: 18, weight: .medium))
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    Spacer()
+                    
+                    ProgressView()
+                        .scaleEffect(1.2)
                 }
             }
-            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
-            .frame(height: horizontalSizeClass == .regular ? 420 : 380) // Content-only height
+            .padding(.loose)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(.ultraThinMaterial)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color.glassBorder, lineWidth: 1)
+                    )
+            )
+            
+            Spacer(minLength: 0)
         }
+    }
+}
+
+// MARK: - Empty Garage View
+struct EmptyGarageView: View {
+    var body: some View {
+        VStack(spacing: .loose) {
+            Image(systemName: "car.fill")
+                .font(.system(size: 60, weight: .thin))
+                .foregroundColor(.secondary)
+            
+            VStack(spacing: .tight) {
+                Text("No Vehicle Passports")
+                    .font(.title2.weight(.semibold))
+                    .foregroundColor(.primary)
+                
+                Text("Tap the + button to add your first vehicle passport")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+        }
+        .padding(.loose)
     }
 }
 
 // MARK: - Vehicle Card View
 struct VehicleCardView: View {
-    let vehicle: Vehicle?
+    let vehicle: Vehicle
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(.ultraThinMaterial)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
-                    )
-                
-                VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 20) {
                 // Vehicle Header
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(vehicle?.make ?? "No Vehicle")
+                        Text(vehicle.make)
                             .font(.system(size: 22, weight: .semibold))
                             .foregroundColor(.primary)
                         
-                        Text(vehicle?.model ?? "Add a vehicle passport to get started")
+                        Text(vehicle.model)
                             .font(.system(size: 18, weight: .medium))
                             .foregroundColor(.secondary)
                     }
@@ -591,11 +664,10 @@ struct VehicleCardView: View {
                 }
                 
                 // Vehicle Data Fields
-                if let vehicle = vehicle {
-                    VStack(spacing: 16) {
+                VStack(spacing: .regular) {
                         // Top row: Year and VIN
-                        HStack(spacing: 20) {
-                            VStack(spacing: 4) {
+                        HStack(spacing: .medium) {
+                            VStack(spacing: .extraTight) {
                                 Text("\(String(vehicle.year))")
                                     .font(.system(size: 18, weight: .semibold))
                                     .foregroundColor(.primary)
@@ -605,12 +677,12 @@ struct VehicleCardView: View {
                                     .foregroundColor(.secondary)
                             }
                             
-                                                    Rectangle()
+                            Rectangle()
                             .fill(Color.secondary.opacity(0.3))
                             .frame(width: 1)
                             .frame(maxHeight: 30)
                             
-                            VStack(spacing: 4) {
+                            VStack(spacing: .extraTight) {
                                 Text(vehicle.vin ?? "Unknown")
                                     .font(.system(size: 14, weight: .semibold))
                                     .foregroundColor(.primary)
@@ -625,8 +697,8 @@ struct VehicleCardView: View {
                         }
                         
                         // Bottom row: Model and Mileage
-                        HStack(spacing: 20) {
-                            VStack(spacing: 4) {
+                        HStack(spacing: .medium) {
+                            VStack(spacing: .extraTight) {
                                 Text(vehicle.model)
                                     .font(.system(size: 16, weight: .semibold))
                                     .foregroundColor(.blue)
@@ -639,12 +711,12 @@ struct VehicleCardView: View {
                             }
                             .frame(maxWidth: .infinity)
                             
-                                                    Rectangle()
+                            Rectangle()
                             .fill(Color.secondary.opacity(0.3))
                             .frame(width: 1)
                             .frame(maxHeight: 30)
                             
-                            VStack(spacing: 4) {
+                            VStack(spacing: .extraTight) {
                                 Text("\(vehicle.mileage ?? 0)")
                                     .font(.system(size: 18, weight: .semibold))
                                     .foregroundColor(.green)
@@ -656,22 +728,21 @@ struct VehicleCardView: View {
                         }
                         
                         // Integrated Quick Options - Photo Album and Service History
-                        VStack(spacing: 16) {
+                        VStack(spacing: .regular) {
                             // Photo Album Section
                             HStack {
-                                HStack(spacing: 12) {
-                                    ZStack {
-                                        Circle()
-                                            .fill(.blue.opacity(0.1))
-                                            .frame(width: horizontalSizeClass == .regular ? 48 : 40, 
-                                                   height: horizontalSizeClass == .regular ? 48 : 40)
-                                        
-                                        Image(systemName: "photo.on.rectangle")
-                                            .font(.system(size: 18, weight: .medium))
-                                            .foregroundColor(.blue)
-                                    }
+                                HStack(spacing: .mediumTight) {
+                                    Image(systemName: "photo.on.rectangle")
+                                        .font(.system(size: 18, weight: .medium))
+                                        .foregroundColor(.blue)
+                                        .frame(width: horizontalSizeClass == .regular ? 48 : 40, 
+                                               height: horizontalSizeClass == .regular ? 48 : 40)
+                                        .background(
+                                            Circle()
+                                                .fill(.blue.opacity(0.1))
+                                        )
                                     
-                                    VStack(alignment: .leading, spacing: 2) {
+                                    VStack(alignment: .leading, spacing: 2) { // Keep minimal for label pairs
                                         Text("Photo Album")
                                             .font(.system(size: 16, weight: .semibold))
                                             .foregroundColor(.primary)
@@ -694,19 +765,18 @@ struct VehicleCardView: View {
                             
                             // Service History Section  
                             HStack {
-                                HStack(spacing: 12) {
-                                    ZStack {
-                                        Circle()
-                                            .fill(.green.opacity(0.1))
-                                            .frame(width: horizontalSizeClass == .regular ? 48 : 40, 
-                                                   height: horizontalSizeClass == .regular ? 48 : 40)
-                                        
-                                        Image(systemName: "wrench.and.screwdriver")
-                                            .font(.system(size: 18, weight: .medium))
-                                            .foregroundColor(.green)
-                                    }
+                                HStack(spacing: .mediumTight) {
+                                    Image(systemName: "wrench.and.screwdriver")
+                                        .font(.system(size: 18, weight: .medium))
+                                        .foregroundColor(.green)
+                                        .frame(width: horizontalSizeClass == .regular ? 48 : 40, 
+                                               height: horizontalSizeClass == .regular ? 48 : 40)
+                                        .background(
+                                            Circle()
+                                                .fill(.green.opacity(0.1))
+                                        )
                                     
-                                    VStack(alignment: .leading, spacing: 2) {
+                                    VStack(alignment: .leading, spacing: 2) { // Keep minimal for label pairs
                                         Text("Service History")
                                             .font(.system(size: 16, weight: .semibold))
                                             .foregroundColor(.primary)
@@ -729,22 +799,16 @@ struct VehicleCardView: View {
                         }
                         .padding(.top, 16)
                     }
-                } else {
-                    // Empty state when no vehicle
-                    VStack(spacing: 12) {
-                        Text("No vehicle data available")
-                            .font(.system(size: 16, weight: .medium))
-                            .foregroundColor(.secondary)
-                        
-                        Text("Scan a vehicle QR code to populate this card")
-                            .font(.system(size: 14, weight: .regular))
-                            .foregroundStyle(.tertiary)
-                            .multilineTextAlignment(.center)
-                    }
-                    .padding(.vertical, 8)
-                }
             }
-            .padding(24)
+            .padding(.loose)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(.ultraThinMaterial)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
+                    )
+            )
         }
         .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 20)
     }
@@ -846,7 +910,7 @@ struct StatisticsCardView: View {
                             .foregroundColor(.orange)
                     }
                 }
-                .padding(24)
+                .padding(.loose)
             }
             
             Spacer(minLength: 0)
@@ -884,103 +948,6 @@ struct QuickOptionRow: View {
 
 
 
-// MARK: - QR Scanner View
-struct QRScannerView: View {
-    let onVehicleIdScanned: (String) -> Void
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
-    @EnvironmentObject var garageViewModel: GarageViewModel
-    
-    @State private var isScanning = false
-    @State private var scanProgress: Double = 0.0
-    
-    var body: some View {
-        NavigationStack {
-            VStack(spacing: 20) {
-                // Scanner UI with auto-simulation
-                ZStack {
-                    Rectangle()
-                        .fill(.background.opacity(0.8))
-                        .frame(height: 300)
-                    
-                    VStack(spacing: 16) {
-                        // Animated scanning viewfinder
-                        ZStack {
-                            Image(systemName: "qrcode.viewfinder")
-                                .font(.system(size: 60, weight: .thin))
-                                .foregroundColor(isScanning ? .green : .blue)
-                                .scaleEffect(isScanning ? 1.1 : 1.0)
-                                .animation(.easeInOut(duration: 0.5).repeatCount(isScanning ? .max : 0), value: isScanning)
-                            
-                            // Progress ring
-                            if isScanning {
-                                Circle()
-                                    .trim(from: 0, to: scanProgress)
-                                    .stroke(Color.green, style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                                    .frame(width: horizontalSizeClass == .regular ? 100 : 80, 
-                                           height: horizontalSizeClass == .regular ? 100 : 80)
-                                    .rotationEffect(.degrees(-90))
-                                    .animation(.linear(duration: 2.0), value: scanProgress)
-                            }
-                        }
-                        
-                        Text(isScanning ? "Scanning..." : "Scan Vehicle QR Code")
-                            .font(.system(size: 18, weight: .medium))
-                            .foregroundStyle(.primary)
-                        
-                        Text(isScanning ? "Detecting vehicle data..." : "Point camera at vehicle's QR code\nto detect Bluetooth passport")
-                            .font(.system(size: 14, weight: .regular))
-                            .foregroundColor(.gray)
-                            .multilineTextAlignment(.center)
-                    }
-                }
-                .cornerRadius(12)
-                
-                Spacer()
-            }
-            .padding()
-            .navigationTitle("Detect Vehicle")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
-            }
-            .onAppear {
-                startAutoScan()
-            }
-        }
-    }
-    
-    private func startAutoScan() {
-        // Start scanning animation after brief delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            withAnimation {
-                isScanning = true
-                scanProgress = 1.0
-            }
-            
-            // Complete scan after 2 seconds
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                completeScan()
-            }
-        }
-    }
-    
-    private func completeScan() {
-        // Use current passport count as index for next vehicle
-        let nextVehicleIndex = garageViewModel.vehiclePassports.count
-        
-        // Pass the index as a special identifier
-        let vehicleId = "FETCH_VEHICLE_AT_INDEX_\(nextVehicleIndex)"
-        
-        print("🔍 QR Scan Complete: Requesting vehicle at index \(nextVehicleIndex)")
-        
-        onVehicleIdScanned(vehicleId)
-    }
-}
 
 struct MyGarageView_Previews: PreviewProvider {
     static var previews: some View {
@@ -994,5 +961,4 @@ struct MyGarageView_Previews: PreviewProvider {
             .environmentObject(authService)
             .previewDisplayName("My Garage View - QR in Add Passport")
     }
-}
 }
