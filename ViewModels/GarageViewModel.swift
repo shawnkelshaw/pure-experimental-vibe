@@ -357,6 +357,8 @@ class GarageViewModel: ObservableObject {
             
             print("📱 ✅ Vehicle passport added: \(String(describing: newPassport.title ?? "Unknown")) (Total: \(vehiclePassports.count))")
             print("📱 Vehicle data: \(fetchedVehicle.year) \(fetchedVehicle.make) \(fetchedVehicle.model)")
+            print("📱 Current vehiclePassports array: \(vehiclePassports.map { $0.title ?? "No title" })")
+            print("📱 Current vehicles array: \(vehicles.map { "\($0.year) \($0.make) \($0.model)" })")
             
         } catch {
             print("📱 ❌ Error fetching vehicle from Supabase: \(error)")

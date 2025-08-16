@@ -6,6 +6,7 @@ struct MyGarageView: View {
     @EnvironmentObject var notificationService: NotificationService
     @EnvironmentObject var authService: AuthService
     @State private var showingAddPassport = false
+    @State private var selectedVehicle: Vehicle?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.verticalSizeClass) var verticalSizeClass
     
@@ -18,8 +19,7 @@ struct MyGarageView: View {
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                LazyVStack(spacing: .regular) {
+            VStack {
                     if garageViewModel.isBluetoothLoading {
                         // Bluetooth Loading State
                         BluetoothLoadingView()
@@ -29,14 +29,15 @@ struct MyGarageView: View {
                             ))
                     } else if !garageViewModel.hasVehiclePassports {
                         // Empty State
-                        VStack(spacing: .loose) {
+                    let _ = print("🏠 Showing MAIN empty state - hasVehiclePassports: \(garageViewModel.hasVehiclePassports)")
+                    VStack(spacing: .loose) {
                             // Empty state content
-                            VStack(spacing: .medium) {
+                        VStack(spacing: .medium) {
                                 Image(systemName: "car.fill")
                                     .font(.system(size: 48, weight: .light))
                                     .foregroundColor(.secondary)
                                 
-                                VStack(spacing: .tight) {
+                            VStack(spacing: .tight) {
                                     Text("No Passports")
                                         .font(.system(size: 24, weight: .medium))
                                         .foregroundColor(.primary)
@@ -48,31 +49,16 @@ struct MyGarageView: View {
                                         .lineSpacing(2)
                                 }
                             }
-                            .padding(.vertical, 60)
+                            .padding(.vertical, .extraLoose)
                         }
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, .medium)
                     } else {
-                        // Vehicle Passport Content - Adaptive Layout
-                        if horizontalSizeClass == .regular && verticalSizeClass == .regular {
-                            // iPad: Structured layout
-                            VStack(spacing: .regular) {
-                                // Vehicle Cards with carousel logic
-                                VehicleCarouselView()
-                            }
-                            .padding(.horizontal, 32)
-                            .padding(.bottom, 40)
-                        } else {
-                            // iPhone: Single column layout
-                            VStack(spacing: .regular) {
-                                // Vehicle Cards with carousel logic (Photo Album and Service History now integrated)
-                                VehicleCarouselView()
-                            }
-
-                        }
-                    }
+                    // Vehicle Passport Content - Simplified Layout
+                    let _ = print("🏠 Showing VEHICLE content - hasVehiclePassports: \(garageViewModel.hasVehiclePassports), count: \(garageViewModel.vehiclePassports.count)")
+                    VehicleListView(selectedVehicle: $selectedVehicle)
                 }
-                .padding(.vertical, 20)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.appBackground)
             .navigationTitle("My Garage")
             .navigationBarTitleDisplayMode(.large)
@@ -131,6 +117,10 @@ struct MyGarageView: View {
                         await triggerBluetoothNotification(vehicleId: vehicleId)
                     }
                 }
+            }
+            .sheet(item: $selectedVehicle) { vehicle in
+                let _ = print("🚗 Sheet opening with vehicle: \(vehicle.year) \(vehicle.make)")
+                VehicleDetailView(vehicle: vehicle)
             }
             .overlay {
                 // Notification Overlay
@@ -269,7 +259,7 @@ struct AddPassportView: View {
                         .multilineTextAlignment(.center)
                         .lineSpacing(2)
                 }
-                .padding(.top, 40)
+                                        .padding(.top, .extraLoose)
                 
                 // Method Selection Buttons
                 VStack(spacing: .regular) {
@@ -304,8 +294,8 @@ struct AddPassportView: View {
                                 .font(.system(size: 16, weight: .semibold))
                                 .foregroundColor(.secondary)
                         }
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 16)
+                        .padding(.horizontal, .medium)
+                        .padding(.vertical, .regular)
                         .background(
                             RoundedRectangle(cornerRadius: 16)
                                 .fill(.ultraThinMaterial)
@@ -344,8 +334,8 @@ struct AddPassportView: View {
                                 .font(.system(size: 16, weight: .semibold))
                                 .foregroundColor(.secondary.opacity(0.5))
                         }
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 16)
+                        .padding(.horizontal, .medium)
+                        .padding(.vertical, .regular)
                         .background(
                             RoundedRectangle(cornerRadius: 16)
                                 .fill(.ultraThinMaterial.opacity(0.5))
@@ -354,7 +344,7 @@ struct AddPassportView: View {
                     .buttonStyle(PlainButtonStyle())
                     .disabled(true)
                 }
-                .padding(.horizontal, 20)
+                .padding(.horizontal, .medium)
                 
                 Spacer()
             }
@@ -512,63 +502,57 @@ struct BluetoothLoadingView: View {
                     .lineSpacing(2)
             }
         }
-        .padding(.vertical, 60)
-        .padding(.horizontal, 20)
+        .padding(.vertical, .extraLoose)
+        .padding(.horizontal, .medium)
         .onAppear {
             isAnimating = true
         }
     }
 }
 
-// MARK: - Vehicle Carousel View
-struct VehicleCarouselView: View {
+// MARK: - Vehicle List View
+struct VehicleListView: View {
     @EnvironmentObject var garageViewModel: GarageViewModel
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Binding var selectedVehicle: Vehicle?
     
     var body: some View {
         let passportCount = garageViewModel.vehiclePassports.count
         
-        if passportCount == 1 {
-            // Single card - no carousel needed
-            if let passport = garageViewModel.vehiclePassports.first,
-               let vehicle = garageViewModel.vehicles.first(where: { $0.id == passport.vehicleId }) {
-                VehicleCardView(vehicle: vehicle)
-                    .padding(.horizontal)
-            } else if let passport = garageViewModel.vehiclePassports.first {
-                // Loading state when passport exists but vehicle data isn't loaded
-                LoadingGarageCard(passport: passport)
-                    .padding(.horizontal)
-            }
-        } else if passportCount > 1 {
-            // Multiple vehicles - carousel with dots outside
-            VStack(spacing: .medium) {
-                TabView {
+        if passportCount > 0 {
+            // Vehicle list - native iOS approach
+            List {
+                let _ = print("🚗 List is being rendered with \(garageViewModel.vehiclePassports.count) passports")
+                Section("MY PASSPORTS") {
                     ForEach(Array(garageViewModel.vehiclePassports.enumerated()), id: \.offset) { index, passport in
                         if let vehicle = garageViewModel.vehicles.first(where: { $0.id == passport.vehicleId }) {
-                            VehicleCardView(vehicle: vehicle)
-                                .padding(.horizontal)
+                                                    VehicleListRow(vehicle: vehicle)
+                            .onTapGesture {
+                                print("🚗 Tapped vehicle: \(vehicle.year) \(vehicle.make) \(vehicle.model)")
+                                selectedVehicle = vehicle
+                                print("🚗 selectedVehicle set to: \(selectedVehicle?.year ?? 0) \(selectedVehicle?.make ?? "nil")")
+                            }
                         } else {
-                            LoadingGarageCard(passport: passport)
-                                .padding(.horizontal)
+                            VehicleLoadingRow(passport: passport)
                         }
                     }
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .frame(height: 420) // Fixed height to ensure cards are visible
-                
-                // Page indicators outside the content
-                HStack(spacing: 8) {
-                    ForEach(0..<passportCount, id: \.self) { index in
-                        Circle()
-                            .fill(Color.primary.opacity(0.3))
-                            .frame(width: 6, height: 6)
-                    }
-                }
-                .padding(.bottom)
+            }
+            .listStyle(.insetGrouped)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onAppear {
+                print("🚗 VehicleListView appeared - passportCount: \(passportCount)")
+                print("🚗 VehicleListView - vehicles.count: \(garageViewModel.vehicles.count)")
+                print("🚗 VehicleListView - passports: \(garageViewModel.vehiclePassports.map { $0.title ?? "No title" })")
             }
         } else {
             // Empty state
             EmptyGarageView()
+                .onAppear {
+                    print("🚗 EmptyGarageView appeared - passportCount: 0")
+                    print("🚗 vehiclePassports: \(garageViewModel.vehiclePassports)")
+                    print("🚗 vehicles: \(garageViewModel.vehicles)")
+                }
         }
     }
 }
@@ -600,12 +584,12 @@ struct LoadingGarageCard: View {
             }
             .padding(.loose)
             .background(
-                RoundedRectangle(cornerRadius: 20)
+            RoundedRectangle(cornerRadius: 20)
                     .fill(.ultraThinMaterial)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color.glassBorder, lineWidth: 1)
-                    )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.glassBorder, lineWidth: 1)
+                )
             )
             
             Spacer(minLength: 0)
@@ -669,15 +653,15 @@ struct VehicleCardView: View {
                         HStack(spacing: .medium) {
                             VStack(spacing: .extraTight) {
                                 Text("\(String(vehicle.year))")
-                                    .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.primary)
-                                
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.primary)
+                        
                                 Text("Year")
-                                    .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(.secondary)
-                            }
-                            
-                            Rectangle()
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    Rectangle()
                             .fill(Color.secondary.opacity(0.3))
                             .frame(width: 1)
                             .frame(maxHeight: 30)
@@ -686,7 +670,7 @@ struct VehicleCardView: View {
                                 Text(vehicle.vin ?? "Unknown")
                                     .font(.system(size: 14, weight: .semibold))
                                     .foregroundColor(.primary)
-                                    .lineLimit(1)
+                                    .lineLimit(2)
                                     .minimumScaleFactor(0.8)
                                 
                                 Text("VIN")
@@ -696,35 +680,21 @@ struct VehicleCardView: View {
                             .frame(maxWidth: .infinity)
                         }
                         
-                        // Bottom row: Model and Mileage
+                        // Bottom row: Only Mileage (Model removed to match Market View)
                         HStack(spacing: .medium) {
-                            VStack(spacing: .extraTight) {
-                                Text(vehicle.model)
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundColor(.blue)
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.8)
-                                
-                                Text("Model")
-                                    .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(.secondary)
-                            }
-                            .frame(maxWidth: .infinity)
-                            
-                            Rectangle()
-                            .fill(Color.secondary.opacity(0.3))
-                            .frame(width: 1)
-                            .frame(maxHeight: 30)
+                            Spacer()
                             
                             VStack(spacing: .extraTight) {
                                 Text("\(vehicle.mileage ?? 0)")
-                                    .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.green)
-                                
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.green)
+                        
                                 Text("Mileage")
-                                    .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(.secondary)
-                            }
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(.secondary)
+                    }
+                    
+                            Spacer()
                         }
                         
                         // Integrated Quick Options - Photo Album and Service History
@@ -761,7 +731,7 @@ struct VehicleCardView: View {
                                         .foregroundColor(.secondary)
                                 }
                             }
-                            .padding(.vertical, 8)
+                            .padding(.vertical, .tight)
                             
                             // Service History Section  
                             HStack {
@@ -792,12 +762,12 @@ struct VehicleCardView: View {
                                 Button(action: {}) {
                                     Image(systemName: "chevron.right")
                                         .font(.system(size: 14, weight: .medium))
-                                        .foregroundColor(.secondary)
-                                }
+                            .foregroundColor(.secondary)
+                    }
                             }
-                            .padding(.vertical, 8)
+                            .padding(.vertical, .tight)
                         }
-                        .padding(.top, 16)
+                        .padding(.top, .regular)
                     }
             }
             .padding(.loose)
@@ -810,7 +780,7 @@ struct VehicleCardView: View {
                     )
             )
         }
-        .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 20)
+                    .padding(.horizontal, horizontalSizeClass == .regular ? .loose : .medium)
     }
 }
 
@@ -827,8 +797,8 @@ struct QuickOptionsCardView: View {
                     .foregroundColor(.secondary)
                 Spacer()
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
+            .padding(.horizontal, .regular)
+            .padding(.vertical, .tight)
             
             // Quick Options Items
             VStack(spacing: 0) {
@@ -853,7 +823,7 @@ struct QuickOptionsCardView: View {
                         .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
                 )
         )
-        .padding(.horizontal, 20)
+        .padding(.horizontal, .medium)
     }
 }
 
@@ -938,16 +908,296 @@ struct QuickOptionRow: View {
                     .font(.system(size: 14, weight: .medium))
                     .foregroundColor(actionColor)
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
+            .padding(.horizontal, .regular)
+            .padding(.vertical, .mediumTight)
         }
         .buttonStyle(PlainButtonStyle())
     }
 }
 
 
+// MARK: - Vehicle List Row
+struct VehicleListRow: View {
+    let vehicle: Vehicle
+    
+    var body: some View {
+        HStack(spacing: .medium) {
+            // Vehicle icon
+            Image(systemName: "car.fill")
+                .font(.title2)
+                .foregroundColor(.blue)
+                .frame(width: 44, height: 44)
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            
+            VStack(alignment: .leading, spacing: .extraTight) {
+                HStack {
+                    Text("\(String(vehicle.year)) \(vehicle.make)")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    
+                    Spacer()
+                    
+                    Image(systemName: "chevron.right")
+                        .font(.caption.weight(.semibold))
+                        .foregroundColor(.secondary)
+                }
+                
+                Text(vehicle.model)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                
+                Text("VIN: \(String(vehicle.vin?.suffix(8) ?? "Unknown"))")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+        }
+        .padding(.vertical, .tight)
+        .contentShape(Rectangle())
+    }
+}
 
+// MARK: - Vehicle Loading Row
+struct VehicleLoadingRow: View {
+    let passport: VehiclePassport
+    
+    var body: some View {
+        HStack(spacing: .medium) {
+            // Loading icon
+            ProgressView()
+                .frame(width: 44, height: 44)
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            
+            VStack(alignment: .leading, spacing: .extraTight) {
+                Text(passport.title ?? "Vehicle")
+                    .font(.headline)
+                    .foregroundColor(.primary)
+                
+                Text("Loading vehicle data...")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+        }
+        .padding(.vertical, .tight)
+    }
+}
 
+// MARK: - Vehicle Detail View
+struct VehicleDetailView: View {
+    let vehicle: Vehicle
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        let _ = print("🚗 VehicleDetailView - vehicle: \(vehicle.year) \(vehicle.make) \(vehicle.model)")
+        let _ = print("🚗 VehicleDetailView - VIN: \(vehicle.vin ?? "nil")")
+        let _ = print("🚗 VehicleDetailView - Mileage: \(vehicle.mileage?.description ?? "nil")")
+        NavigationStack {
+            VStack(spacing: .loose) {
+                // Centered Vehicle Icon
+                Image(systemName: "car.fill")
+                    .font(.system(size: 60, weight: .light))
+                    .foregroundColor(.blue)
+                    .frame(width: 80, height: 80)
+                    .background(.ultraThinMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .padding(.top, .medium)
+                
+                // Vehicle Details List
+                List {
+                    Section {
+                        VehicleDetailRow(label: "Vehicle", value: "\(String(vehicle.year)) \(vehicle.make) - \(vehicle.model)")
+                        VehicleDetailRow(label: "VIN", value: vehicle.vin ?? "Not Available")
+                        VehicleDetailRow(label: "Mileage", value: formatMileage(vehicle.mileage))
+                        VehicleDetailRow(label: "Color", value: vehicle.color ?? "Not Available")
+                        VehicleDetailRow(label: "Valuation", value: generateMockValuation())
+                        
+                        // Action Links
+                        NavigationLink(destination: PhotoGalleryView(vehicle: vehicle)) {
+                            Label("Photo Gallery", systemImage: "camera.fill")
+                        }
+                        .padding(.vertical, .tight)
+                        
+                        NavigationLink(destination: ServiceHistoryView(vehicle: vehicle)) {
+                            Label("Service History", systemImage: "wrench.and.screwdriver.fill")
+                        }
+                        .padding(.vertical, .tight)
+                    }
+                }
+                .listStyle(.insetGrouped)
+                .scrollContentBackground(.hidden)
+            }
+            .navigationTitle("My Passport")
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                    .font(.body.weight(.medium))
+                }
+            }
+        }
+        .presentationDragIndicator(.visible)
+    }
+    
+    // MARK: - Helper Functions
+    
+    private func formatMileage(_ mileage: Int?) -> String {
+        guard let mileage = mileage else { return "Not Available" }
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter.string(from: NSNumber(value: mileage)) ?? "\(mileage)"
+    }
+    
+    private func generateMockValuation() -> String {
+        // Generate a mock valuation range based on vehicle year
+        let currentYear = Calendar.current.component(.year, from: Date())
+        let vehicleAge = currentYear - vehicle.year
+        
+        // Base value decreases with age
+        let baseValue = max(15000 - (vehicleAge * 1500), 8000)
+        let minValue = baseValue - 2500
+        let maxValue = baseValue + 2500
+        
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencyCode = "USD"
+        formatter.maximumFractionDigits = 0
+        
+        let minString = formatter.string(from: NSNumber(value: minValue)) ?? "$\(minValue)"
+        let maxString = formatter.string(from: NSNumber(value: maxValue)) ?? "$\(maxValue)"
+        
+        return "\(minString) - \(maxString)"
+    }
+}
+
+// MARK: - Vehicle Detail Row Helper
+struct VehicleDetailRow: View {
+    let label: String
+    let value: String
+    
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.body.weight(.medium))
+                .foregroundColor(.secondary)
+                .frame(width: 100, alignment: .leading)
+            
+            Text(value)
+                .font(.body)
+                .foregroundColor(.primary)
+            
+            Spacer()
+        }
+        .padding(.vertical, .tight)
+    }
+}
+
+// MARK: - Photo Gallery View
+struct PhotoGalleryView: View {
+    let vehicle: Vehicle
+    
+    var body: some View {
+        ScrollView {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: .medium) {
+                // Placeholder for future photos
+                ForEach(0..<6, id: \.self) { index in
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(.quaternary)
+                        .aspectRatio(1, contentMode: .fit)
+                        .overlay {
+                            VStack(spacing: .tight) {
+                                Image(systemName: "photo")
+                                    .font(.title2)
+                                    .foregroundColor(.secondary)
+                                Text("Photo \(index + 1)")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                }
+            }
+            .padding()
+        }
+        .navigationTitle("Photo Gallery")
+        .navigationBarTitleDisplayMode(.large)
+    }
+}
+
+// MARK: - Service History View
+struct ServiceHistoryView: View {
+    let vehicle: Vehicle
+    
+    var body: some View {
+        List {
+            Section("RECENT SERVICE") {
+                // Placeholder service records
+                ServiceHistoryRow(
+                    date: "Dec 15, 2024",
+                    service: "Oil Change",
+                    mileage: "45,230",
+                    cost: "$89.99"
+                )
+                
+                ServiceHistoryRow(
+                    date: "Sep 22, 2024",
+                    service: "Tire Rotation",
+                    mileage: "43,150",
+                    cost: "$45.00"
+                )
+                
+                ServiceHistoryRow(
+                    date: "Jun 18, 2024",
+                    service: "Brake Inspection",
+                    mileage: "41,890",
+                    cost: "$125.00"
+                )
+            }
+        }
+        .navigationTitle("Service History")
+        .navigationBarTitleDisplayMode(.large)
+    }
+}
+
+// MARK: - Service History Row
+struct ServiceHistoryRow: View {
+    let date: String
+    let service: String
+    let mileage: String
+    let cost: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: .extraTight) {
+            HStack {
+                Text(service)
+                    .font(.headline)
+                    .foregroundColor(.primary)
+                
+                Spacer()
+                
+                Text(cost)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundColor(.secondary)
+            }
+            
+            HStack {
+                Text(date)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+                
+                Text("\(mileage) miles")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding(.vertical, .extraTight)
+    }
+}
 
 struct MyGarageView_Previews: PreviewProvider {
     static var previews: some View {

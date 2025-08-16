@@ -75,7 +75,7 @@ struct VehicleMarketView: View {
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
-                .frame(height: 420) // Fixed height to ensure cards are visible
+                .frame(height: 500) // Increased height to prevent cutoff
                 
                 // Page indicators outside the content
                 HStack(spacing: 8) {
@@ -123,7 +123,7 @@ struct VehicleMarketList: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: .medium) {
-                // Vehicle Header
+                // Standard Vehicle Header (matching My Garage)
                 HStack {
                     VStack(alignment: .leading, spacing: .extraTight) {
                         Text(vehicle.make)
@@ -140,6 +140,57 @@ struct VehicleMarketList: View {
                     Image(systemName: "car.fill")
                         .font(.system(size: 32, weight: .light))
                         .foregroundColor(.secondary)
+                }
+                
+                // Standard Vehicle Data Grid (matching My Garage)
+                VStack(spacing: .regular) {
+                    // Top row: Year and VIN
+                    HStack(spacing: .medium) {
+                        VStack(spacing: .extraTight) {
+                            Text("\(vehicle.year)")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundColor(.primary)
+                            
+                            Text("Year")
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        Rectangle()
+                            .fill(Color.secondary.opacity(0.3))
+                            .frame(width: 1)
+                            .frame(maxHeight: 30)
+                        
+                        VStack(spacing: .extraTight) {
+                            Text(vehicle.vin ?? "Unknown")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundColor(.primary)
+                                .lineLimit(2)
+                                .minimumScaleFactor(0.8)
+                            
+                            Text("VIN")
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    
+                    // Bottom row: Only Mileage (Model removed)
+                    HStack(spacing: .medium) {
+                        Spacer()
+                        
+                        VStack(spacing: .extraTight) {
+                            Text("\(vehicle.mileage ?? 0)")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundColor(.green)
+                            
+                            Text("Mileage")
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        Spacer()
+                    }
                 }
                 
                 // Market Value and Trend
@@ -221,7 +272,7 @@ struct VehicleMarketList: View {
             .padding(.loose)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(.ultraThinMaterial)
+                    .fill(.regularMaterial)
                     .overlay(
                         RoundedRectangle(cornerRadius: 20)
                             .stroke(Color.glassBorder, lineWidth: 1)
@@ -238,7 +289,7 @@ struct VehicleMarketList: View {
     
     private func formatMileage(_ mileage: Int?) -> String {
         guard let mileage = mileage else { return "Unknown" }
-        return NumberFormatter.localizedString(from: NSNumber(value: mileage), number: .decimal) + " mi"
+        return NumberFormatter.localizedString(from: NSNumber(value: mileage), number: .decimal)
     }
 }
 
