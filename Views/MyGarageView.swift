@@ -261,90 +261,52 @@ struct AddPassportView: View {
                 }
                                         .padding(.top, .extraLoose)
                 
-                // Method Selection Buttons
-                VStack(spacing: .regular) {
-                    // QR Scanner Button (Primary)
-                    Button(action: {
-                        showingQRScanner = true
-                    }) {
-                        HStack(spacing: .regular) {
-                            Image(systemName: "qrcode.viewfinder")
-                                .font(.system(size: 24, weight: .medium))
-                                .foregroundColor(.blue)
-                                .frame(width: horizontalSizeClass == .regular ? 56 : 48, 
-                                       height: horizontalSizeClass == .regular ? 56 : 48)
-                                .background(
-                                    Circle()
-                                        .fill(.blue.opacity(0.1))
-                                )
-                            
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Scan Vehicle QR Code")
-                                    .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.primary)
-                                
-                                Text("Scan a QR code on a vehicle or dealer paperwork")
-                                    .font(.system(size: 14, weight: .regular))
-                                    .foregroundColor(.secondary)
+                // Method Selection List
+                List {
+                    Section("ADD METHOD") {
+                        // QR Scanner Option
+                        Button(action: {
+                            showingQRScanner = true
+                        }) {
+                            Label {
+                                VStack(alignment: .leading, spacing: .extraTight) {
+                                    Text("Scan Vehicle QR Code")
+                                        .font(.body.weight(.medium))
+                                        .foregroundColor(.primary)
+                                    
+                                    Text("Scan a QR code on a vehicle or dealer paperwork")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                            } icon: {
+                                Image(systemName: "qrcode.viewfinder")
+                                    .foregroundColor(.blue)
                             }
-                            
-                            Spacer()
-                            
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundColor(.secondary)
                         }
-                        .padding(.horizontal, .medium)
-                        .padding(.vertical, .regular)
-                        .background(
-                            RoundedRectangle(cornerRadius: 16)
-                                .fill(.ultraThinMaterial)
-                        )
-                    }
-                    .buttonStyle(PlainButtonStyle())
+                        .padding(.vertical, .tight)
                     
-                    // Manual Entry Button (Secondary) - Disabled for now
-                    Button(action: {
-                        // Coming soon
-                    }) {
-                        HStack(spacing: .regular) {
-                            Image(systemName: "pencil")
-                                .font(.system(size: 24, weight: .medium))
-                                .foregroundColor(.gray)
-                                .frame(width: horizontalSizeClass == .regular ? 56 : 48, 
-                                       height: horizontalSizeClass == .regular ? 56 : 48)
-                                .background(
-                                    Circle()
-                                        .fill(.gray.opacity(0.1))
-                                )
-                            
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Manual Entry")
-                                    .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.secondary)
-                                
-                                Text("Enter vehicle details manually (Coming Soon)")
-                                    .font(.system(size: 14, weight: .regular))
-                                    .foregroundColor(.secondary)
+                        // Manual Entry Option (Disabled)
+                        HStack {
+                            Label {
+                                VStack(alignment: .leading, spacing: .extraTight) {
+                                    Text("Manual Entry")
+                                        .font(.body.weight(.medium))
+                                        .foregroundColor(.secondary)
+                                    
+                                    Text("Coming soon")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary.opacity(0.5))
+                                }
+                            } icon: {
+                                Image(systemName: "pencil")
+                                    .foregroundColor(.gray)
                             }
-                            
-                            Spacer()
-                            
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundColor(.secondary.opacity(0.5))
                         }
-                        .padding(.horizontal, .medium)
-                        .padding(.vertical, .regular)
-                        .background(
-                            RoundedRectangle(cornerRadius: 16)
-                                .fill(.ultraThinMaterial.opacity(0.5))
-                        )
+                        .padding(.vertical, .tight)
                     }
-                    .buttonStyle(PlainButtonStyle())
-                    .disabled(true)
                 }
-                .padding(.horizontal, .medium)
+                .listStyle(.insetGrouped)
+                .scrollContentBackground(.hidden)
                 
                 Spacer()
             }
@@ -376,78 +338,225 @@ struct QRScannerView: View {
     @EnvironmentObject var garageViewModel: GarageViewModel
     
     @State private var isScanning = false
-    @State private var scanProgress: Double = 0.0
     
     var body: some View {
-        NavigationStack {
-            VStack(spacing: .medium) {
-                // Scanner UI with auto-simulation
-                ZStack {
-                    Rectangle()
-                        .fill(.background.opacity(0.8))
-                        .frame(height: 300)
-                    
-                    VStack(spacing: .regular) {
-                        // Animated scanning viewfinder
-                        ZStack {
-                            Image(systemName: "qrcode.viewfinder")
-                                .font(.system(size: 60, weight: .thin))
-                                .foregroundColor(isScanning ? .green : .blue)
-                                .scaleEffect(isScanning ? 1.1 : 1.0)
-                                .animation(.easeInOut(duration: 0.5).repeatCount(isScanning ? .max : 0), value: isScanning)
-                            
-                            // Progress ring
-                            if isScanning {
-                                Circle()
-                                    .trim(from: 0, to: scanProgress)
-                                    .stroke(Color.green, style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                                    .frame(width: horizontalSizeClass == .regular ? 100 : 80, 
-                                           height: horizontalSizeClass == .regular ? 100 : 80)
-                                    .rotationEffect(.degrees(-90))
-                                    .animation(.linear(duration: 2.0), value: scanProgress)
-                            }
-                        }
-                        
-                        Text(isScanning ? "Scanning..." : "Scan Vehicle QR Code")
-                            .font(.system(size: 18, weight: .medium))
-                            .foregroundStyle(.primary)
-                        
-                        Text(isScanning ? "Detecting vehicle data..." : "Point camera at vehicle's QR code\nto detect Bluetooth passport")
-                            .font(.system(size: 14, weight: .regular))
-                            .foregroundColor(.gray)
-                            .multilineTextAlignment(.center)
+        ZStack {
+            // Full-screen black camera background
+            Color.black
+                .ignoresSafeArea(.all)
+            
+            VStack(spacing: 0) {
+                // Top controls bar
+                HStack {
+                    // Flash button (left)
+                    Button(action: {}) {
+                        Image(systemName: "bolt.slash")
+                            .font(.title2)
+                            .foregroundColor(.white)
                     }
+                    .frame(width: 44, height: 44)
+                    
+                    Spacer()
+                    
+                    // Chevron up (center)
+                    Button(action: {}) {
+                        Image(systemName: "chevron.up")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                    }
+                    .frame(width: 44, height: 44)
+                    
+                    Spacer()
+                    
+                    // Settings (right)
+                    Button(action: {}) {
+                        Image(systemName: "gearshape")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                    }
+                    .frame(width: 44, height: 44)
                 }
-                .cornerRadius(12)
+                .padding(.horizontal, .medium)
+                .padding(.top, .tight)
+                
+                // Main camera area with QR detection
+                Spacer()
+                
+                // QR Detection area with yellow highlighting
+                VStack(spacing: .medium) {
+                    ZStack {
+                        // QR Code image
+                        Image(systemName: "qrcode")
+                            .font(.system(size: 140))
+                            .foregroundColor(.white)
+                        
+                        // Yellow detection frame (appears immediately)
+                        YellowDetectionFrame()
+                    }
+                    .frame(width: 200, height: 200)
+                    
+                    // Detection banner
+                    HStack(spacing: .tight) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(.yellow)
+                            .font(.caption)
+                        
+                        Text("Vehicle Data Detected")
+                            .foregroundColor(.black)
+                            .font(.system(size: 14, weight: .medium))
+                    }
+                    .padding(.horizontal, .mediumTight)
+                    .padding(.vertical, .extraTight)
+                    .background(
+                        Capsule()
+                            .fill(.yellow)
+                    )
+                }
                 
                 Spacer()
-            }
-            .padding()
-            .navigationTitle("Detect Vehicle")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Cancel") {
-                        dismiss()
+                
+                // Zoom controls
+                HStack(spacing: .mediumTight) {
+                    // .5x zoom
+                    Button(".5") {
+                        // Zoom functionality placeholder
+                    }
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundColor(.white)
+                    .frame(width: 32, height: 32)
+                    .background(
+                        Circle()
+                            .fill(.black.opacity(0.5))
+                    )
+                    
+                    // 1x zoom (highlighted as active)
+                    Button("1×") {
+                        // Zoom functionality placeholder
+                    }
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(.black)
+                    .frame(width: 32, height: 32)
+                    .background(
+                        Circle()
+                            .fill(.white)
+                    )
+                    
+                    // 2x zoom
+                    Button("2") {
+                        // Zoom functionality placeholder
+                    }
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundColor(.white)
+                    .frame(width: 32, height: 32)
+                    .background(
+                        Circle()
+                            .fill(.black.opacity(0.5))
+                    )
+                }
+                
+                Spacer()
+                
+                // Mode selector
+                HStack(spacing: .loose) {
+                    Button("SLO-MO") {
+                        // Mode selection placeholder
+                    }
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.gray)
+                    
+                    Button("VIDEO") {
+                        // Mode selection placeholder
+                    }
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.gray)
+                    
+                    Button("PHOTO") {
+                        // Mode selection placeholder
+                    }
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(.yellow)
+                    
+                    Button("PORTRAIT") {
+                        // Mode selection placeholder
+                    }
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.gray)
+                    
+                    Button("PANO") {
+                        // Mode selection placeholder
+                    }
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.gray)
+                }
+                .padding(.bottom, .medium)
+                
+                // Bottom controls
+                HStack {
+                    // Gallery thumbnail (left)
+                    Button(action: {
+                        // Gallery action placeholder
+                    }) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(.white.opacity(0.2))
+                                .frame(width: 50, height: 50)
+                            
+                            // Mock vehicle thumbnail
+                            Image(systemName: "car.fill")
+                                .font(.title2)
+                                .foregroundColor(.white)
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    // Capture button (center)
+                    Button(action: {
+                        // Capture action - triggers scan completion
+                    }) {
+                        ZStack {
+                            Circle()
+                                .stroke(.white, lineWidth: 5)
+                                .frame(width: 80, height: 80)
+                            
+                            Circle()
+                                .fill(.white)
+                                .frame(width: 68, height: 68)
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    // Camera flip (right)
+                    Button(action: {
+                        // Camera flip placeholder
+                    }) {
+                        Image(systemName: "arrow.triangle.2.circlepath.camera")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                            .frame(width: 50, height: 50)
                     }
                 }
+                .padding(.horizontal, .loose)
+                .padding(.bottom, .extraLoose)
             }
-            .onAppear {
-                startAutoScan()
-            }
+        }
+        .onAppear {
+            startAutoScan()
         }
     }
     
     private func startAutoScan() {
-        // Start scanning animation after brief delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            withAnimation {
+        // Variable timing for realistic feel (2-4 seconds)
+        let scanDuration = Double.random(in: 2.0...4.0)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + scanDuration) {
+            withAnimation(.easeInOut(duration: 0.3)) {
                 isScanning = true
-                scanProgress = 1.0
             }
             
-            // Complete scan after 2 seconds
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            // Show success message briefly, then complete
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                 completeScan()
             }
         }
@@ -1199,6 +1308,94 @@ struct ServiceHistoryRow: View {
     }
 }
 
+// MARK: - Yellow Detection Frame
+struct YellowDetectionFrame: View {
+    var body: some View {
+        GeometryReader { geometry in
+            let cornerLength: CGFloat = .loose // 24pt
+            let lineWidth: CGFloat = .extraTight // 4pt
+            
+            ZStack {
+                // Top-left corner
+                Path { path in
+                    path.move(to: CGPoint(x: 0, y: cornerLength))
+                    path.addLine(to: CGPoint(x: 0, y: 0))
+                    path.addLine(to: CGPoint(x: cornerLength, y: 0))
+                }
+                .stroke(.yellow, lineWidth: lineWidth)
+                
+                // Top-right corner
+                Path { path in
+                    path.move(to: CGPoint(x: geometry.size.width - cornerLength, y: 0))
+                    path.addLine(to: CGPoint(x: geometry.size.width, y: 0))
+                    path.addLine(to: CGPoint(x: geometry.size.width, y: cornerLength))
+                }
+                .stroke(.yellow, lineWidth: lineWidth)
+                
+                // Bottom-left corner
+                Path { path in
+                    path.move(to: CGPoint(x: 0, y: geometry.size.height - cornerLength))
+                    path.addLine(to: CGPoint(x: 0, y: geometry.size.height))
+                    path.addLine(to: CGPoint(x: cornerLength, y: geometry.size.height))
+                }
+                .stroke(.yellow, lineWidth: lineWidth)
+                
+                // Bottom-right corner
+                Path { path in
+                    path.move(to: CGPoint(x: geometry.size.width - cornerLength, y: geometry.size.height))
+                    path.addLine(to: CGPoint(x: geometry.size.width, y: geometry.size.height))
+                    path.addLine(to: CGPoint(x: geometry.size.width, y: geometry.size.height - cornerLength))
+                }
+                .stroke(.yellow, lineWidth: lineWidth)
+            }
+        }
+    }
+}
+
+// MARK: - Viewfinder Overlay
+struct ViewfinderOverlay: View {
+    var body: some View {
+        GeometryReader { geometry in
+            let cornerLength: CGFloat = .medium // 20pt
+            let lineWidth: CGFloat = .extraTight // 4pt
+            
+            ZStack {
+                // Top-left corner
+                Path { path in
+                    path.move(to: CGPoint(x: 0, y: cornerLength))
+                    path.addLine(to: CGPoint(x: 0, y: 0))
+                    path.addLine(to: CGPoint(x: cornerLength, y: 0))
+                }
+                .stroke(Color.blue, lineWidth: lineWidth)
+                
+                // Top-right corner
+                Path { path in
+                    path.move(to: CGPoint(x: geometry.size.width - cornerLength, y: 0))
+                    path.addLine(to: CGPoint(x: geometry.size.width, y: 0))
+                    path.addLine(to: CGPoint(x: geometry.size.width, y: cornerLength))
+                }
+                .stroke(Color.blue, lineWidth: lineWidth)
+                
+                // Bottom-left corner
+                Path { path in
+                    path.move(to: CGPoint(x: 0, y: geometry.size.height - cornerLength))
+                    path.addLine(to: CGPoint(x: 0, y: geometry.size.height))
+                    path.addLine(to: CGPoint(x: cornerLength, y: geometry.size.height))
+                }
+                .stroke(Color.blue, lineWidth: lineWidth)
+                
+                // Bottom-right corner
+                Path { path in
+                    path.move(to: CGPoint(x: geometry.size.width - cornerLength, y: geometry.size.height))
+                    path.addLine(to: CGPoint(x: geometry.size.width, y: geometry.size.height))
+                    path.addLine(to: CGPoint(x: geometry.size.width, y: geometry.size.height - cornerLength))
+                }
+                .stroke(Color.blue, lineWidth: lineWidth)
+            }
+        }
+    }
+}
+
 struct MyGarageView_Previews: PreviewProvider {
     static var previews: some View {
         let authService = AuthService(isPreview: true)
@@ -1212,3 +1409,4 @@ struct MyGarageView_Previews: PreviewProvider {
             .previewDisplayName("My Garage View - QR in Add Passport")
     }
 }
+
