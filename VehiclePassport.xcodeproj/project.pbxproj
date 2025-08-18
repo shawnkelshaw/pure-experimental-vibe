@@ -7,62 +7,205 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A2B3C4D5E6F7890 /* VehiclePassportApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7891 /* VehiclePassportApp.swift */; };
-		1A2B3C4D5E6F7892 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7893 /* ContentView.swift */; };
+		A1234567890123456789012 /* VehiclePassportApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789013 /* VehiclePassportApp.swift */; };
+		A1234567890123456789014 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789015 /* ContentView.swift */; };
+		A1234567890123456789016 /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789017 /* AuthenticationView.swift */; };
+		A1234567890123456789018 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789019 /* HomeView.swift */; };
+		A1234567890123456789020 /* MarketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789021 /* MarketView.swift */; };
+		A1234567890123456789022 /* MyGarageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789023 /* MyGarageView.swift */; };
+		A1234567890123456789024 /* MoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789025 /* MoreView.swift */; };
+		A1234567890123456789026 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789027 /* RootTabView.swift */; };
+		A1234567890123456789028 /* GlassEffectDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789029 /* GlassEffectDemoView.swift */; };
+		A1234567890123456789030 /* iOS26TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789031 /* iOS26TabBar.swift */; };
+		A1234567890123456789032 /* GlassEffectModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789033 /* GlassEffectModifiers.swift */; };
+		A1234567890123456789034 /* VehiclePassportCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789035 /* VehiclePassportCard.swift */; };
+		A1234567890123456789036 /* BluetoothNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789037 /* BluetoothNotificationView.swift */; };
+		A1234567890123456789038 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789039 /* User.swift */; };
+		A1234567890123456789040 /* Vehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789041 /* Vehicle.swift */; };
+		A1234567890123456789042 /* VehiclePassport.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789043 /* VehiclePassport.swift */; };
+		A1234567890123456789044 /* MarketData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789045 /* MarketData.swift */; };
+		A1234567890123456789046 /* PendingNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789047 /* PendingNotification.swift */; };
+		A1234567890123456789048 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789049 /* AuthService.swift */; };
+		A1234567890123456789050 /* VehicleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789051 /* VehicleService.swift */; };
+		A1234567890123456789052 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789053 /* NotificationService.swift */; };
+		A1234567890123456789054 /* GarageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789055 /* GarageViewModel.swift */; };
+		A1234567890123456789056 /* SupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789057 /* SupabaseConfig.swift */; };
+		A1234567890123456789058 /* SystemSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789059 /* SystemSpacing.swift */; };
+		A1234567890123456789085 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = A1234567890123456789086 /* Supabase */; };
+		A1234567890123456789087 /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = A1234567890123456789088 /* Auth */; };
+		A1234567890123456789089 /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = A1234567890123456789090 /* PostgREST */; };
+		A1234567890123456789091 /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = A1234567890123456789092 /* Storage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1A2B3C4D5E6F7890 /* VehiclePassport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VehiclePassport.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		1A2B3C4D5E6F7891 /* VehiclePassportApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehiclePassportApp.swift; sourceTree = "<group>"; };
-		1A2B3C4D5E6F7893 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A1234567890123456789060 /* VehiclePassport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VehiclePassport.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1234567890123456789013 /* VehiclePassportApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehiclePassportApp.swift; sourceTree = "<group>"; };
+		A1234567890123456789015 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A1234567890123456789017 /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
+		A1234567890123456789019 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		A1234567890123456789021 /* MarketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketView.swift; sourceTree = "<group>"; };
+		A1234567890123456789023 /* MyGarageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyGarageView.swift; sourceTree = "<group>"; };
+		A1234567890123456789025 /* MoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreView.swift; sourceTree = "<group>"; };
+		A1234567890123456789027 /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
+		A1234567890123456789029 /* GlassEffectDemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassEffectDemoView.swift; sourceTree = "<group>"; };
+		A1234567890123456789031 /* iOS26TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOS26TabBar.swift; sourceTree = "<group>"; };
+		A1234567890123456789033 /* GlassEffectModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassEffectModifiers.swift; sourceTree = "<group>"; };
+		A1234567890123456789035 /* VehiclePassportCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehiclePassportCard.swift; sourceTree = "<group>"; };
+		A1234567890123456789037 /* BluetoothNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothNotificationView.swift; sourceTree = "<group>"; };
+		A1234567890123456789039 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		A1234567890123456789041 /* Vehicle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vehicle.swift; sourceTree = "<group>"; };
+		A1234567890123456789043 /* VehiclePassport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehiclePassport.swift; sourceTree = "<group>"; };
+		A1234567890123456789045 /* MarketData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketData.swift; sourceTree = "<group>"; };
+		A1234567890123456789047 /* PendingNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingNotification.swift; sourceTree = "<group>"; };
+		A1234567890123456789049 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		A1234567890123456789051 /* VehicleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleService.swift; sourceTree = "<group>"; };
+		A1234567890123456789053 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		A1234567890123456789055 /* GarageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarageViewModel.swift; sourceTree = "<group>"; };
+		A1234567890123456789057 /* SupabaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseConfig.swift; sourceTree = "<group>"; };
+		A1234567890123456789059 /* SystemSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSpacing.swift; sourceTree = "<group>"; };
+		A1234567890123456789061 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
+		A1234567890123456789086 /* Supabase */ = {isa = PBXFileReference; productName = Supabase; productReference = A1234567890123456789084 /* XCRemoteSwiftPackageReference "supabase-swift" */; };
+		A1234567890123456789088 /* Auth */ = {isa = PBXFileReference; productName = Auth; productReference = A1234567890123456789084 /* XCRemoteSwiftPackageReference "supabase-swift" */; };
+		A1234567890123456789090 /* PostgREST */ = {isa = PBXFileReference; productName = PostgREST; productReference = A1234567890123456789084 /* XCRemoteSwiftPackageReference "supabase-swift" */; };
+		A1234567890123456789092 /* Storage */ = {isa = PBXFileReference; productName = Storage; productReference = A1234567890123456789084 /* XCRemoteSwiftPackageReference "supabase-swift" */; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		1A2B3C4D5E6F788D /* Frameworks */ = {
+		A1234567890123456789062 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1234567890123456789085 /* Supabase in Frameworks */,
+				A1234567890123456789087 /* Auth in Frameworks */,
+				A1234567890123456789089 /* PostgREST in Frameworks */,
+				A1234567890123456789091 /* Storage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1A2B3C4D5E6F7887 = {
+		A1234567890123456789063 = {
 			isa = PBXGroup;
 			children = (
-				1A2B3C4D5E6F7892 /* VehiclePassport */,
-				1A2B3C4D5E6F7891 /* Products */,
+				A1234567890123456789064 /* VehiclePassport */,
+				A1234567890123456789065 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		1A2B3C4D5E6F7891 /* Products */ = {
+		A1234567890123456789065 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1A2B3C4D5E6F7890 /* VehiclePassport.app */,
+				A1234567890123456789060 /* VehiclePassport.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		1A2B3C4D5E6F7892 /* VehiclePassport */ = {
+		A1234567890123456789064 /* VehiclePassport */ = {
 			isa = PBXGroup;
 			children = (
-				1A2B3C4D5E6F7891 /* VehiclePassportApp.swift */,
-				1A2B3C4D5E6F7893 /* ContentView.swift */,
+				A1234567890123456789066 /* App */,
+				A1234567890123456789067 /* Views */,
+				A1234567890123456789068 /* Models */,
+				A1234567890123456789069 /* Services */,
+				A1234567890123456789070 /* ViewModels */,
+				A1234567890123456789071 /* Components */,
+				A1234567890123456789072 /* Design */,
+				A1234567890123456789073 /* Resources */,
 			);
 			path = VehiclePassport;
+			sourceTree = "<group>";
+		};
+		A1234567890123456789066 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				A1234567890123456789013 /* VehiclePassportApp.swift */,
+				A1234567890123456789015 /* ContentView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		A1234567890123456789067 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A1234567890123456789017 /* AuthenticationView.swift */,
+				A1234567890123456789019 /* HomeView.swift */,
+				A1234567890123456789021 /* MarketView.swift */,
+				A1234567890123456789023 /* MyGarageView.swift */,
+				A1234567890123456789025 /* MoreView.swift */,
+				A1234567890123456789027 /* RootTabView.swift */,
+				A1234567890123456789029 /* GlassEffectDemoView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1234567890123456789071 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A1234567890123456789031 /* iOS26TabBar.swift */,
+				A1234567890123456789033 /* GlassEffectModifiers.swift */,
+				A1234567890123456789035 /* VehiclePassportCard.swift */,
+				A1234567890123456789037 /* BluetoothNotificationView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A1234567890123456789068 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A1234567890123456789039 /* User.swift */,
+				A1234567890123456789041 /* Vehicle.swift */,
+				A1234567890123456789043 /* VehiclePassport.swift */,
+				A1234567890123456789045 /* MarketData.swift */,
+				A1234567890123456789047 /* PendingNotification.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A1234567890123456789069 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A1234567890123456789049 /* AuthService.swift */,
+				A1234567890123456789051 /* VehicleService.swift */,
+				A1234567890123456789053 /* NotificationService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A1234567890123456789070 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A1234567890123456789055 /* GarageViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1234567890123456789072 /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				A1234567890123456789059 /* SystemSpacing.swift */,
+			);
+			path = Design;
+			sourceTree = "<group>";
+		};
+		A1234567890123456789073 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A1234567890123456789061 /* Config.plist */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1A2B3C4D5E6F788F /* VehiclePassport */ = {
+		A1234567890123456789074 /* VehiclePassport */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1A2B3C4D5E6F7896 /* Build configuration list for PBXNativeTarget "VehiclePassport" */;
+			buildConfigurationList = A1234567890123456789075 /* Build configuration list for PBXNativeTarget "VehiclePassport" */;
 			buildPhases = (
-				1A2B3C4D5E6F788C /* Sources */,
-				1A2B3C4D5E6F788D /* Frameworks */,
-				1A2B3C4D5E6F788E /* Resources */,
+				A1234567890123456789076 /* Sources */,
+				A1234567890123456789062 /* Frameworks */,
+				A1234567890123456789077 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -70,25 +213,25 @@
 			);
 			name = VehiclePassport;
 			productName = VehiclePassport;
-			productReference = 1A2B3C4D5E6F7890 /* VehiclePassport.app */;
+			productReference = A1234567890123456789060 /* VehiclePassport.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		1A2B3C4D5E6F7888 /* Project object */ = {
+		A1234567890123456789078 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
-					1A2B3C4D5E6F788F = {
+					A1234567890123456789074 = {
 						CreatedOnToolsVersion = 15.0;
 					};
 				};
 			};
-			buildConfigurationList = 1A2B3C4D5E6F788B /* Build configuration list for PBXProject "VehiclePassport" */;
+			buildConfigurationList = A1234567890123456789079 /* Build configuration list for PBXProject "VehiclePassport" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -96,18 +239,21 @@
 				en,
 				Base,
 			);
-			mainGroup = 1A2B3C4D5E6F7887;
-			productRefGroup = 1A2B3C4D5E6F7891 /* Products */;
+			mainGroup = A1234567890123456789063;
+			packageReferences = (
+				A1234567890123456789084 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
+			productRefGroup = A1234567890123456789065 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1A2B3C4D5E6F788F /* VehiclePassport */,
+				A1234567890123456789074 /* VehiclePassport */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		1A2B3C4D5E6F788E /* Resources */ = {
+		A1234567890123456789077 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -117,19 +263,41 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		1A2B3C4D5E6F788C /* Sources */ = {
+		A1234567890123456789076 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1A2B3C4D5E6F7892 /* ContentView.swift in Sources */,
-				1A2B3C4D5E6F7890 /* VehiclePassportApp.swift in Sources */,
+				A1234567890123456789014 /* ContentView.swift in Sources */,
+				A1234567890123456789016 /* AuthenticationView.swift in Sources */,
+				A1234567890123456789018 /* HomeView.swift in Sources */,
+				A1234567890123456789020 /* MarketView.swift in Sources */,
+				A1234567890123456789022 /* MyGarageView.swift in Sources */,
+				A1234567890123456789024 /* MoreView.swift in Sources */,
+				A1234567890123456789026 /* RootTabView.swift in Sources */,
+				A1234567890123456789028 /* GlassEffectDemoView.swift in Sources */,
+				A1234567890123456789030 /* iOS26TabBar.swift in Sources */,
+				A1234567890123456789032 /* GlassEffectModifiers.swift in Sources */,
+				A1234567890123456789034 /* VehiclePassportCard.swift in Sources */,
+				A1234567890123456789036 /* BluetoothNotificationView.swift in Sources */,
+				A1234567890123456789038 /* User.swift in Sources */,
+				A1234567890123456789040 /* Vehicle.swift in Sources */,
+				A1234567890123456789042 /* VehiclePassport.swift in Sources */,
+				A1234567890123456789044 /* MarketData.swift in Sources */,
+				A1234567890123456789046 /* PendingNotification.swift in Sources */,
+				A1234567890123456789048 /* AuthService.swift in Sources */,
+				A1234567890123456789050 /* VehicleService.swift in Sources */,
+				A1234567890123456789052 /* NotificationService.swift in Sources */,
+				A1234567890123456789054 /* GarageViewModel.swift in Sources */,
+				A1234567890123456789056 /* SupabaseConfig.swift in Sources */,
+				A1234567890123456789058 /* SystemSpacing.swift in Sources */,
+				A1234567890123456789012 /* VehiclePassportApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		1A2B3C4D5E6F7894 /* Debug */ = {
+		A1234567890123456789080 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -181,7 +349,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -192,7 +360,7 @@
 			};
 			name = Debug;
 		};
-		1A2B3C4D5E6F7895 /* Release */ = {
+		A1234567890123456789081 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -238,7 +406,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -248,27 +416,28 @@
 			};
 			name = Release;
 		};
-		1A2B3C4D5E6F7897 /* Debug */ = {
+		A1234567890123456789082 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"VehiclePassport/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = VehiclePassport/Resources/Config.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = iPad;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.VehiclePassport;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vehiclepassport.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -276,29 +445,30 @@
 			};
 			name = Debug;
 		};
-		1A2B3C4D5E6F7898 /* Release */ = {
+		A1234567890123456789083 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"VehiclePassport/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = VehiclePassport/Resources/Config.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = iPad;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.VehiclePassport;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vehiclepassport.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_EMPTY_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -307,25 +477,60 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1A2B3C4D5E6F788B /* Build configuration list for PBXProject "VehiclePassport" */ = {
+		A1234567890123456789079 /* Build configuration list for PBXProject "VehiclePassport" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1A2B3C4D5E6F7894 /* Debug */,
-				1A2B3C4D5E6F7895 /* Release */,
+				A1234567890123456789080 /* Debug */,
+				A1234567890123456789081 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1A2B3C4D5E6F7896 /* Build configuration list for PBXNativeTarget "VehiclePassport" */ = {
+		A1234567890123456789075 /* Build configuration list for PBXNativeTarget "VehiclePassport" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1A2B3C4D5E6F7897 /* Debug */,
-				1A2B3C4D5E6F7898 /* Release */,
+				A1234567890123456789082 /* Debug */,
+				A1234567890123456789082 /* Debug */,
+				A1234567890123456789083 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A1234567890123456789084 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A1234567890123456789086 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1234567890123456789084 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+		A1234567890123456789088 /* Auth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1234567890123456789084 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Auth;
+		};
+		A1234567890123456789090 /* PostgREST */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1234567890123456789084 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = PostgREST;
+		};
+		A1234567890123456789092 /* Storage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1234567890123456789084 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Storage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = 1A2B3C4D5E6F7888 /* Project object */;
-} 
+	rootObject = A1234567890123456789078 /* Project object */;
+}

@@ -1,3 +1,19 @@
+//
+//  MyGarageView.swift
+//  The Vehicle Passport
+//
+//  Created by Shawn Kelshaw on August 2025.
+//
+
+// Reference: Docs/HIG_REFERENCE.md, Design/DESIGN_SYSTEM.md, Docs/GLASS_EFFECT_IMPLEMENTATION.md
+// Constraints:
+// - Use Apple-native SwiftUI controls (full library permitted)
+// - Follow iOS 26 Human Interface Guidelines and visual system
+// - Apply `.glassBackgroundEffect()` where appropriate
+// - Avoid custom or third-party UI unless explicitly approved
+// - Support portrait and landscape on iPhone and iPad
+// - Use semantic spacing (see SystemSpacing.swift)
+
 import SwiftUI
 import Foundation
 
@@ -1133,6 +1149,11 @@ struct VehicleDetailView: View {
                             Label("Service History", systemImage: "wrench.and.screwdriver.fill")
                         }
                         .padding(.vertical, .tight)
+                        
+                        NavigationLink(destination: OwnershipHistoryView(vehicle: vehicle)) {
+                            Label("Ownership History", systemImage: "person.crop.circle.badge.questionmark.fill")
+                        }
+                        .padding(.vertical, .tight)
                     }
                 }
                 .listStyle(.insetGrouped)
@@ -1208,10 +1229,11 @@ struct VehicleDetailRow: View {
 // MARK: - Photo Gallery View
 struct PhotoGalleryView: View {
     let vehicle: Vehicle
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: .medium) {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: horizontalSizeClass == .regular ? 3 : 2), spacing: .medium) {
                 // Placeholder for future photos
                 ForEach(0..<6, id: \.self) { index in
                     RoundedRectangle(cornerRadius: 12)
@@ -1229,7 +1251,7 @@ struct PhotoGalleryView: View {
                         }
                 }
             }
-            .padding()
+            .padding(horizontalSizeClass == .regular ? .loose : .regular)
         }
         .navigationTitle("Photo Gallery")
         .navigationBarTitleDisplayMode(.large)
@@ -1271,6 +1293,27 @@ struct ServiceHistoryView: View {
     }
 }
 
+// MARK: - Ownership History View
+struct OwnershipHistoryView: View {
+    let vehicle: Vehicle
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    
+    var body: some View {
+        List {
+            Section("ORIGINAL PURCHASE") {
+                // Placeholder original purchase information
+                OwnershipDetailRow(label: "Dealership", value: "Metro Toyota Center")
+                OwnershipDetailRow(label: "Sales Agent", value: "Alan Subran")
+                OwnershipDetailRow(label: "Date of Purchase", value: "March 15, \(vehicle.year)")
+                OwnershipDetailRow(label: "Agent Number", value: "(555) 123-4567")
+                OwnershipDetailRow(label: "Agent Email", value: "asubran@dealership.com")
+            }
+        }
+        .navigationTitle("Ownership History")
+        .navigationBarTitleDisplayMode(.large)
+    }
+}
+
 // MARK: - Service History Row
 struct ServiceHistoryRow: View {
     let date: String
@@ -1303,6 +1346,29 @@ struct ServiceHistoryRow: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
+        }
+        .padding(.vertical, .extraTight)
+    }
+}
+
+// MARK: - Ownership Detail Row
+struct OwnershipDetailRow: View {
+    let label: String
+    let value: String
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.body.weight(.medium))
+                .foregroundColor(.secondary)
+                .frame(width: horizontalSizeClass == .regular ? 140 : 120, alignment: .leading)
+            
+            Text(value)
+                .font(.body)
+                .foregroundColor(.primary)
+            
+            Spacer()
         }
         .padding(.vertical, .extraTight)
     }

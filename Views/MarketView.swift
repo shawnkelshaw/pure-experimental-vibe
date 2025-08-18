@@ -1,3 +1,19 @@
+//
+//  MarketView.swift
+//  The Vehicle Passport
+//
+//  Created by Shawn Kelshaw on August 2025.
+//
+
+// Reference: Docs/HIG_REFERENCE.md, Design/DESIGN_SYSTEM.md, Docs/GLASS_EFFECT_IMPLEMENTATION.md
+// Constraints:
+// - Use Apple-native SwiftUI controls (full library permitted)
+// - Follow iOS 26 Human Interface Guidelines and visual system
+// - Apply `.glassBackgroundEffect()` where appropriate
+// - Avoid custom or third-party UI unless explicitly approved
+// - Support portrait and landscape on iPhone and iPad
+// - Use semantic spacing (see SystemSpacing.swift)
+
 import SwiftUI
 import Charts
 

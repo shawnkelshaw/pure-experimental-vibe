@@ -1,3 +1,16 @@
+//
+//  SystemSpacing.swift
+//  Vehicle Passport
+//
+//  Created by Shawn Kelshaw on August 2025.
+//
+
+// Reference: Design/DESIGN_SYSTEM.md
+// Purpose:
+// - Provides standardized vertical spacing
+// - Aligns with Apple’s semantic layout principles
+// - Use in place of ad hoc `.padding()` or hardcoded `Spacer()` gaps
+
 import SwiftUI
 
 // MARK: - System Spacing Extension
