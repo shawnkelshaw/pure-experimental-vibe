@@ -88,20 +88,7 @@
       "usage": "Selected tab backgrounds, highlighted sections"
     }
   ],
-  "customColors": [
-    {
-      "name": "Brand Blue",
-      "description": "Custom brand blue for specific use cases",
-      "hex": "#0088FF",
-      "rgb": {
-        "r": 0,
-        "g": 0.533,
-        "b": 1.0,
-        "a": 1
-      },
-      "usage": "Specific brand elements that need consistent blue"
-    }
-  ],
+  "customColors": [],
   "metadata": {
     "designSystem": "Apple Human Interface Guidelines + Liquid Glass",
     "colorSystem": "Apple Semantic Colors",
@@ -133,7 +120,7 @@
       "Liquid glass effects use native materials for better performance",
       "Primary and secondary colors follow Apple's accessibility guidelines",
       "Glass borders use .separator for consistent appearance",
-      "Custom brand blue available for specific use cases"
+      "Pure native iOS semantic colors only - no custom brand colors"
     ]
   }
 } 

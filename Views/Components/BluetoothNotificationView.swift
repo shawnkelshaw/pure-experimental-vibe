@@ -28,7 +28,7 @@ struct BluetoothNotificationView: View {
                             // Animated outer rings
                             ForEach(0..<3, id: \.self) { index in
                                 Circle()
-                                    .stroke(Color.blue.opacity(0.3), lineWidth: 2)
+                                    .stroke(Color(.systemBlue).opacity(0.3), lineWidth: 2)
                                     .frame(width: 80 + CGFloat(index * 20), height: 80 + CGFloat(index * 20))
                                     .scaleEffect(isAnimating ? 1.2 : 0.8)
                                     .opacity(isAnimating ? 0.0 : 0.7)
@@ -43,16 +43,16 @@ struct BluetoothNotificationView: View {
                             // Central Bluetooth Icon
                             ZStack {
                                 Circle()
-                                    .fill(Color.blue.opacity(0.2))
+                                    .fill(Color(.systemBlue).opacity(0.2))
                                     .frame(width: 80, height: 80)
                                     .overlay(
                                         Circle()
-                                            .stroke(Color.blue, lineWidth: 2)
+                                            .stroke(Color(.systemBlue), lineWidth: 2)
                                     )
                                 
                                 Image(systemName: notification.type.iconName)
                                     .font(.system(size: 32, weight: .medium))
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(Color(.systemBlue))
                             }
                         }
                         .frame(height: 120)
@@ -106,7 +106,7 @@ struct BluetoothNotificationView: View {
                                     .fill(.thinMaterial)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 25)
-                                            .stroke(Color.blue.opacity(0.3), lineWidth: 1)
+                                            .stroke(Color(.systemBlue).opacity(0.3), lineWidth: 1)
                                     )
                             )
                         }
@@ -151,7 +151,7 @@ struct BluetoothNotificationView: View {
                         .fill(.ultraThinMaterial)
                         .overlay(
                             RoundedRectangle(cornerRadius: 24)
-                                .stroke(Color.blue.opacity(0.3), lineWidth: 1)
+                                .stroke(Color(.systemBlue).opacity(0.3), lineWidth: 1)
                         )
                         .shadow(color: Color.primary.opacity(0.1), radius: 20, x: 0, y: 10)
                 )
@@ -186,7 +186,7 @@ struct NotificationOverlayView: View {
                     onConfirm: onConfirm,
                     onDismiss: onDismiss
                 )
-            case .maintenanceReminder, .documentExpiry, .other:
+            case .qr, .system:
                 GenericNotificationView(
                     notification: notification,
                     onConfirm: onConfirm,
@@ -220,16 +220,16 @@ struct GenericNotificationView: View {
                     // Icon
                     ZStack {
                         Circle()
-                            .fill(Color.orange.opacity(0.2))
+                            .fill(Color(.systemOrange).opacity(0.2))
                             .frame(width: 80, height: 80)
                             .overlay(
                                 Circle()
-                                    .stroke(Color.orange, lineWidth: 2)
+                                    .stroke(Color(.systemOrange), lineWidth: 2)
                             )
                         
                         Image(systemName: notification.type.iconName)
                             .font(.system(size: 32, weight: .medium))
-                            .foregroundColor(.orange)
+                            .foregroundColor(Color(.systemOrange))
                     }
                     
                     // Content
@@ -280,7 +280,7 @@ struct GenericNotificationView: View {
                                         .fill(.thinMaterial)
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 20)
-                                                .stroke(Color.orange.opacity(0.3), lineWidth: 1)
+                                                .stroke(Color(.systemOrange).opacity(0.3), lineWidth: 1)
                                         )
                                 )
                         }
@@ -294,7 +294,7 @@ struct GenericNotificationView: View {
                         .fill(.ultraThinMaterial)
                         .overlay(
                             RoundedRectangle(cornerRadius: 20)
-                                .stroke(Color.orange.opacity(0.3), lineWidth: 1)
+                                .stroke(Color(.systemOrange).opacity(0.3), lineWidth: 1)
                         )
                 )
                 .padding(.horizontal, 20)
@@ -316,9 +316,12 @@ struct GenericNotificationView: View {
 // MARK: - Preview
 struct BluetoothNotificationView_Previews: PreviewProvider {
     static var previews: some View {
-        let sampleNotification = PendingNotification.bluetoothPassportPush(
+        let sampleNotification = PendingNotification(
             userId: UUID(),
-            vehicleName: "2023 Tesla Model 3"
+            type: .bluetoothPassportPush,
+            title: "Vehicle Passport Incoming",
+            message: "A nearby vehicle is sending you a Vehicle Passport—a digital certificate that can help speed up future trade-ins.",
+            metadata: ["vehicle_name": "2023 Tesla Model 3"]
         )
         
         BluetoothNotificationView(

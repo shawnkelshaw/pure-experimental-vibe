@@ -8,9 +8,9 @@ struct GlassEffectDemoView: View {
             // Background with gradient for better glass visibility
             LinearGradient(
                 gradient: Gradient(colors: [
-                    Color.blue.opacity(0.3),
-                    Color.purple.opacity(0.3),
-                    Color.pink.opacity(0.3)
+                    Color(.systemBlue).opacity(0.3),
+                    Color(.systemPurple).opacity(0.3),
+                    Color(.systemPink).opacity(0.3)
                 ]),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -22,24 +22,24 @@ struct GlassEffectDemoView: View {
                     Text("Glass Effect Showcase")
                         .font(.largeTitle)
                         .fontWeight(.bold)
-                        .foregroundColor(.textPrimary)
+                        .foregroundColor(.primary)
                         .padding(.top)
                     
                     // Regular Glass Effect
                     VStack(spacing: 16) {
                         Text("Regular Glass Effect")
                             .font(.headline)
-                            .foregroundColor(.textPrimary)
+                            .foregroundColor(.primary)
                         
                         VStack(spacing: 12) {
                             Text("This is a regular glass card with blur and transparency")
-                                .foregroundColor(.textSecondary)
+                                .foregroundColor(.secondary)
                             
                             HStack {
                                 Image(systemName: "star.fill")
-                                    .foregroundColor(.yellow)
+                                    .foregroundColor(Color(.systemYellow))
                                 Text("Featured Content")
-                                    .foregroundColor(.textPrimary)
+                                    .foregroundColor(.primary)
                             }
                         }
                         .padding()
@@ -50,35 +50,35 @@ struct GlassEffectDemoView: View {
                     VStack(spacing: 16) {
                         Text("Liquid Glass Effect")
                             .font(.headline)
-                            .foregroundColor(.textPrimary)
+                            .foregroundColor(.primary)
                         
                         VStack(spacing: 12) {
                             Text("Enhanced glass with multiple layers and gradients")
-                                .foregroundColor(.textSecondary)
+                                .foregroundColor(.secondary)
                             
                             HStack(spacing: 20) {
                                 VStack {
                                     Image(systemName: "heart.fill")
-                                        .foregroundColor(.red)
+                                        .foregroundColor(Color(.systemRed))
                                     Text("Likes")
                                         .font(.caption)
-                                        .foregroundColor(.textSecondary)
+                                        .foregroundColor(.secondary)
                                 }
                                 
                                 VStack {
                                     Image(systemName: "message.fill")
-                                        .foregroundColor(.blue)
+                                        .foregroundColor(Color(.systemBlue))
                                     Text("Messages")
                                         .font(.caption)
-                                        .foregroundColor(.textSecondary)
+                                        .foregroundColor(.secondary)
                                 }
                                 
                                 VStack {
                                     Image(systemName: "share.fill")
-                                        .foregroundColor(.green)
+                                        .foregroundColor(Color(.systemGreen))
                                     Text("Share")
                                         .font(.caption)
-                                        .foregroundColor(.textSecondary)
+                                        .foregroundColor(.secondary)
                                 }
                             }
                         }
@@ -90,23 +90,23 @@ struct GlassEffectDemoView: View {
                     VStack(spacing: 16) {
                         Text("Ultra-thin Glass")
                             .font(.headline)
-                            .foregroundColor(.textPrimary)
+                            .foregroundColor(.primary)
                         
                         HStack(spacing: 12) {
                             Button("Action 1") {}
-                                .foregroundColor(.textPrimary)
+                                .foregroundColor(.primary)
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 8)
                                 .ultraThinGlass()
                             
                             Button("Action 2") {}
-                                .foregroundColor(.textPrimary)
+                                .foregroundColor(.primary)
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 8)
                                 .ultraThinGlass()
                             
                             Button("Action 3") {}
-                                .foregroundColor(.textPrimary)
+                                .foregroundColor(.primary)
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 8)
                                 .ultraThinGlass()
@@ -117,18 +117,18 @@ struct GlassEffectDemoView: View {
                     VStack(spacing: 16) {
                         Text("Frost Glass Effect")
                             .font(.headline)
-                            .foregroundColor(.textPrimary)
+                            .foregroundColor(.primary)
                         
                         VStack(spacing: 12) {
                             Text("Crystalline frosted glass with enhanced blur")
-                                .foregroundColor(.textSecondary)
+                                .foregroundColor(.secondary)
                             
                             ProgressView(value: 0.7)
-                                .progressViewStyle(LinearProgressViewStyle(tint: .brandPrimary))
+                                .progressViewStyle(LinearProgressViewStyle(tint: .accentColor))
                             
                             Text("Loading... 70%")
                                 .font(.caption)
-                                .foregroundColor(.textSecondary)
+                                .foregroundColor(.secondary)
                         }
                         .padding()
                         .frostGlassEffect(cornerRadius: 16, intensity: 0.8)
@@ -138,23 +138,23 @@ struct GlassEffectDemoView: View {
                     VStack(spacing: 16) {
                         Text("Glass Card Component")
                             .font(.headline)
-                            .foregroundColor(.textPrimary)
+                            .foregroundColor(.primary)
                         
                         GlassCard(cornerRadius: 24, material: .ultraThinMaterial) {
                             VStack(alignment: .leading, spacing: 12) {
                                 HStack {
                                     Image(systemName: "car.fill")
                                         .font(.title2)
-                                        .foregroundColor(.brandPrimary)
+                                        .foregroundColor(.accentColor)
                                     
                                     VStack(alignment: .leading) {
                                         Text("Tesla Model 3")
                                             .font(.headline)
-                                            .foregroundColor(.textPrimary)
+                                            .foregroundColor(.primary)
                                         
                                         Text("Electric Vehicle")
                                             .font(.caption)
-                                            .foregroundColor(.textSecondary)
+                                            .foregroundColor(.secondary)
                                     }
                                     
                                     Spacer()
@@ -171,10 +171,10 @@ struct GlassEffectDemoView: View {
                                     VStack(alignment: .leading) {
                                         Text("Range")
                                             .font(.caption)
-                                            .foregroundColor(.textSecondary)
+                                            .foregroundColor(.secondary)
                                         Text("350 mi")
                                             .font(.headline)
-                                            .foregroundColor(.textPrimary)
+                                            .foregroundColor(.primary)
                                     }
                                     
                                     Spacer()
@@ -182,10 +182,10 @@ struct GlassEffectDemoView: View {
                                     VStack(alignment: .leading) {
                                         Text("Charge")
                                             .font(.caption)
-                                            .foregroundColor(.textSecondary)
+                                            .foregroundColor(.secondary)
                                         Text("85%")
                                             .font(.headline)
-                                            .foregroundColor(.textPrimary)
+                                            .foregroundColor(.primary)
                                     }
                                     
                                     Spacer()
@@ -193,7 +193,7 @@ struct GlassEffectDemoView: View {
                                     VStack(alignment: .leading) {
                                         Text("Status")
                                             .font(.caption)
-                                            .foregroundColor(.textSecondary)
+                                            .foregroundColor(.secondary)
                                         Text("Ready")
                                             .font(.headline)
                                             .foregroundColor(.statusSuccess)
@@ -207,7 +207,7 @@ struct GlassEffectDemoView: View {
                     VStack(spacing: 16) {
                         Text("Glass Tab Bar")
                             .font(.headline)
-                            .foregroundColor(.textPrimary)
+                            .foregroundColor(.primary)
                         
                         GlassTabBar(
                             items: [

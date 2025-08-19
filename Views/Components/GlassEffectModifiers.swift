@@ -1,5 +1,11 @@
 import SwiftUI
 
+// MARK: - Color Extensions
+extension Color {
+    /// Glass border color that adapts to light/dark mode
+    static let glassBorder = Color(.separator)
+}
+
 // MARK: - Glass Effect Modifiers
 
 extension View {
@@ -144,7 +150,7 @@ extension View {
                     
                     // Frosting overlay
                     RoundedRectangle(cornerRadius: cornerRadius)
-                        .fill(Color.appBackground.opacity(intensity * 0.2))
+                        .fill(Color(.systemBackground).opacity(intensity * 0.2))
                     
                     // Crystalline effect
                     RoundedRectangle(cornerRadius: cornerRadius)
@@ -259,12 +265,12 @@ struct GlassTabBarButton: View {
             VStack(spacing: 1) {
                 Image(systemName: icon)
                     .font(.system(size: 17, weight: isSelected ? .semibold : .regular))
-                    .foregroundColor(isSelected ? Color.tabBarSelectedText : Color.tabBarUnselectedText)
+                    .foregroundColor(isSelected ? Color.accentColor : Color(.secondaryLabel))
                     .frame(height: 28)
                 
                 Text(title)
                     .font(.system(size: 10, weight: isSelected ? .bold : .medium))
-                    .foregroundColor(isSelected ? Color.tabBarSelectedText : Color.tabBarUnselectedText)
+                    .foregroundColor(isSelected ? Color.accentColor : Color(.secondaryLabel))
                     .frame(height: 12)
             }
         }

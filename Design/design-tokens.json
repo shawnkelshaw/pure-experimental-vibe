@@ -67,11 +67,7 @@
             "type": "semantic",
             "description": "Primary brand color - uses user's accent color preference"
           },
-          "blue": {
-            "value": "#0088FF",
-            "type": "color",
-            "description": "Custom brand blue for specific use cases"
-          }
+
         },
         "status": {
           "success": {
@@ -291,7 +287,7 @@
       "Liquid glass effects use native materials (.regularMaterial, .thinMaterial, etc.)",
       "Spacing and typography follow iOS 17+ Human Interface Guidelines", 
       "Brand colors use accent color for user preference integration",
-      "Legacy custom colors maintained for fallback scenarios"
+      "Pure native iOS semantic colors only - no custom brand colors"
     ]
   }
 } 

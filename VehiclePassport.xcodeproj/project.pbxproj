@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A1234567890123456789012 /* VehiclePassportApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789013 /* VehiclePassportApp.swift */; };
-		A1234567890123456789014 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789015 /* ContentView.swift */; };
+
 		A1234567890123456789016 /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789017 /* AuthenticationView.swift */; };
 		A1234567890123456789018 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789019 /* HomeView.swift */; };
 		A1234567890123456789020 /* MarketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789021 /* MarketView.swift */; };
@@ -40,7 +40,7 @@
 /* Begin PBXFileReference section */
 		A1234567890123456789060 /* VehiclePassport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VehiclePassport.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1234567890123456789013 /* VehiclePassportApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehiclePassportApp.swift; sourceTree = "<group>"; };
-		A1234567890123456789015 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+
 		A1234567890123456789017 /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		A1234567890123456789019 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		A1234567890123456789021 /* MarketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketView.swift; sourceTree = "<group>"; };
@@ -113,14 +113,13 @@
 				A1234567890123456789072 /* Design */,
 				A1234567890123456789073 /* Resources */,
 			);
-			path = VehiclePassport;
 			sourceTree = "<group>";
 		};
 		A1234567890123456789066 /* App */ = {
 			isa = PBXGroup;
 			children = (
 				A1234567890123456789013 /* VehiclePassportApp.swift */,
-				A1234567890123456789015 /* ContentView.swift */,
+
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -267,7 +266,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1234567890123456789014 /* ContentView.swift in Sources */,
+
 				A1234567890123456789016 /* AuthenticationView.swift in Sources */,
 				A1234567890123456789018 /* HomeView.swift in Sources */,
 				A1234567890123456789020 /* MarketView.swift in Sources */,

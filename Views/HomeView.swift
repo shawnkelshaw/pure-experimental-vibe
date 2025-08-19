@@ -14,47 +14,60 @@
 // - Support portrait and landscape on iPhone and iPad
 // - Use semantic spacing (see SystemSpacing.swift)
 
-
 import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var authService: AuthService
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @State private var isLoading = true
     @State private var logoOpacity: Double = 0
     @State private var logoScale: Double = 0.8
     
     var body: some View {
         ZStack {
+            // Standard system background
+            Color(.systemBackground)
+                .ignoresSafeArea()
+            
             // Content respecting safe areas (status bar will show)
             VStack(spacing: 0) {
                 if isLoading {
                     // Loading screen with logo animation
-                    VStack(spacing: 24) {
+                    VStack(spacing: horizontalSizeClass == .regular ? 32 : 24) {
                         Spacer()
                         
-                        // Logo container with dark theme
+                        // Logo container with glass effect
                         ZStack {
-                            // Dark background with subtle border
-                            RoundedRectangle(cornerRadius: 24)
-                                .fill(Color.cardBackground)
-                                .frame(width: 120, height: 120)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 24)
-                                        .stroke(Color.glassBorder, lineWidth: 2)
-                                )
+                            // Glass background effect
+                            Group {
+                                RoundedRectangle(cornerRadius: horizontalSizeClass == .regular ? 32 : 24)
+                                    .fill(Color(.secondarySystemBackground))
+                                    .stroke(Color(.separator), lineWidth: 1)
+                            }
+                            .frame(
+                                width: horizontalSizeClass == .regular ? 160 : 120,
+                                height: horizontalSizeClass == .regular ? 160 : 120
+                            )
                             
                             // Logo placeholder
                             Image(systemName: "car.fill")
-                                .font(.system(size: 48, weight: .light))
-                                .foregroundColor(.textPrimary)
+                                .font(.system(
+                                    size: horizontalSizeClass == .regular ? 64 : 48,
+                                    weight: .light
+                                ))
+                                .foregroundColor(.primary)
                         }
                         .scaleEffect(logoScale)
                         .opacity(logoOpacity)
                         
                         // App name
                         Text("Vehicle Passports")
-                            .font(.system(size: 28, weight: .ultraLight, design: .rounded))
-                            .foregroundColor(.textPrimary)
+                            .font(.system(
+                                size: horizontalSizeClass == .regular ? 36 : 28,
+                                weight: .ultraLight,
+                                design: .rounded
+                            ))
+                            .foregroundColor(.primary)
                             .opacity(logoOpacity)
                         
                         Spacer()
@@ -79,7 +92,6 @@ struct HomeView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        // Remove forced dark mode - let system handle theme
         .onAppear {
             // Check real authentication state
             print("🔐 Checking real authentication state...")
@@ -99,33 +111,53 @@ struct HomeView: View {
             }
         }
     }
-    
-    // MARK: - Private Methods
-    
-    private func createTestUserForDemo() {
-        // DISABLED - User wants real authentication only
-        print("🔐 Test user creation disabled - using real Supabase authentication")
-        return
-    }
-
 }
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
+        let authService = AuthService(isPreview: true)
+        let themeManager = ThemeManager()
+        
         Group {
-            // iPhone Preview
+            // iPhone Preview - Dark Mode
             HomeView()
-                .environmentObject(AuthService())
+                .environmentObject(authService)
                 .environmentObject(NotificationService())
+                .environmentObject(GarageViewModel(authService: authService))
+                .environmentObject(themeManager)
                 .previewDevice("iPhone 15 Pro")
-                .previewDisplayName("iPhone - Home View")
+                .previewDisplayName("iPhone - Home View - Dark Mode")
+                .preferredColorScheme(.dark)
             
-            // iPad Preview
+            // iPhone Preview - Light Mode
             HomeView()
-                .environmentObject(AuthService())
+                .environmentObject(authService)
                 .environmentObject(NotificationService())
+                .environmentObject(GarageViewModel(authService: authService))
+                .environmentObject(themeManager)
+                .previewDevice("iPhone 15 Pro")
+                .previewDisplayName("iPhone - Home View - Light Mode")
+                .preferredColorScheme(.light)
+            
+            // iPad Preview - Dark Mode
+            HomeView()
+                .environmentObject(authService)
+                .environmentObject(NotificationService())
+                .environmentObject(GarageViewModel(authService: authService))
+                .environmentObject(themeManager)
                 .previewDevice("iPad Pro (12.9-inch) (6th generation)")
-                .previewDisplayName("iPad - Home View")
+                .previewDisplayName("iPad - Home View - Dark Mode")
+                .preferredColorScheme(.dark)
+            
+            // iPad Preview - Light Mode
+            HomeView()
+                .environmentObject(authService)
+                .environmentObject(NotificationService())
+                .environmentObject(GarageViewModel(authService: authService))
+                .environmentObject(themeManager)
+                .previewDevice("iPad Pro (12.9-inch) (6th generation)")
+                .previewDisplayName("iPad - Home View - Light Mode")
+                .preferredColorScheme(.light)
         }
     }
 } 

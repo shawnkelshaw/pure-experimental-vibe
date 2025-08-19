@@ -45,17 +45,17 @@ struct VehiclePassportCard: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(vehicleDisplayName)
                         .font(.system(size: 18, weight: .semibold, design: .rounded))
-                        .foregroundColor(.textPrimary)
+                        .foregroundColor(.primary)
                     
                     Text("Active")
                         .font(.system(size: 14, weight: .regular))
-                        .foregroundColor(.textSecondary)
+                        .foregroundColor(.secondary)
                     
                     // Show vehicle details if available
                     if !vehicleDetails.isEmpty {
                         Text(vehicleDetails)
                             .font(.system(size: 12, weight: .regular))
-                            .foregroundColor(.textSecondary)
+                            .foregroundColor(.secondary)
                             .lineLimit(1)
                     }
                 }
@@ -89,7 +89,7 @@ struct VehiclePassportCard: View {
                 Button(action: {}) {
                     Image(systemName: "chevron.right")
                         .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(.textSecondary)
+                        .foregroundColor(.secondary)
                 }
             }
         }
@@ -108,16 +108,16 @@ struct StatItem: View {
             HStack(spacing: 4) {
                 Image(systemName: icon)
                     .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(.textPrimary)
+                    .foregroundColor(.primary)
                 
                 Text(value)
                     .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.textPrimary)
+                    .foregroundColor(.primary)
             }
             
             Text(label)
                 .font(.system(size: 10, weight: .regular))
-                .foregroundColor(.textSecondary)
+                .foregroundColor(.secondary)
         }
     }
 }
@@ -136,7 +136,7 @@ struct ActionButton: View {
                 Text(title)
                     .font(.system(size: 12, weight: .medium))
             }
-            .foregroundColor(.textPrimary)
+            .foregroundColor(.primary)
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
             .ultraThinGlass(cornerRadius: 12)
@@ -188,7 +188,7 @@ struct VehiclePassportCard_Previews: PreviewProvider {
             updatedAt: Date()
         ))
         .padding()
-        .background(Color.appBackground)
+        .background(Color(.systemBackground))
         .previewLayout(.sizeThatFits)
     }
 } 

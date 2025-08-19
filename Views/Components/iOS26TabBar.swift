@@ -25,7 +25,7 @@ struct iOS26TabBar: View {
                 .fill(.ultraThinMaterial)
                 .background(
                     RoundedRectangle(cornerRadius: 28)
-                        .fill(Color.appBackground.opacity(0.8))
+                        .fill(Color(.systemBackground).opacity(0.8))
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 28)
@@ -63,17 +63,17 @@ struct iOS26TabBarButton: View {
                     if isSelected {
                         // Selected state background
                         RoundedRectangle(cornerRadius: 16)
-                            .fill(Color.tabBarSelectedText.opacity(0.12))
+                            .fill(Color.accentColor.opacity(0.12))
                             .frame(width: 44, height: 32)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 16)
-                                    .stroke(Color.tabBarSelectedText.opacity(0.2), lineWidth: 0.5)
+                                    .stroke(Color.accentColor.opacity(0.2), lineWidth: 0.5)
                             )
                     }
                     
                     Image(systemName: icon)
                         .font(.system(size: 20, weight: isSelected ? .semibold : .medium, design: .rounded))
-                        .foregroundColor(isSelected ? Color.tabBarSelectedText : Color.tabBarUnselectedText)
+                        .foregroundColor(isSelected ? Color.accentColor : Color(.secondaryLabel))
                         .scaleEffect(isSelected ? 1.0 : 0.9)
                         .symbolRenderingMode(.hierarchical)
                 }
@@ -82,7 +82,7 @@ struct iOS26TabBarButton: View {
                 // Text label with iOS 26 typography
                 Text(title)
                     .font(.system(size: 10, weight: isSelected ? .semibold : .medium, design: .rounded))
-                    .foregroundColor(isSelected ? Color.tabBarSelectedText : Color.tabBarUnselectedText)
+                    .foregroundColor(isSelected ? Color.accentColor : Color(.secondaryLabel))
                     .lineLimit(1)
                     .frame(height: 12)
                     .opacity(isSelected ? 1.0 : 0.8)
@@ -176,13 +176,13 @@ struct PremiumTabBarButton: View {
             VStack(spacing: 3) {
                 Image(systemName: icon)
                     .font(.system(size: 19, weight: isSelected ? .semibold : .medium, design: .rounded))
-                    .foregroundColor(isSelected ? Color.tabBarSelectedText : Color.tabBarUnselectedText)
+                    .foregroundColor(isSelected ? Color.accentColor : Color(.secondaryLabel))
                     .symbolRenderingMode(.hierarchical)
                     .scaleEffect(isSelected ? 1.05 : 0.95)
                 
                 Text(title)
                     .font(.system(size: 10, weight: isSelected ? .semibold : .regular, design: .rounded))
-                    .foregroundColor(isSelected ? Color.tabBarSelectedText : Color.tabBarUnselectedText)
+                    .foregroundColor(isSelected ? Color.accentColor : Color(.secondaryLabel))
                     .lineLimit(1)
                     .opacity(isSelected ? 1.0 : 0.7)
             }
@@ -234,7 +234,7 @@ struct iOS26TabBar_Previews: PreviewProvider {
         }
         .background(
             LinearGradient(
-                gradient: Gradient(colors: [Color.blue.opacity(0.3), Color.purple.opacity(0.3)]),
+                gradient: Gradient(colors: [Color(.systemBlue).opacity(0.3), Color(.systemPurple).opacity(0.3)]),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )

@@ -7,12 +7,12 @@
 
 // Reference: Docs/HIG_REFERENCE.md, Design/DESIGN_SYSTEM.md, Docs/GLASS_EFFECT_IMPLEMENTATION.md
 // Constraints:
-// - Use Apple-native SwiftUI controls (full library permitted)
-// - Follow iOS 26 Human Interface Guidelines and visual system
-// - Apply `.glassBackgroundEffect()` where appropriate
-// - Avoid custom or third-party UI unless explicitly approved
-// - Support portrait and landscape on iPhone and iPad
-// - Use semantic spacing (see SystemSpacing.swift)
+// - Use only Apple-native SwiftUI controls (full library permitted)
+// - Follow iOS 26 Human Interface Guidelines and layout behavior
+// - Apply `.ultraThinGlass()` and custom effects as defined
+// - Avoid third-party or custom UI unless explicitly approved
+// - Support iPhone and iPad in both portrait and landscape
+// - Use semantic spacing (SystemSpacing.swift)
 
 import SwiftUI
 import Foundation
@@ -22,7 +22,7 @@ struct MyGarageView: View {
     @EnvironmentObject var notificationService: NotificationService
     @EnvironmentObject var authService: AuthService
     @State private var showingAddPassport = false
-    @State private var selectedVehicle: Vehicle?
+
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.verticalSizeClass) var verticalSizeClass
     
@@ -71,11 +71,11 @@ struct MyGarageView: View {
                     } else {
                     // Vehicle Passport Content - Simplified Layout
                     let _ = print("🏠 Showing VEHICLE content - hasVehiclePassports: \(garageViewModel.hasVehiclePassports), count: \(garageViewModel.vehiclePassports.count)")
-                    VehicleListView(selectedVehicle: $selectedVehicle)
+                    VehicleListView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.appBackground)
+            .background(Color(.systemGroupedBackground))
             .navigationTitle("My Garage")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
@@ -90,10 +90,10 @@ struct MyGarageView: View {
                             .frame(width: horizontalSizeClass == .regular ? 44 : 36, 
                                    height: horizontalSizeClass == .regular ? 44 : 36)
                             .background(
-                                Circle()
+                            Circle()
                                     .fill(.ultraThinMaterial)
-                                    .overlay(
-                                        Circle()
+                                .overlay(
+                                    Circle()
                                             .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
                                     )
                             )
@@ -134,10 +134,7 @@ struct MyGarageView: View {
                     }
                 }
             }
-            .sheet(item: $selectedVehicle) { vehicle in
-                let _ = print("🚗 Sheet opening with vehicle: \(vehicle.year) \(vehicle.make)")
-                VehicleDetailView(vehicle: vehicle)
-            }
+
             .overlay {
                 // Notification Overlay
                 if notificationService.showingNotification,
@@ -214,7 +211,7 @@ struct MyGarageView: View {
         )
         
         await notificationService.createNotification(notification)
-        notificationService.showNotification(notification)
+        await notificationService.showNotification(notification)
     }
     
     private func handleNotificationAcceptance(_ notification: PendingNotification) async {
@@ -263,7 +260,7 @@ struct AddPassportView: View {
                 VStack(spacing: .mediumTight) {
                     Image(systemName: "car.fill")
                         .font(.system(size: 48, weight: .light))
-                        .foregroundColor(.blue)
+                        .foregroundColor(.accentColor)
                     
                     Text("Add Vehicle Passport")
                         .font(.system(size: 24, weight: .semibold))
@@ -296,7 +293,7 @@ struct AddPassportView: View {
                                 }
                             } icon: {
                                 Image(systemName: "qrcode.viewfinder")
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(.accentColor)
                             }
                         }
                         .padding(.vertical, .tight)
@@ -356,7 +353,7 @@ struct QRScannerView: View {
     @State private var isScanning = false
     
     var body: some View {
-        ZStack {
+            ZStack {
             // Full-screen black camera background
             Color.black
                 .ignoresSafeArea(.all)
@@ -414,7 +411,7 @@ struct QRScannerView: View {
                     // Detection banner
                     HStack(spacing: .tight) {
                         Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(.yellow)
+                            .foregroundColor(Color(.systemYellow))
                             .font(.caption)
                         
                         Text("Vehicle Data Detected")
@@ -425,7 +422,7 @@ struct QRScannerView: View {
                     .padding(.vertical, .extraTight)
                     .background(
                         Capsule()
-                            .fill(.yellow)
+                            .fill(Color(.systemYellow))
                     )
                 }
                 
@@ -441,7 +438,7 @@ struct QRScannerView: View {
                     .foregroundColor(.white)
                     .frame(width: 32, height: 32)
                     .background(
-                        Circle()
+                Circle()
                             .fill(.black.opacity(0.5))
                     )
                     
@@ -490,7 +487,7 @@ struct QRScannerView: View {
                         // Mode selection placeholder
                     }
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(.yellow)
+                    .foregroundColor(Color(.systemYellow))
                     
                     Button("PORTRAIT") {
                         // Mode selection placeholder
@@ -601,7 +598,7 @@ struct BluetoothLoadingView: View {
             // Bluetooth Icon with animation
                 Image(systemName: "bluetooth")
                     .font(.system(size: 32, weight: .light))
-                    .foregroundColor(.blue)
+                    .foregroundColor(.accentColor)
                     .scaleEffect(isAnimating ? 1.2 : 1.0)
                     .animation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true), value: isAnimating)
                 .frame(width: horizontalSizeClass == .regular ? 100 : 80, 
@@ -639,7 +636,6 @@ struct BluetoothLoadingView: View {
 struct VehicleListView: View {
     @EnvironmentObject var garageViewModel: GarageViewModel
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
-    @Binding var selectedVehicle: Vehicle?
     
     var body: some View {
         let passportCount = garageViewModel.vehiclePassports.count
@@ -651,11 +647,8 @@ struct VehicleListView: View {
                 Section("MY PASSPORTS") {
                     ForEach(Array(garageViewModel.vehiclePassports.enumerated()), id: \.offset) { index, passport in
                         if let vehicle = garageViewModel.vehicles.first(where: { $0.id == passport.vehicleId }) {
-                                                    VehicleListRow(vehicle: vehicle)
-                            .onTapGesture {
-                                print("🚗 Tapped vehicle: \(vehicle.year) \(vehicle.make) \(vehicle.model)")
-                                selectedVehicle = vehicle
-                                print("🚗 selectedVehicle set to: \(selectedVehicle?.year ?? 0) \(selectedVehicle?.make ?? "nil")")
+                            NavigationLink(destination: VehicleDetailView(vehicle: vehicle)) {
+                                VehicleListRow(vehicle: vehicle)
                             }
                         } else {
                             VehicleLoadingRow(passport: passport)
@@ -812,7 +805,7 @@ struct VehicleCardView: View {
                             VStack(spacing: .extraTight) {
                                 Text("\(vehicle.mileage ?? 0)")
                             .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.green)
+                            .foregroundColor(Color(.systemGreen))
                         
                                 Text("Mileage")
                             .font(.system(size: 12, weight: .medium))
@@ -829,12 +822,12 @@ struct VehicleCardView: View {
                                 HStack(spacing: .mediumTight) {
                                     Image(systemName: "photo.on.rectangle")
                                         .font(.system(size: 18, weight: .medium))
-                                        .foregroundColor(.blue)
+                            .foregroundColor(.accentColor)
                                         .frame(width: horizontalSizeClass == .regular ? 48 : 40, 
                                                height: horizontalSizeClass == .regular ? 48 : 40)
                                         .background(
                                             Circle()
-                                                .fill(.blue.opacity(0.1))
+                                                .fill(Color(.systemBlue).opacity(0.1))
                                         )
                                     
                                     VStack(alignment: .leading, spacing: 2) { // Keep minimal for label pairs
@@ -844,9 +837,9 @@ struct VehicleCardView: View {
                                         
                                         Text("12 Photos")
                                             .font(.system(size: 14, weight: .regular))
-                                            .foregroundColor(.secondary)
-                                    }
-                                }
+                            .foregroundColor(.secondary)
+                    }
+                }
                                 
                                 Spacer()
                                 
@@ -863,12 +856,12 @@ struct VehicleCardView: View {
                                 HStack(spacing: .mediumTight) {
                                     Image(systemName: "wrench.and.screwdriver")
                                         .font(.system(size: 18, weight: .medium))
-                                        .foregroundColor(.green)
+                                        .foregroundColor(Color(.systemGreen))
                                         .frame(width: horizontalSizeClass == .regular ? 48 : 40, 
                                                height: horizontalSizeClass == .regular ? 48 : 40)
                                         .background(
                                             Circle()
-                                                .fill(.green.opacity(0.1))
+                                                .fill(Color(.systemGreen).opacity(0.1))
                                         )
                                     
                                     VStack(alignment: .leading, spacing: 2) { // Keep minimal for label pairs
@@ -930,13 +923,13 @@ struct QuickOptionsCardView: View {
                 QuickOptionRow(
                     title: "Photo Album (12)",
                     action: "Manage",
-                    actionColor: .blue
+                    actionColor: .accentColor
                 )
                 
                 QuickOptionRow(
                     title: "Service History (0)",
                     action: "Manage",
-                    actionColor: .blue
+                    actionColor: .accentColor
                 )
             }
         }
@@ -982,7 +975,7 @@ struct StatisticsCardView: View {
                             .foregroundColor(.secondary)
                         Text("4.2 mi/kWh")
                             .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.green)
+                            .foregroundColor(Color(.systemGreen))
                     }
                 }
                 
@@ -1002,7 +995,7 @@ struct StatisticsCardView: View {
                             .foregroundColor(.secondary)
                         Text("Jan 15, 2024")
                             .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.orange)
+                            .foregroundColor(Color(.systemOrange))
                     }
                 }
                 .padding(.loose)
@@ -1044,29 +1037,19 @@ struct QuickOptionRow: View {
 // MARK: - Vehicle List Row
 struct VehicleListRow: View {
     let vehicle: Vehicle
-    
+
     var body: some View {
         HStack(spacing: .medium) {
             // Vehicle icon
             Image(systemName: "car.fill")
                 .font(.title2)
-                .foregroundColor(.blue)
-                .frame(width: 44, height: 44)
-                .background(.ultraThinMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .foregroundColor(.accentColor)
+                .frame(width: 32, height: 32)
             
             VStack(alignment: .leading, spacing: .extraTight) {
-                HStack {
-                    Text("\(String(vehicle.year)) \(vehicle.make)")
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                    
-                    Spacer()
-                    
-                    Image(systemName: "chevron.right")
-                        .font(.caption.weight(.semibold))
-                        .foregroundColor(.secondary)
-                }
+                Text("\(String(vehicle.year)) \(vehicle.make)")
+                    .font(.headline)
+                    .foregroundColor(.primary)
                 
                 Text(vehicle.model)
                     .font(.subheadline)
@@ -1113,22 +1096,18 @@ struct VehicleLoadingRow: View {
 // MARK: - Vehicle Detail View
 struct VehicleDetailView: View {
     let vehicle: Vehicle
-    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         let _ = print("🚗 VehicleDetailView - vehicle: \(vehicle.year) \(vehicle.make) \(vehicle.model)")
         let _ = print("🚗 VehicleDetailView - VIN: \(vehicle.vin ?? "nil")")
         let _ = print("🚗 VehicleDetailView - Mileage: \(vehicle.mileage?.description ?? "nil")")
-        NavigationStack {
-            VStack(spacing: .loose) {
-                // Centered Vehicle Icon
-                Image(systemName: "car.fill")
-                    .font(.system(size: 60, weight: .light))
-                    .foregroundColor(.blue)
-                    .frame(width: 80, height: 80)
-                    .background(.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .padding(.top, .medium)
+        VStack(spacing: .loose) {
+            // Centered Vehicle Icon
+            Image(systemName: "car.fill")
+                .font(.system(size: 60, weight: .light))
+                .foregroundColor(.accentColor)
+                .frame(width: 80, height: 80)
+                .padding(.top, .medium)
                 
                 // Vehicle Details List
                 List {
@@ -1158,19 +1137,9 @@ struct VehicleDetailView: View {
                 }
                 .listStyle(.insetGrouped)
                 .scrollContentBackground(.hidden)
-            }
-            .navigationTitle("My Passport")
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                    .font(.body.weight(.medium))
-                }
-            }
         }
-        .presentationDragIndicator(.visible)
+        .navigationTitle("My Passport")
+        .navigationBarTitleDisplayMode(.large)
     }
     
     // MARK: - Helper Functions
@@ -1388,7 +1357,7 @@ struct YellowDetectionFrame: View {
                     path.addLine(to: CGPoint(x: 0, y: 0))
                     path.addLine(to: CGPoint(x: cornerLength, y: 0))
                 }
-                .stroke(.yellow, lineWidth: lineWidth)
+                .stroke(Color(.systemYellow), lineWidth: lineWidth)
                 
                 // Top-right corner
                 Path { path in
@@ -1396,7 +1365,7 @@ struct YellowDetectionFrame: View {
                     path.addLine(to: CGPoint(x: geometry.size.width, y: 0))
                     path.addLine(to: CGPoint(x: geometry.size.width, y: cornerLength))
                 }
-                .stroke(.yellow, lineWidth: lineWidth)
+                .stroke(Color(.systemYellow), lineWidth: lineWidth)
                 
                 // Bottom-left corner
                 Path { path in
@@ -1404,7 +1373,7 @@ struct YellowDetectionFrame: View {
                     path.addLine(to: CGPoint(x: 0, y: geometry.size.height))
                     path.addLine(to: CGPoint(x: cornerLength, y: geometry.size.height))
                 }
-                .stroke(.yellow, lineWidth: lineWidth)
+                .stroke(Color(.systemYellow), lineWidth: lineWidth)
                 
                 // Bottom-right corner
                 Path { path in
@@ -1412,7 +1381,7 @@ struct YellowDetectionFrame: View {
                     path.addLine(to: CGPoint(x: geometry.size.width, y: geometry.size.height))
                     path.addLine(to: CGPoint(x: geometry.size.width, y: geometry.size.height - cornerLength))
                 }
-                .stroke(.yellow, lineWidth: lineWidth)
+                .stroke(Color(.systemYellow), lineWidth: lineWidth)
             }
         }
     }
@@ -1432,7 +1401,7 @@ struct ViewfinderOverlay: View {
                     path.addLine(to: CGPoint(x: 0, y: 0))
                     path.addLine(to: CGPoint(x: cornerLength, y: 0))
                 }
-                .stroke(Color.blue, lineWidth: lineWidth)
+                .stroke(Color(.systemBlue), lineWidth: lineWidth)
                 
                 // Top-right corner
                 Path { path in
@@ -1440,7 +1409,7 @@ struct ViewfinderOverlay: View {
                     path.addLine(to: CGPoint(x: geometry.size.width, y: 0))
                     path.addLine(to: CGPoint(x: geometry.size.width, y: cornerLength))
                 }
-                .stroke(Color.blue, lineWidth: lineWidth)
+                .stroke(Color(.systemBlue), lineWidth: lineWidth)
                 
                 // Bottom-left corner
                 Path { path in
@@ -1448,7 +1417,7 @@ struct ViewfinderOverlay: View {
                     path.addLine(to: CGPoint(x: 0, y: geometry.size.height))
                     path.addLine(to: CGPoint(x: cornerLength, y: geometry.size.height))
                 }
-                .stroke(Color.blue, lineWidth: lineWidth)
+                .stroke(Color(.systemBlue), lineWidth: lineWidth)
                 
                 // Bottom-right corner
                 Path { path in
@@ -1456,7 +1425,7 @@ struct ViewfinderOverlay: View {
                     path.addLine(to: CGPoint(x: geometry.size.width, y: geometry.size.height))
                     path.addLine(to: CGPoint(x: geometry.size.width, y: geometry.size.height - cornerLength))
                 }
-                .stroke(Color.blue, lineWidth: lineWidth)
+                .stroke(Color(.systemBlue), lineWidth: lineWidth)
             }
         }
     }

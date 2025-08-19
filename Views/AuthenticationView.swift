@@ -7,17 +7,18 @@
 
 // Reference: Docs/HIG_REFERENCE.md, Design/DESIGN_SYSTEM.md, Docs/GLASS_EFFECT_IMPLEMENTATION.md
 // Constraints:
-// - Use Apple-native SwiftUI controls (full library permitted)
-// - Follow iOS 26 Human Interface Guidelines and visual system
-// - Apply `.glassBackgroundEffect()` where appropriate
-// - Avoid custom or third-party UI unless explicitly approved
-// - Support portrait and landscape on iPhone and iPad
-// - Use semantic spacing (see SystemSpacing.swift)
+// - Use only Apple-native SwiftUI controls (full library permitted)
+// - Follow iOS 26 Human Interface Guidelines and layout behavior
+// - Apply `.ultraThinGlass()` and custom effects as defined
+// - Avoid third-party or custom UI unless explicitly approved
+// - Support iPhone and iPad in both portrait and landscape
+// - Use semantic spacing (SystemSpacing.swift)
 
 import SwiftUI
 
 struct AuthenticationView: View {
     @EnvironmentObject var authService: AuthService
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @State private var isSignUpMode = false
     @State private var email = ""
     @State private var password = ""
@@ -55,32 +56,32 @@ struct AuthenticationView: View {
     
     var body: some View {
         ZStack {
-            // Consistent adaptive background - full bleed
-            Color.appBackground
+            // Standard system background
+            Color(.systemBackground)
                 .ignoresSafeArea()
             
             ScrollView {
-                VStack(spacing: .extraLoose) {
+                VStack(spacing: horizontalSizeClass == .regular ? .extraLoose : .loose) {
                     // Header
-                    VStack(spacing: .loose) {
+                    VStack(spacing: horizontalSizeClass == .regular ? .loose : .medium) {
                         Text("Vehicle Passport")
-                            .font(.largeTitle)
+                            .font(horizontalSizeClass == .regular ? .largeTitle : .largeTitle)
                             .fontWeight(.bold)
                             .foregroundColor(.primary)
                         
                         Text(isSignUpMode ? "Create Account" : "Sign In")
-                            .font(.title2)
+                            .font(horizontalSizeClass == .regular ? .title : .title2)
                             .foregroundColor(.secondary)
                     }
-                    .padding(.top, .extraLoose)
+                    .padding(.top, horizontalSizeClass == .regular ? .extraLoose : .loose)
                     
-                    // Form
-                    VStack(spacing: .loose) {
+                    // Form Container with Glass Effect
+                    VStack(spacing: horizontalSizeClass == .regular ? .loose : .medium) {
                         if isSignUpMode {
                             // First Name
                             VStack(alignment: .leading, spacing: .tight) {
                                 Text("First Name")
-                                    .font(.headline)
+                                    .font(horizontalSizeClass == .regular ? .title3 : .headline)
                                     .foregroundColor(.primary)
                                 
                                 TextField("Enter first name", text: $firstName)
@@ -94,7 +95,7 @@ struct AuthenticationView: View {
                             // Last Name
                             VStack(alignment: .leading, spacing: .tight) {
                                 Text("Last Name")
-                                    .font(.headline)
+                                    .font(horizontalSizeClass == .regular ? .title3 : .headline)
                                     .foregroundColor(.primary)
                                 
                                 TextField("Enter last name", text: $lastName)
@@ -109,7 +110,7 @@ struct AuthenticationView: View {
                         // Email
                         VStack(alignment: .leading, spacing: .tight) {
                             Text("Email")
-                                .font(.headline)
+                                .font(horizontalSizeClass == .regular ? .title3 : .headline)
                                 .foregroundColor(.primary)
                             
                             TextField("Enter email", text: $email)
@@ -127,7 +128,7 @@ struct AuthenticationView: View {
                         // Password
                         VStack(alignment: .leading, spacing: .tight) {
                             Text("Password")
-                                .font(.headline)
+                                .font(horizontalSizeClass == .regular ? .title3 : .headline)
                                 .foregroundColor(.primary)
                             
                             SecureField("Enter password", text: $password)
@@ -147,7 +148,7 @@ struct AuthenticationView: View {
                             // Confirm Password
                             VStack(alignment: .leading, spacing: .tight) {
                                 Text("Confirm Password")
-                                    .font(.headline)
+                                    .font(horizontalSizeClass == .regular ? .title3 : .headline)
                                     .foregroundColor(.primary)
                                 
                                 SecureField("Confirm password", text: $confirmPassword)
@@ -160,10 +161,18 @@ struct AuthenticationView: View {
                             }
                         }
                     }
-                    .padding(.horizontal, .regular)
+                    .padding(horizontalSizeClass == .regular ? .extraLoose : .regular)
+                    .background(
+                        Group {
+                            RoundedRectangle(cornerRadius: horizontalSizeClass == .regular ? 20 : 16)
+                                .fill(Color(.secondarySystemBackground))
+                                .stroke(Color(.separator), lineWidth: 1)
+                        }
+                    )
+                    .padding(.horizontal, horizontalSizeClass == .regular ? .extraLoose : .regular)
                     
                     // Action Buttons
-                    VStack(spacing: .regular) {
+                    VStack(spacing: horizontalSizeClass == .regular ? .medium : .regular) {
                         Button(action: {
                             if isSignUpMode {
                                 Task {
@@ -179,17 +188,22 @@ struct AuthenticationView: View {
                                 if authService.isLoading {
                                     ProgressView()
                                         .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                        .scaleEffect(0.8)
+                                        .scaleEffect(horizontalSizeClass == .regular ? 1.0 : 0.8)
                                 }
                                 
                                 Text(isSignUpMode ? "Create Account" : "Sign In")
-                                    .font(.headline)
+                                    .font(horizontalSizeClass == .regular ? .title3 : .headline)
+                                    .fontWeight(.semibold)
                                     .foregroundColor(.white)
                             }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, .regular)
-                            .background(Color.accentColor)
-                            .cornerRadius(.regular)
+                            .frame(maxWidth: horizontalSizeClass == .regular ? 400 : .infinity)
+                            .padding(.vertical, horizontalSizeClass == .regular ? .medium : .regular)
+                            .background(
+                                Group {
+                                    Color.accentColor
+                                }
+                            )
+                            .cornerRadius(horizontalSizeClass == .regular ? 16 : 12)
                         }
                         .disabled(!isFormValid || authService.isLoading)
                         .opacity((!isFormValid || authService.isLoading) ? 0.6 : 1.0)
@@ -200,6 +214,7 @@ struct AuthenticationView: View {
                         }) {
                             Text(isSignUpMode ? "Already have an account? Sign In" : "Don't have an account? Sign Up")
                                 .foregroundColor(.accentColor)
+                                .font(horizontalSizeClass == .regular ? .body : .callout)
                         }
                         .buttonStyle(.plain)
                         .disabled(authService.isLoading)
@@ -210,12 +225,13 @@ struct AuthenticationView: View {
                             }
                             .foregroundColor(.secondary)
                             .buttonStyle(.plain)
+                            .font(horizontalSizeClass == .regular ? .body : .callout)
                             .disabled(authService.isLoading)
                         }
                     }
-                    .padding(.horizontal, .regular)
+                    .padding(.horizontal, horizontalSizeClass == .regular ? .extraLoose : .regular)
                     
-                    Spacer(minLength: .extraLoose)
+                    Spacer(minLength: horizontalSizeClass == .regular ? .extraLoose : .loose)
                 }
             }
         }
@@ -234,18 +250,20 @@ struct AuthenticationView: View {
 struct PasswordResetView: View {
     @Binding var resetEmail: String
     @Binding var showingPasswordReset: Bool
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @State private var message = ""
     
     var body: some View {
         NavigationView {
-            VStack(spacing: .loose) {
+            VStack(spacing: horizontalSizeClass == .regular ? .loose : .medium) {
                 Text("Reset Password")
-                    .font(.title)
+                    .font(horizontalSizeClass == .regular ? .largeTitle : .title)
                     .fontWeight(.bold)
                 
                 Text("Enter your email address and we'll send you a link to reset your password.")
                     .multilineTextAlignment(.center)
                     .foregroundColor(.secondary)
+                    .font(horizontalSizeClass == .regular ? .body : .callout)
                 
                 TextField("Email", text: $resetEmail)
                     .textFieldStyle(.roundedBorder)
@@ -263,12 +281,13 @@ struct PasswordResetView: View {
                 
                 if !message.isEmpty {
                     Text(message)
-                        .foregroundColor(.green)
+                        .foregroundColor(Color(.systemGreen))
+                        .font(horizontalSizeClass == .regular ? .body : .callout)
                 }
                 
                 Spacer()
             }
-            .padding(.regular)
+            .padding(horizontalSizeClass == .regular ? .extraLoose : .regular)
             .navigationTitle("Reset Password")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
