@@ -158,8 +158,8 @@ class MarketDataService {
                 discountAmount: 3000,
                 discountPercentage: 9,
                 imageUrl: "mustang_thumb",
-                city: "Downtown",
-                state: "CA",
+                city: "Savannah",
+                state: "GA",
                 createdAt: Date()
             ),
             DealershipAnnouncement(
@@ -172,8 +172,8 @@ class MarketDataService {
                 discountAmount: 2500,
                 discountPercentage: 8,
                 imageUrl: "camry_thumb",
-                city: "Westside",
-                state: "CA",
+                city: "Savannah",
+                state: "GA",
                 createdAt: Date()
             ),
             DealershipAnnouncement(
@@ -186,8 +186,8 @@ class MarketDataService {
                 discountAmount: 4500,
                 discountPercentage: 11,
                 imageUrl: "bmw_thumb",
-                city: "Uptown",
-                state: "CA",
+                city: "Savannah",
+                state: "GA",
                 createdAt: Date()
             ),
             DealershipAnnouncement(
@@ -200,8 +200,8 @@ class MarketDataService {
                 discountAmount: 1800,
                 discountPercentage: 7,
                 imageUrl: "civic_thumb",
-                city: "Midtown",
-                state: "CA",
+                city: "Savannah",
+                state: "GA",
                 createdAt: Date()
             ),
             DealershipAnnouncement(
@@ -214,8 +214,8 @@ class MarketDataService {
                 discountAmount: 4200,
                 discountPercentage: 10,
                 imageUrl: "audi_thumb",
-                city: "Eastside",
-                state: "CA",
+                city: "Savannah",
+                state: "GA",
                 createdAt: Date()
             )
         ]

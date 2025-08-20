@@ -64,20 +64,43 @@ class AuthService: ObservableObject {
             errorMessage = nil
         }
         
-        // Simulate network delay
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
-        
-        await MainActor.run {
-            // Create mock user for demo
-            self.user = User(
-                id: UUID(),
+        do {
+            // Create Supabase user account
+            let session = try await supabase.auth.signUp(email: email, password: password)
+            let authUser = session.user
+            
+            // Create user profile in database
+            let newUser = User(
+                id: authUser.id,
                 email: email,
                 firstName: firstName,
                 lastName: lastName,
                 displayName: "\(firstName) \(lastName)",
                 createdAt: Date()
             )
-            self.isLoading = false
+            
+            // Insert user profile into database
+            let response: [User] = try await supabase
+                .from("users")
+                .insert(newUser)
+                .execute()
+                .value
+            
+            await MainActor.run {
+                if let dbUser = response.first {
+                    self.user = dbUser
+                    print("✅ Sign up successful: \(dbUser.email)")
+                } else {
+                    self.errorMessage = "Failed to create user profile"
+                }
+                self.isLoading = false
+            }
+        } catch {
+            await MainActor.run {
+                self.errorMessage = "Sign up failed: \(error.localizedDescription)"
+                self.isLoading = false
+            }
+            print("❌ Sign up error: \(error)")
         }
     }
     

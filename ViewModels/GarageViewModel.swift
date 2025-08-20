@@ -13,62 +13,29 @@ class GarageViewModel: ObservableObject {
     }
     
     private let authService: AuthService
+    private let vehicleService: VehicleService
+    
+    // Track how many Bluetooth notifications have been accepted
+    private var acceptCount = 0
     
     init(authService: AuthService) {
         self.authService = authService
+        self.vehicleService = VehicleService()
         // Start with empty state - passports added via notifications
     }
     
-    private func loadMockData() {
-        // Create mock vehicles for testing
-        let mockVehicles = [
-            Vehicle(
-                make: "Tesla",
-                model: "Model 3",
-                year: 2018,
-                vin: "1HGBH41JXMN109186",
-                mileage: 45000,
-                fuelType: .electric,
-                transmission: .automatic,
-                color: "Red",
-                engineSize: "Electric"
-            ),
-            Vehicle(
-                make: "BMW",
-                model: "X5",
-                year: 2020,
-                vin: "5UXWX7C5*BA",
-                mileage: 32000,
-                fuelType: .gasoline,
-                transmission: .automatic,
-                color: "Blue",
-                engineSize: "3.0L I6"
-            )
-        ]
-        
-        // Create mock vehicle passports
-        let mockPassports = [
-            VehiclePassport(
-                vehicleId: mockVehicles[0].id,
-                title: "Tesla Model 3"
-            ),
-            VehiclePassport(
-                vehicleId: mockVehicles[1].id,
-                title: "BMW X5"
-            )
-        ]
-        
-        self.vehicles = mockVehicles
-        self.vehiclePassports = mockPassports
-    }
+    // MARK: - Data Loading
     
     func loadInitialData() async {
         await MainActor.run {
             isLoading = true
         }
         
-        // Simulate network delay
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        // Reset accept count on fresh login
+        acceptCount = 0
+        
+        // Test Supabase connection
+        await testSupabaseConnection()
         
         await MainActor.run {
             isLoading = false
@@ -88,45 +55,67 @@ class GarageViewModel: ObservableObject {
         }
     }
     
+    // MARK: - Bluetooth Notification Handling
+    
     func addVehiclePassportFromNotification(_ notification: PendingNotification) async {
         await MainActor.run {
             isBluetoothLoading = true
+            errorMessage = nil
         }
         
-        // Simulate processing delay
-        try? await Task.sleep(nanoseconds: 2_000_000_000)
-        
-        await MainActor.run {
-            isBluetoothLoading = false
+        do {
+            let allVehicles = try await vehicleService.fetchVehicles()
+            let allPassports = try await vehicleService.fetchVehiclePassports()
             
-            // Add the new vehicle and passport based on notification
-            if let vehicleName = notification.metadata["vehicle_name"] ?? notification.metadata["sender_name"] {
-                // Create new vehicle from notification data
-                let newVehicle = Vehicle(
-                    make: "Tesla", // Would come from notification metadata
-                    model: "Model 3",
-                    year: 2023,
-                    vin: "5YJ3E1EA1NF123456",
-                    mileage: 15000,
-                    fuelType: .electric,
-                    transmission: .automatic,
-                    color: "White",
-                    engineSize: "Electric"
-                )
-                
-                // Create corresponding passport
-                let newPassport = VehiclePassport(
-                    vehicleId: newVehicle.id,
-                    title: vehicleName
-                )
-                
-                // Add to arrays
-                self.vehicles.append(newVehicle)
-                self.vehiclePassports.append(newPassport)
-                
-                print("✅ Added vehicle passport: \(vehicleName)")
+            guard acceptCount < allVehicles.count, acceptCount < allPassports.count else {
+                await MainActor.run {
+                    isBluetoothLoading = false
+                    errorMessage = "No more vehicles available"
+                }
+                return
             }
+            
+            let vehicle = allVehicles[acceptCount]
+            let passport = allPassports[acceptCount]
+            
+            await MainActor.run {
+                vehiclePassports.append(passport)
+                vehicles.append(vehicle)
+                acceptCount += 1
+                isBluetoothLoading = false
+                print("✅ Added vehicle: \(vehicle.displayName)")
+            }
+            
+        } catch {
+            await MainActor.run {
+                isBluetoothLoading = false
+                errorMessage = "Failed to add vehicle: \(error.localizedDescription)"
+            }
+            print("❌ Error: \(error)")
         }
+    }
+    
+    // MARK: - Debug and Testing
+    
+        func testSupabaseConnection() async {
+        print("🔍 Testing mock data connection...")
+        
+        do {
+            let vehicles = try await vehicleService.fetchVehicles()
+            let passports = try await vehicleService.fetchVehiclePassports()
+            print("✅ Mock data test: \(vehicles.count) vehicles, \(passports.count) passports")
+        } catch {
+            print("❌ Mock data test failed: \(error)")
+        }
+    }
+    
+    // MARK: - Reset State
+    
+    func resetState() {
+        acceptCount = 0
+        vehicles.removeAll()
+        vehiclePassports.removeAll()
+        errorMessage = nil
     }
 }
 

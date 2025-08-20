@@ -105,6 +105,12 @@ struct MyGarageView: View {
                     await garageViewModel.loadInitialData()
                 }
             }
+            .onChange(of: authService.isAuthenticated) { isAuthenticated in
+                if !isAuthenticated {
+                    // Reset garage state when user signs out
+                    garageViewModel.resetState()
+                }
+            }
             .onDisappear {
                 // Reset session state when leaving the view
                 resetSessionState()
@@ -576,7 +582,7 @@ struct QRScannerView: View {
     }
     
     private func completeScan() {
-        // Use current passport count as index for next vehicle
+        // Use current accept count as index for next vehicle
         let nextVehicleIndex = garageViewModel.vehiclePassports.count
         
         // Pass the index as a special identifier

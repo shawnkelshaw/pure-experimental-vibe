@@ -64,7 +64,7 @@ struct VehiclePassportCard: View {
                 
                 // Status indicator
                 Circle()
-                    .fill(passport.isActive ? Color.statusSuccess : Color.statusError)
+                    .fill(passport.isActive ? Color(.systemGreen) : Color(.systemRed))
                     .frame(width: 8, height: 8)
             }
             
@@ -158,32 +158,6 @@ struct VehiclePassportCard_Previews: PreviewProvider {
             currentValue: 42000.00,
             isActive: true,
             qrCode: "sample-qr-code",
-            documents: [
-                VehicleDocument(
-                    id: UUID(),
-                    passportId: UUID(),
-                    type: .registration,
-                    title: "Registration",
-                    fileUrl: "test.pdf",
-                    fileSize: 1000,
-                    mimeType: "application/pdf",
-                    uploadedAt: Date()
-                )
-            ],
-            maintenanceRecords: [
-                MaintenanceRecord(
-                    id: UUID(),
-                    passportId: UUID(),
-                    type: .oilChange,
-                    description: "Oil change",
-                    cost: 89.99,
-                    mileage: 25000,
-                    serviceProvider: "Auto Shop",
-                    serviceDate: Date(),
-                    nextServiceDue: Date(),
-                    createdAt: Date()
-                )
-            ],
             createdAt: Date(),
             updatedAt: Date()
         ))

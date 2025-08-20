@@ -3,7 +3,7 @@ import Foundation
 struct VehiclePassport: Identifiable, Codable {
     let id: UUID
     let vehicleId: UUID
-    let userId: UUID
+    let userId: UUID?
     let title: String?
     let notes: String?
     let purchaseDate: Date?
@@ -11,15 +11,17 @@ struct VehiclePassport: Identifiable, Codable {
     let currentValue: Double?
     let isActive: Bool
     let qrCode: String?
-    let documents: [VehicleDocument]
-    let maintenanceRecords: [MaintenanceRecord]
     let createdAt: Date
     let updatedAt: Date
+    
+    // These will be populated when we fetch related data
+    var documents: [VehicleDocument] = []
+    var maintenanceRecords: [MaintenanceRecord] = []
     
     init(
         id: UUID = UUID(),
         vehicleId: UUID,
-        userId: UUID = UUID(),
+        userId: UUID? = nil,
         title: String? = nil,
         notes: String? = nil,
         purchaseDate: Date? = nil,
@@ -27,8 +29,6 @@ struct VehiclePassport: Identifiable, Codable {
         currentValue: Double? = nil,
         isActive: Bool = true,
         qrCode: String? = nil,
-        documents: [VehicleDocument] = [],
-        maintenanceRecords: [MaintenanceRecord] = [],
         createdAt: Date = Date(),
         updatedAt: Date = Date()
     ) {
@@ -42,10 +42,25 @@ struct VehiclePassport: Identifiable, Codable {
         self.currentValue = currentValue
         self.isActive = isActive
         self.qrCode = qrCode
-        self.documents = documents
-        self.maintenanceRecords = maintenanceRecords
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+    }
+    
+    // MARK: - Coding Keys for Supabase mapping
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case vehicleId = "vehicle_id"
+        case userId = "user_id"
+        case title
+        case notes
+        case purchaseDate = "purchase_date"
+        case purchasePrice = "purchase_price"
+        case currentValue = "current_value"
+        case isActive = "is_active"
+        case qrCode = "qr_code"
+        case createdAt = "created_at"
+        case updatedAt = "updated_at"
     }
 }
 
@@ -56,8 +71,8 @@ struct VehicleDocument: Identifiable, Codable {
     let type: DocumentType
     let title: String
     let fileUrl: String
-    let fileSize: Int64
-    let mimeType: String
+    let fileSize: Int64?
+    let mimeType: String?
     let uploadedAt: Date
     
     init(
@@ -66,8 +81,8 @@ struct VehicleDocument: Identifiable, Codable {
         type: DocumentType,
         title: String,
         fileUrl: String,
-        fileSize: Int64,
-        mimeType: String,
+        fileSize: Int64? = nil,
+        mimeType: String? = nil,
         uploadedAt: Date = Date()
     ) {
         self.id = id
@@ -78,6 +93,19 @@ struct VehicleDocument: Identifiable, Codable {
         self.fileSize = fileSize
         self.mimeType = mimeType
         self.uploadedAt = uploadedAt
+    }
+    
+    // MARK: - Coding Keys for Supabase mapping
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case passportId = "passport_id"
+        case type
+        case title
+        case fileUrl = "file_url"
+        case fileSize = "file_size"
+        case mimeType = "mime_type"
+        case uploadedAt = "uploaded_at"
     }
 }
 
@@ -116,7 +144,7 @@ struct MaintenanceRecord: Identifiable, Codable {
     let passportId: UUID
     let type: MaintenanceType
     let description: String
-    let cost: Double
+    let cost: Double?
     let mileage: Int?
     let serviceProvider: String?
     let serviceDate: Date
@@ -128,7 +156,7 @@ struct MaintenanceRecord: Identifiable, Codable {
         passportId: UUID,
         type: MaintenanceType,
         description: String,
-        cost: Double,
+        cost: Double? = nil,
         mileage: Int? = nil,
         serviceProvider: String? = nil,
         serviceDate: Date,
@@ -146,6 +174,21 @@ struct MaintenanceRecord: Identifiable, Codable {
         self.nextServiceDue = nextServiceDue
         self.createdAt = createdAt
     }
+    
+    // MARK: - Coding Keys for Supabase mapping
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case passportId = "passport_id"
+        case type
+        case description
+        case cost
+        case mileage
+        case serviceProvider = "service_provider"
+        case serviceDate = "service_date"
+        case nextServiceDue = "next_service_due"
+        case createdAt = "created_at"
+    }
 }
 
 enum MaintenanceType: String, CaseIterable, Codable {
@@ -156,6 +199,9 @@ enum MaintenanceType: String, CaseIterable, Codable {
     case airFilter = "air_filter"
     case batteryService = "battery_service"
     case inspection = "inspection"
+    case tuneUp = "tune_up"
+    case repair = "repair"
+    case warranty = "warranty"
     case other = "other"
     
     var displayName: String {
@@ -174,6 +220,12 @@ enum MaintenanceType: String, CaseIterable, Codable {
             return "Battery Service"
         case .inspection:
             return "Inspection"
+        case .tuneUp:
+            return "Tune Up"
+        case .repair:
+            return "Repair"
+        case .warranty:
+            return "Warranty"
         case .other:
             return "Other"
         }

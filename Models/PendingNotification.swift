@@ -59,7 +59,7 @@ enum NotificationType: String, CaseIterable, Codable {
     var iconName: String {
         switch self {
         case .bluetoothPassportPush:
-            return "wave.3.right"
+            return "magazine.fill"
         case .qr:
             return "qrcode"
         case .system:

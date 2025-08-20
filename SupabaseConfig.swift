@@ -9,6 +9,8 @@ class SupabaseConfig {
     private let supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllZ3NvdW12bWh2dmhtZHl4aHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE5MTY5OTcsImV4cCI6MjA2NzQ5Mjk5N30.6uTac2a61UsLXdIEKw_RWlgrsMeAFapV3zHrbi_i1TI"
     
     lazy var client: SupabaseClient = {
+        print("🔧 Initializing Supabase client with URL: \(supabaseURL)")
+        print("🔧 API Key: \(String(supabaseKey.prefix(20)))...")
         return SupabaseClient(supabaseURL: supabaseURL, supabaseKey: supabaseKey)
     }()
     
