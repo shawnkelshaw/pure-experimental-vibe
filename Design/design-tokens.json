@@ -66,8 +66,7 @@
             "value": "Color.accentColor",
             "type": "semantic",
             "description": "Primary brand color - uses user's accent color preference"
-          },
-
+          }
         },
         "status": {
           "success": {
@@ -282,6 +281,11 @@
     "created": "2024",
     "updated": "2024",
     "notes": [
+      "This file is for design documentation and handoff only",
+      "For actual SwiftUI implementation, use SystemSpacing.swift",
+      "Values here are design references, not code values",
+      "",
+      "Technical Details:",
       "Uses Apple's semantic color system for automatic light/dark mode adaptation",
       "Prefers system colors over custom colors for accessibility and user preference compliance",
       "Liquid glass effects use native materials (.regularMaterial, .thinMaterial, etc.)",

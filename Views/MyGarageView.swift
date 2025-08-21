@@ -1208,25 +1208,84 @@ struct PhotoGalleryView: View {
     
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: horizontalSizeClass == .regular ? 3 : 2), spacing: .medium) {
-                // Placeholder for future photos
-                ForEach(0..<6, id: \.self) { index in
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(.quaternary)
-                        .aspectRatio(1, contentMode: .fit)
-                        .overlay {
-                            VStack(spacing: .tight) {
-                                Image(systemName: "photo")
-                                    .font(.title2)
-                                    .foregroundColor(.secondary)
-                                Text("Photo \(index + 1)")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
+            LazyVStack(spacing: .loose) {
+                // Vehicle info header
+                VStack(alignment: .leading, spacing: .tight) {
+                    HStack {
+                        Text("\(String(vehicle.year)) \(vehicle.make) - \(vehicle.model)")
+                            .font(.caption)
+                            .foregroundColor(.primary)
+                        
+                        Spacer()
+                        
+                        Text(vehicle.vin ?? "Unknown")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(.horizontal, horizontalSizeClass == .regular ? .loose : .regular)
+                }
+                
+                // External Photos Section
+                VStack(alignment: .leading, spacing: .medium) {
+                    Text("EXTERNAL")
+                        .font(.footnote)
+                        .fontWeight(.medium)
+                        .foregroundColor(.secondary)
+                        .textCase(.uppercase)
+                        .padding(.horizontal, horizontalSizeClass == .regular ? .loose : .regular)
+                    
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: .tight), count: horizontalSizeClass == .regular ? 3 : 2), spacing: .tight) {
+                        // External photos (8 placeholder)
+                        ForEach(0..<8, id: \.self) { index in
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(.quaternary)
+                                .aspectRatio(1, contentMode: .fit)
+                                .overlay {
+                                    VStack(spacing: .tight) {
+                                        Image(systemName: "photo")
+                                            .font(.title2)
+                                            .foregroundColor(.secondary)
+                                        Text("External \(index + 1)")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
                         }
+                    }
+                    .padding(.horizontal, horizontalSizeClass == .regular ? .loose : .regular)
+                }
+                
+                // Internal Photos Section
+                VStack(alignment: .leading, spacing: .medium) {
+                    Text("INTERNAL")
+                        .font(.footnote)
+                        .fontWeight(.medium)
+                        .foregroundColor(.secondary)
+                        .textCase(.uppercase)
+                        .padding(.horizontal, horizontalSizeClass == .regular ? .loose : .regular)
+                    
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: .tight), count: horizontalSizeClass == .regular ? 3 : 2), spacing: .tight) {
+                        // Internal photos (8 placeholder)
+                        ForEach(0..<8, id: \.self) { index in
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(.quaternary)
+                                .aspectRatio(1, contentMode: .fit)
+                                .overlay {
+                                    VStack(spacing: .tight) {
+                                        Image(systemName: "photo")
+                                            .font(.title2)
+                                            .foregroundColor(.secondary)
+                                        Text("Internal \(index + 1)")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                        }
+                    }
+                    .padding(.horizontal, horizontalSizeClass == .regular ? .loose : .regular)
                 }
             }
-            .padding(horizontalSizeClass == .regular ? .loose : .regular)
+            .padding(.vertical, .regular)
         }
         .navigationTitle("Photo Gallery")
         .navigationBarTitleDisplayMode(.large)

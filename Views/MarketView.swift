@@ -1,4 +1,6 @@
 import SwiftUI
+import Charts
+import UIKit // For haptic feedback
 
 // MARK: - Custom RoundedCorner Shape
 struct RoundedCorner: Shape {
@@ -16,6 +18,7 @@ struct RoundedCorner: Shape {
 }
 
 struct MarketView: View {
+    @EnvironmentObject var garageViewModel: GarageViewModel
     @State private var currentZipCode = "31405"
     @State private var showingZipCodeSheet = false
     @State private var tempZipCode = ""
@@ -24,7 +27,7 @@ struct MarketView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                LazyVStack(spacing: 24) {
+                                LazyVStack(spacing: 24) {
                     // Zip Code Selector
                     VStack(alignment: .leading, spacing: 8) {
                         Text("CURRENT AREA")
@@ -45,9 +48,9 @@ struct MarketView: View {
                                 
                                 Spacer()
                                 
-                                                                        Image(systemName: "keyboard.fill")
-                                            .font(.caption)
-                                            .foregroundColor(.secondary)
+                                Image(systemName: "keyboard.fill")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
                             }
                             .padding(.horizontal, .regular)
                             .padding(.vertical, .mediumTight)
@@ -63,6 +66,44 @@ struct MarketView: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         .padding(.horizontal)
+                    }
+                    
+                    // Chart Carousel (only show when user has vehicle passports)
+                    if !isLoading && garageViewModel.hasVehiclePassports {
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("MY PASSPORT(S): DEMAND TRENDS FOR CURRENT AREA")
+                                .font(.footnote)
+                                .fontWeight(.medium)
+                                .foregroundColor(.secondary)
+                                .textCase(.uppercase)
+                                .padding(.horizontal)
+                            
+                            // Conditional: Full-width for single passport, carousel for multiple
+                            if garageViewModel.vehiclePassports.count == 1 {
+                                // Single passport - full width (any device)
+                                ForEach(Array(zip(garageViewModel.vehiclePassports, garageViewModel.vehicles)), id: \.0.id) { passport, vehicle in
+                                    PassportChartCard(
+                                        passport: passport, 
+                                        vehicle: vehicle
+                                    )
+                                }
+                                .padding(.horizontal)
+                            } else {
+                                // Multiple passports - horizontal carousel
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 16) {
+                                        ForEach(Array(zip(garageViewModel.vehiclePassports, garageViewModel.vehicles)), id: \.0.id) { passport, vehicle in
+                                            PassportChartCard(
+                                                passport: passport, 
+                                                vehicle: vehicle
+                                            )
+                                        }
+                                    }
+                                    .padding(.leading, .regular)
+                                }
+                            }
+                        }
+                        .padding(.bottom, .loose) // Add extra spacing below chart carousel
                     }
                     
                     // Popular Vehicles Section
@@ -214,6 +255,13 @@ struct MarketView: View {
 }
 
 // MARK: - Data Models
+
+struct ChartDataPoint: Identifiable {
+    let id = UUID()
+    let month: String
+    let value: Double
+    let passportId: UUID
+}
 
 struct PopularVehicle {
     let make: String
@@ -483,10 +531,236 @@ struct ZipCodeInputSheet: View {
     }
 }
 
+// MARK: - Passport Chart Card
+
+struct PassportChartCard: View {
+    let passport: VehiclePassport
+    let vehicle: Vehicle
+    @State private var isSellButtonPressed = false
+    @State private var isTradeInButtonPressed = false
+    
+    // Generate mock 3-month forecast data
+    private var chartData: [ChartDataPoint] {
+        let purchasePrice = Double(passport.purchasePrice ?? 50000) // Default to $50k if nil
+        let months = ["Jul", "Aug", "Sep"]
+        
+        // Generate trend: slight increase or decrease based on passport ID
+        let trend = passport.id.uuidString.hashValue % 2 == 0 ? 1.0 : -1.0
+        let monthlyChange = purchasePrice * 0.02 * trend // 2% change per month
+        
+        return months.enumerated().map { index, month in
+            let monthValue = purchasePrice + (monthlyChange * Double(index + 1))
+            return ChartDataPoint(month: month, value: monthValue, passportId: passport.id)
+        }
+    }
+    
+
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            // Vehicle info above chart (Year, Make, Model)
+            VStack(alignment: .leading, spacing: 8) {
+                Text("\(String(vehicle.year)) \(vehicle.make) - \(vehicle.model)")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.primary)
+                    .lineLimit(2)
+                
+                // VIN below the title
+                Text("VIN: \(vehicle.vin ?? "Unknown")")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            .padding(.horizontal, .regular)
+            .padding(.bottom, .tight)
+            
+            // Swift Chart
+            Chart(chartData) { dataPoint in
+                LineMark(
+                    x: .value("Month", dataPoint.month),
+                    y: .value("Value", dataPoint.value)
+                )
+                .foregroundStyle(passport.id.uuidString.hashValue % 2 == 0 ? Color(.systemGreen) : Color(.systemRed))
+                .lineStyle(StrokeStyle(lineWidth: 3))
+                
+                PointMark(
+                    x: .value("Month", dataPoint.month),
+                    y: .value("Value", dataPoint.value)
+                )
+                .foregroundStyle(passport.id.uuidString.hashValue % 2 == 0 ? Color(.systemGreen) : Color(.systemRed))
+            }
+            .frame(height: 250) // Increased height to prevent cutoff
+            .chartYScale(domain: .automatic(includesZero: false))
+            .chartYAxis {
+                AxisMarks(position: .leading) { value in
+                    if let doubleValue = value.as(Double.self) {
+                        AxisValueLabel {
+                            Text("$\(Int(doubleValue/1000))k") // Abbreviated format: $47k
+                        }
+                    }
+                }
+            }
+            
+            // Action buttons below chart
+            VStack(spacing: .tight) {
+                Button(action: {
+                    // Haptic feedback
+                    let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+                    impactFeedback.impactOccurred()
+                    
+                    // Placeholder action
+                }) {
+                    Text("SELL NOW (DIRECT)")
+                        .font(.footnote)
+                        .fontWeight(.medium)
+                        .textCase(.uppercase)
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, .tight)
+                        .background(Color(.systemBackground).opacity(isSellButtonPressed ? 0.8 : 1.0))
+                        .overlay(
+                            Rectangle()
+                                .stroke(Color(.tertiaryLabel).opacity(isSellButtonPressed ? 0.6 : 1.0), lineWidth: 0.5)
+                        )
+                }
+                .buttonStyle(PlainButtonStyle())
+                .scaleEffect(isSellButtonPressed ? 0.98 : 1.0)
+                .onTapGesture {
+                    withAnimation(.easeInOut(duration: 0.1)) {
+                        isSellButtonPressed = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        withAnimation(.easeInOut(duration: 0.1)) {
+                            isSellButtonPressed = false
+                        }
+                    }
+                }
+                .accessibilityLabel("Sell now direct")
+                .accessibilityHint("Tap to sell your vehicle directly")
+                
+                Button(action: {
+                    // Haptic feedback
+                    let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+                    impactFeedback.impactOccurred()
+                    
+                    // Placeholder action
+                }) {
+                    Text("DEALER TRADE IN")
+                        .font(.footnote)
+                        .fontWeight(.medium)
+                        .textCase(.uppercase)
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, .tight)
+                        .background(Color(.systemBackground).opacity(isTradeInButtonPressed ? 0.8 : 1.0))
+                        .overlay(
+                            Rectangle()
+                                .stroke(Color(.tertiaryLabel).opacity(isTradeInButtonPressed ? 0.6 : 1.0), lineWidth: 0.5)
+                        )
+                }
+                .buttonStyle(PlainButtonStyle())
+                .scaleEffect(isTradeInButtonPressed ? 0.98 : 1.0)
+                .onTapGesture {
+                    withAnimation(.easeInOut(duration: 0.1)) {
+                        isTradeInButtonPressed = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        withAnimation(.easeInOut(duration: 0.1)) {
+                            isTradeInButtonPressed = false
+                        }
+                    }
+                }
+                .accessibilityLabel("Dealer trade in")
+                .accessibilityHint("Tap to trade in your vehicle at a dealer")
+            }
+        }
+        .frame(minWidth: 280, maxWidth: .infinity)
+        .padding(.top, .regular)
+        .padding(.bottom, .regular)
+        .padding(.leading, .regular)
+        .padding(.trailing, .regular)
+        .background(Color(.systemBackground))
+        .overlay(
+            Rectangle()
+                .stroke(Color(.tertiaryLabel), lineWidth: 0.5)
+        )
+    }
+}
+
+// MARK: - Custom Button Style for Chart Cards
+struct ChartButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background(
+                Color(.systemBackground)
+                    .opacity(configuration.isPressed ? 0.8 : 1.0)
+            )
+            .overlay(
+                Rectangle()
+                    .stroke(
+                        Color(.tertiaryLabel)
+                            .opacity(configuration.isPressed ? 0.6 : 1.0),
+                        lineWidth: 0.5
+                    )
+            )
+            .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+    }
+}
+
 struct MarketView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             MarketView()
+                .environmentObject(GarageViewModel(authService: AuthService()))
         }
+    }
+}
+
+// MARK: - PassportChartCard Preview
+struct PassportChartCard_Previews: PreviewProvider {
+    static var previews: some View {
+        VStack {
+            // Preview with single passport (tablet mode)
+            PassportChartCard(
+                passport: VehiclePassport(vehicleId: UUID()),
+                vehicle: Vehicle(
+                    id: UUID(),
+                    make: "Tesla",
+                    model: "Model 3",
+                    year: 2023,
+                    vin: "5YJ3E1EA1KF123456",
+                    licensePlate: "TESLA123",
+                    mileage: 15000,
+                    fuelType: .electric,
+                    transmission: .automatic,
+                    color: "Pearl White",
+                    engineSize: "Electric Motor"
+                )
+            )
+            .frame(height: 400)
+            .padding()
+            
+            // Preview with multiple passports (phone mode)
+            PassportChartCard(
+                passport: VehiclePassport(vehicleId: UUID()),
+                vehicle: Vehicle(
+                    id: UUID(),
+                    make: "BMW",
+                    model: "M3",
+                    year: 2022,
+                    vin: "WBS3R9C00NP123456",
+                    licensePlate: "BMW-M3X",
+                    mileage: 8500,
+                    fuelType: .gasoline,
+                    transmission: .automatic,
+                    color: "Alpine White",
+                    engineSize: "3.0L Twin Turbo"
+                )
+            )
+            .frame(height: 400)
+            .padding()
+        }
+        .background(Color(.systemGroupedBackground))
     }
 }

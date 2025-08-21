@@ -18,6 +18,7 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var authService: AuthService
+    @EnvironmentObject var garageViewModel: GarageViewModel
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @State private var isLoading = true
     @State private var logoOpacity: Double = 0
@@ -77,6 +78,7 @@ struct HomeView: View {
                     // Show appropriate view based on authentication state
                     if authService.isAuthenticated {
                         RootTabView()
+                            .environmentObject(garageViewModel)
                             .transition(.asymmetric(
                                 insertion: .opacity.combined(with: .scale(scale: 0.95)),
                                 removal: .opacity.combined(with: .scale(scale: 1.05))
