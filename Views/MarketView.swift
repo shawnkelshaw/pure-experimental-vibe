@@ -19,10 +19,19 @@ struct RoundedCorner: Shape {
 
 struct MarketView: View {
     @EnvironmentObject var garageViewModel: GarageViewModel
+    @EnvironmentObject var appointmentService: AppointmentService
     @State private var currentZipCode = "31405"
-    @State private var showingZipCodeSheet = false
+    @State private var isEditingZipCode = false
     @State private var tempZipCode = ""
     @State private var isLoading = true
+    @FocusState private var isZipCodeFocused: Bool
+    
+    // Dealer Trade-In Flow States
+    @State private var isRetrievingDealerAgent = false
+    @State private var foundDealerAgent: DealerAgent?
+    @State private var showDealerConfirmation = false
+    @State private var selectedVehicle: Vehicle?
+    @State private var selectedPassport: VehiclePassport?
     
     var body: some View {
         NavigationStack {
@@ -37,35 +46,50 @@ struct MarketView: View {
                             .textCase(.uppercase)
                             .padding(.horizontal)
                         
-                        Button(action: {
-                            tempZipCode = currentZipCode
-                            showingZipCodeSheet = true
-                        }) {
-                            HStack {
+                        HStack {
+                            if isEditingZipCode {
+                                TextField("Enter zip code", text: $tempZipCode)
+                                    .font(.body)
+                                    .foregroundColor(.primary)
+                                    .keyboardType(.numberPad)
+                                    .focused($isZipCodeFocused)
+                                    .onSubmit {
+                                        saveZipCode()
+                                    }
+                            } else {
                                 Text(currentZipCode)
                                     .font(.body)
                                     .foregroundColor(.primary)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "keyboard.fill")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
                             }
-                            .padding(.horizontal, .regular)
-                            .padding(.vertical, .mediumTight)
-                            .padding(.bottom, .tight)
-                            .background(
-                                VStack {
-                                    Spacer()
-                                    Rectangle()
-                                        .frame(height: 1)
-                                        .foregroundColor(Color(.tertiaryLabel))
-                                }
-                            )
+                            
+                            Spacer()
+                            
+                            Image(systemName: "keyboard.fill")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
                         }
-                        .buttonStyle(PlainButtonStyle())
+                        .padding(.horizontal, .regular)
+                        .padding(.vertical, .mediumTight)
+                        .padding(.bottom, .tight)
+                        .background(
+                            VStack {
+                                Spacer()
+                                Rectangle()
+                                    .frame(height: 1)
+                                    .foregroundColor(Color(.tertiaryLabel))
+                            }
+                        )
                         .padding(.horizontal)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            if !isEditingZipCode {
+                                tempZipCode = currentZipCode
+                                isEditingZipCode = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    isZipCodeFocused = true
+                                }
+                            }
+                        }
                     }
                     
                     // Chart Carousel (only show when user has vehicle passports)
@@ -77,6 +101,7 @@ struct MarketView: View {
                                 .foregroundColor(.secondary)
                                 .textCase(.uppercase)
                                 .padding(.horizontal)
+                                .padding(.top, .tight)
                             
                             // Conditional: Full-width for single passport, carousel for multiple
                             if garageViewModel.vehiclePassports.count == 1 {
@@ -84,7 +109,8 @@ struct MarketView: View {
                                 ForEach(Array(zip(garageViewModel.vehiclePassports, garageViewModel.vehicles)), id: \.0.id) { passport, vehicle in
                                     PassportChartCard(
                                         passport: passport, 
-                                        vehicle: vehicle
+                                        vehicle: vehicle,
+                                        onDealerTradeIn: startDealerAgentRetrieval(for:passport:)
                                     )
                                 }
                                 .padding(.horizontal)
@@ -95,7 +121,8 @@ struct MarketView: View {
                                         ForEach(Array(zip(garageViewModel.vehiclePassports, garageViewModel.vehicles)), id: \.0.id) { passport, vehicle in
                                             PassportChartCard(
                                                 passport: passport, 
-                                                vehicle: vehicle
+                                                vehicle: vehicle,
+                                                onDealerTradeIn: startDealerAgentRetrieval(for:passport:)
                                             )
                                         }
                                     }
@@ -182,14 +209,11 @@ struct MarketView: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Market")
             .navigationBarTitleDisplayMode(.large)
-            .sheet(isPresented: $showingZipCodeSheet) {
-                ZipCodeInputSheet(
-                    zipCode: $tempZipCode,
-                    isPresented: $showingZipCodeSheet,
-                    onSave: {
-                        currentZipCode = tempZipCode
-                    }
-                )
+            .onChange(of: isZipCodeFocused) { focused in
+                if !focused && isEditingZipCode {
+                    // User tapped outside or dismissed keyboard
+                    cancelZipCodeEdit()
+                }
             }
             .onAppear {
                 // Simulate loading delay
@@ -199,7 +223,135 @@ struct MarketView: View {
                     }
                 }
             }
+            .alert("Dealer agent found", isPresented: $showDealerConfirmation) {
+                Button("I'm not ready", role: .cancel) {
+                    // Handle NO - dismiss
+                    foundDealerAgent = nil
+                }
+                Button("Search for agents") {
+                    // TODO: Implement different agent selection flow
+                    foundDealerAgent = nil
+                }
+                Button("Yes, schedule appointment") {
+                    // Handle YES - schedule appointment
+                    handleScheduleAppointment()
+                }
+            } message: {
+                if let agent = foundDealerAgent {
+                    Text(formatDealerAgentMessage(agent: agent))
+                }
+            }
+            .overlay {
+                if isRetrievingDealerAgent {
+                    Color.black.opacity(0.3)
+                        .ignoresSafeArea()
+                    
+                    VStack(spacing: 16) {
+                        ProgressView()
+                            .scaleEffect(1.2)
+                            .tint(.white)
+                        
+                        Text("Retrieving dealer agent...")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                    }
+                    .padding(24)
+                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
+                }
+            }
         }
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func saveZipCode() {
+        currentZipCode = tempZipCode
+        isEditingZipCode = false
+        isZipCodeFocused = false
+    }
+    
+    private func cancelZipCodeEdit() {
+        tempZipCode = currentZipCode
+        isEditingZipCode = false
+        isZipCodeFocused = false
+    }
+    
+    // MARK: - Dealer Trade-In Flow
+    
+    private func startDealerAgentRetrieval(for vehicle: Vehicle, passport: VehiclePassport) {
+        selectedVehicle = vehicle
+        selectedPassport = passport
+        isRetrievingDealerAgent = true
+        
+        // Simulate 4-6 second retrieval delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + Double.random(in: 4.0...6.0)) {
+            foundDealerAgent = DealerAgent.alanSubran
+            isRetrievingDealerAgent = false
+            showDealerConfirmation = true
+        }
+    }
+    
+    private func handleScheduleAppointment() {
+        // Package vehicle data for Voiceflow integration
+        let vehicleContext = prepareVehicleContext()
+        
+        // Create appointment with dealer agent
+        if let vehicle = selectedVehicle, let agent = foundDealerAgent {
+            let vehicleInfo = "\(vehicle.year) \(vehicle.make) \(vehicle.model)"
+            appointmentService.scheduleAppointment(
+                vehicleInfo: vehicleInfo,
+                dealerAgent: agent
+            )
+        }
+        
+        // Clear current state
+        foundDealerAgent = nil
+        selectedVehicle = nil
+        selectedPassport = nil
+        
+        // TODO: This is where we'll launch Voiceflow integration with vehicle context
+        // For now, just show a temporary success alert
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            print("Appointment scheduling would start here with Voiceflow")
+            print("Vehicle Context: \(vehicleContext)")
+        }
+    }
+    
+    private func formatDealerAgentMessage(agent: DealerAgent) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .long
+        dateFormatter.timeStyle = .none
+        
+        let formattedDate = dateFormatter.string(from: agent.lastInteractionDate)
+        
+        return """
+        The last dealer agent you interacted with was:
+        
+        \(agent.name)
+        \(agent.dealership)
+        \(formattedDate)
+        
+        I can help schedule an appointment with \(agent.name) if you're ready to proceed.
+        """
+    }
+    
+    private func prepareVehicleContext() -> [String: Any] {
+        guard let vehicle = selectedVehicle, let passport = selectedPassport else {
+            return [:]
+        }
+        
+        return [
+            "vehicle_year": vehicle.year,
+            "vehicle_make": vehicle.make,
+            "vehicle_model": vehicle.model,
+            "vehicle_vin": vehicle.vin ?? "Unknown",
+            "vehicle_mileage": vehicle.mileage ?? 0,
+            "vehicle_color": vehicle.color ?? "Unknown",
+            "purchase_price": passport.purchasePrice ?? 0,
+            "dealer_agent_name": foundDealerAgent?.name ?? "Alan Subran",
+            "dealer_name": foundDealerAgent?.dealership ?? "Savannah Tesla",
+            "user_zip_code": currentZipCode
+        ]
     }
     
     // MARK: - Mock Data
@@ -471,71 +623,13 @@ struct DealershipAnnouncementSkeletonCard: View {
     }
 }
 
-// MARK: - Zip Code Input Sheet
-
-struct ZipCodeInputSheet: View {
-    @Binding var zipCode: String
-    @Binding var isPresented: Bool
-    let onSave: () -> Void
-    
-    var body: some View {
-        NavigationStack {
-            VStack(spacing: 24) {
-                Spacer()
-                
-                VStack(spacing: 16) {
-                    Text("YOUR CURRENT AREA")
-                        .font(.footnote)
-                        .fontWeight(.medium)
-                        .foregroundColor(.secondary)
-                        .textCase(.uppercase)
-                    
-                    TextField("Enter zip code", text: $zipCode)
-                        .keyboardType(.numberPad)
-                        .font(.title2)
-                        .multilineTextAlignment(.center)
-                        .frame(maxWidth: 150)
-                        .padding(.bottom, .tight)
-                        .background(
-                            VStack {
-                                Spacer()
-                                Rectangle()
-                                    .frame(height: 1)
-                                    .foregroundColor(.secondary)
-                            }
-                        )
-                }
-                
-                Spacer()
-                Spacer()
-            }
-            .padding()
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
-                        isPresented = false
-                    }
-                }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        onSave()
-                        isPresented = false
-                    }
-                    .fontWeight(.semibold)
-                    .disabled(zipCode.trimmingCharacters(in: .whitespaces).isEmpty)
-                }
-            }
-        }
-    }
-}
 
 // MARK: - Passport Chart Card
 
 struct PassportChartCard: View {
     let passport: VehiclePassport
     let vehicle: Vehicle
+    let onDealerTradeIn: (Vehicle, VehiclePassport) -> Void
     
     // Generate mock 3-month forecast data
     private var chartData: [ChartDataPoint] {
@@ -617,7 +711,8 @@ struct PassportChartCard: View {
                     let impactFeedback = UIImpactFeedbackGenerator(style: .light)
                     impactFeedback.impactOccurred()
                     
-                    // Placeholder action
+                    // Start dealer agent retrieval simulation
+                    onDealerTradeIn(vehicle, passport)
                 }
                 .buttonStyle(NativeButtonWithPressState())
                 .accessibilityLabel("Dealer trade in")
@@ -683,7 +778,8 @@ struct PassportChartCard_Previews: PreviewProvider {
                     transmission: .automatic,
                     color: "Pearl White",
                     engineSize: "Electric Motor"
-                )
+                ),
+                onDealerTradeIn: { _, _ in print("Preview dealer trade-in") }
             )
             .frame(height: 400)
             .padding()
@@ -703,7 +799,8 @@ struct PassportChartCard_Previews: PreviewProvider {
                     transmission: .automatic,
                     color: "Alpine White",
                     engineSize: "3.0L Twin Turbo"
-                )
+                ),
+                onDealerTradeIn: { _, _ in print("Preview dealer trade-in") }
             )
             .frame(height: 400)
             .padding()

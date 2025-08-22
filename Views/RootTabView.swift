@@ -2,10 +2,12 @@ import SwiftUI
 
 struct RootTabView: View {
     @State private var selectedTab = 1
+    @StateObject private var appointmentService = AppointmentService()
     
     var body: some View {
         TabView(selection: $selectedTab) {
             MarketView()
+                .environmentObject(appointmentService)
                 .tabItem {
                     Image(systemName: "chart.line.uptrend.xyaxis")
                     Text("Market")
@@ -20,10 +22,12 @@ struct RootTabView: View {
                 .tag(1)
             
             MoreView()
+                .environmentObject(appointmentService)
                 .tabItem {
                     Image(systemName: "ellipsis.circle")
                     Text("More")
                 }
+                .badge(appointmentService.hasUpcomingAppointments ? "!" : nil)
                 .tag(2)
         }
         .tint(.accentColor)

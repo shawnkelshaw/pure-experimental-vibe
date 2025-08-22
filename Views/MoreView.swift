@@ -3,6 +3,7 @@ import SwiftUI
 struct MoreView: View {
     @EnvironmentObject var authService: AuthService
     @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var appointmentService: AppointmentService
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     
     var body: some View {
@@ -57,6 +58,18 @@ struct MoreView: View {
                         }
                         .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
                     }
+                
+                // Appointments Section
+                Section("Appointments") {
+                    SettingsRow(
+                        icon: "calendar.badge.clock", 
+                        title: "Upcoming Events and Appointments", 
+                        subtitle: appointmentService.hasUpcomingAppointments ? "\(appointmentService.upcomingAppointments.count) upcoming" : "No upcoming appointments",
+                        action: {
+                            // TODO: Navigate to appointments view
+                        }
+                    )
+                }
                 
                 // Settings Section
                 Section("Settings") {
