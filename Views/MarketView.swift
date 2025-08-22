@@ -536,8 +536,6 @@ struct ZipCodeInputSheet: View {
 struct PassportChartCard: View {
     let passport: VehiclePassport
     let vehicle: Vehicle
-    @State private var isSellButtonPressed = false
-    @State private var isTradeInButtonPressed = false
     
     // Generate mock 3-month forecast data
     private var chartData: [ChartDataPoint] {
@@ -603,73 +601,25 @@ struct PassportChartCard: View {
             
             // Action buttons below chart
             VStack(spacing: .tight) {
-                Button(action: {
+                Button("SELL NOW (DIRECT)") {
                     // Haptic feedback
                     let impactFeedback = UIImpactFeedbackGenerator(style: .light)
                     impactFeedback.impactOccurred()
                     
                     // Placeholder action
-                }) {
-                    Text("SELL NOW (DIRECT)")
-                        .font(.footnote)
-                        .fontWeight(.medium)
-                        .textCase(.uppercase)
-                        .foregroundColor(.secondary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, .tight)
-                        .background(Color(.systemBackground).opacity(isSellButtonPressed ? 0.8 : 1.0))
-                        .overlay(
-                            Rectangle()
-                                .stroke(Color(.tertiaryLabel).opacity(isSellButtonPressed ? 0.6 : 1.0), lineWidth: 0.5)
-                        )
                 }
-                .buttonStyle(PlainButtonStyle())
-                .scaleEffect(isSellButtonPressed ? 0.98 : 1.0)
-                .onTapGesture {
-                    withAnimation(.easeInOut(duration: 0.1)) {
-                        isSellButtonPressed = true
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        withAnimation(.easeInOut(duration: 0.1)) {
-                            isSellButtonPressed = false
-                        }
-                    }
-                }
+                .buttonStyle(NativeButtonWithPressState())
                 .accessibilityLabel("Sell now direct")
                 .accessibilityHint("Tap to sell your vehicle directly")
                 
-                Button(action: {
+                Button("DEALER TRADE IN") {
                     // Haptic feedback
                     let impactFeedback = UIImpactFeedbackGenerator(style: .light)
                     impactFeedback.impactOccurred()
                     
                     // Placeholder action
-                }) {
-                    Text("DEALER TRADE IN")
-                        .font(.footnote)
-                        .fontWeight(.medium)
-                        .textCase(.uppercase)
-                        .foregroundColor(.secondary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, .tight)
-                        .background(Color(.systemBackground).opacity(isTradeInButtonPressed ? 0.8 : 1.0))
-                        .overlay(
-                            Rectangle()
-                                .stroke(Color(.tertiaryLabel).opacity(isTradeInButtonPressed ? 0.6 : 1.0), lineWidth: 0.5)
-                        )
                 }
-                .buttonStyle(PlainButtonStyle())
-                .scaleEffect(isTradeInButtonPressed ? 0.98 : 1.0)
-                .onTapGesture {
-                    withAnimation(.easeInOut(duration: 0.1)) {
-                        isTradeInButtonPressed = true
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        withAnimation(.easeInOut(duration: 0.1)) {
-                            isTradeInButtonPressed = false
-                        }
-                    }
-                }
+                .buttonStyle(NativeButtonWithPressState())
                 .accessibilityLabel("Dealer trade in")
                 .accessibilityHint("Tap to trade in your vehicle at a dealer")
             }
@@ -687,24 +637,21 @@ struct PassportChartCard: View {
     }
 }
 
-// MARK: - Custom Button Style for Chart Cards
-struct ChartButtonStyle: ButtonStyle {
+// MARK: - Native Button Style with Press State
+struct NativeButtonWithPressState: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .background(
-                Color(.systemBackground)
-                    .opacity(configuration.isPressed ? 0.8 : 1.0)
-            )
+            .font(.footnote)
+            .fontWeight(.medium)
+            .textCase(.uppercase)
+            .foregroundColor(configuration.isPressed ? Color.accentColor : .secondary)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, .tight)
+            .background(Color(.systemBackground))
             .overlay(
                 Rectangle()
-                    .stroke(
-                        Color(.tertiaryLabel)
-                            .opacity(configuration.isPressed ? 0.6 : 1.0),
-                        lineWidth: 0.5
-                    )
+                    .stroke(configuration.isPressed ? Color.accentColor : Color(.tertiaryLabel), lineWidth: 0.5)
             )
-            .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
-            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
 }
 
