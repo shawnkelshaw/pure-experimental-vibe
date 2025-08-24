@@ -23,6 +23,7 @@ struct VehiclePassportApp: App {
     @StateObject private var notificationService = NotificationService()
     @StateObject private var themeManager = ThemeManager()
     @StateObject private var garageViewModel = GarageViewModel(authService: AuthService())
+    @StateObject private var appointmentService = AppointmentService()
     
     var body: some Scene {
         WindowGroup {
@@ -31,6 +32,7 @@ struct VehiclePassportApp: App {
                 .environmentObject(notificationService)
                 .environmentObject(garageViewModel)
                 .environmentObject(themeManager)
+                .environmentObject(appointmentService)
                 .preferredColorScheme(themeManager.currentColorScheme)
         }
     }

@@ -5,6 +5,11 @@ class AppointmentService: ObservableObject {
     @Published var hasUpcomingAppointments = false
     @Published var upcomingAppointments: [Appointment] = []
     
+    func clearAllAppointments() {
+        upcomingAppointments.removeAll()
+        hasUpcomingAppointments = false
+    }
+    
     func scheduleAppointment(
         vehicleInfo: String,
         dealerAgent: DealerAgent,
@@ -32,6 +37,16 @@ class AppointmentService: ObservableObject {
     func cancelAppointment(_ appointmentId: UUID) {
         upcomingAppointments.removeAll { $0.id == appointmentId }
         updateNotificationBadge()
+    }
+    
+    // Lightweight helper to check if there's a scheduled appointment for a specific vehicle
+    func hasScheduledAppointment(for vehicle: Vehicle) -> Bool {
+        upcomingAppointments.contains { appt in
+            appt.status == .scheduled
+            && appt.vehicleInfo.contains(vehicle.make)
+            && appt.vehicleInfo.contains(vehicle.model)
+            && appt.vehicleInfo.contains(String(vehicle.year))
+        }
     }
     
     private func updateNotificationBadge() {

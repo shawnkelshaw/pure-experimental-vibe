@@ -32,6 +32,7 @@ struct MarketView: View {
     @State private var showDealerConfirmation = false
     @State private var selectedVehicle: Vehicle?
     @State private var selectedPassport: VehiclePassport?
+    @State private var showVoiceChat = false
     
     var body: some View {
         NavigationStack {
@@ -233,8 +234,8 @@ struct MarketView: View {
                     foundDealerAgent = nil
                 }
                 Button("Yes, schedule appointment") {
-                    // Handle YES - schedule appointment
-                    handleScheduleAppointment()
+                    // Handle YES - show voice chat
+                    showVoiceChat = true
                 }
             } message: {
                 if let agent = foundDealerAgent {
@@ -258,6 +259,17 @@ struct MarketView: View {
                     .padding(24)
                     .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
                 }
+            }
+        }
+        .sheet(isPresented: $showVoiceChat) {
+            if let vehicle = selectedVehicle, 
+               let passport = selectedPassport,
+               let agent = foundDealerAgent {
+                VoiceChatView(
+                    vehicle: vehicle,
+                    passport: passport,
+                    dealerAgent: agent
+                )
             }
         }
     }
@@ -630,6 +642,7 @@ struct PassportChartCard: View {
     let passport: VehiclePassport
     let vehicle: Vehicle
     let onDealerTradeIn: (Vehicle, VehiclePassport) -> Void
+    @EnvironmentObject var appointmentService: AppointmentService
     
     // Generate mock 3-month forecast data
     private var chartData: [ChartDataPoint] {
@@ -695,6 +708,20 @@ struct PassportChartCard: View {
             
             // Action buttons below chart
             VStack(spacing: .tight) {
+                // Dealer Trade-In button: updates to scheduled state and disables when appointment exists
+                Button(appointmentService.hasScheduledAppointment(for: vehicle) ? "TRADE IN APPOINTMENT SCHEDULED" : "DEALER TRADE IN") {
+                    // Haptic feedback
+                    let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+                    impactFeedback.impactOccurred()
+                    
+                    // Start dealer agent retrieval simulation
+                    onDealerTradeIn(vehicle, passport)
+                }
+                .buttonStyle(NativeButtonWithPressState())
+                .disabled(appointmentService.hasScheduledAppointment(for: vehicle))
+                .accessibilityLabel(appointmentService.hasScheduledAppointment(for: vehicle) ? "Trade in appointment scheduled" : "Dealer trade in")
+                .accessibilityHint(appointmentService.hasScheduledAppointment(for: vehicle) ? "Appointment is already scheduled" : "Tap to trade in your vehicle at a dealer")
+                
                 Button("SELL NOW (DIRECT)") {
                     // Haptic feedback
                     let impactFeedback = UIImpactFeedbackGenerator(style: .light)
@@ -705,18 +732,6 @@ struct PassportChartCard: View {
                 .buttonStyle(NativeButtonWithPressState())
                 .accessibilityLabel("Sell now direct")
                 .accessibilityHint("Tap to sell your vehicle directly")
-                
-                Button("DEALER TRADE IN") {
-                    // Haptic feedback
-                    let impactFeedback = UIImpactFeedbackGenerator(style: .light)
-                    impactFeedback.impactOccurred()
-                    
-                    // Start dealer agent retrieval simulation
-                    onDealerTradeIn(vehicle, passport)
-                }
-                .buttonStyle(NativeButtonWithPressState())
-                .accessibilityLabel("Dealer trade in")
-                .accessibilityHint("Tap to trade in your vehicle at a dealer")
             }
         }
         .frame(minWidth: 280, maxWidth: .infinity)
@@ -734,18 +749,28 @@ struct PassportChartCard: View {
 
 // MARK: - Native Button Style with Press State
 struct NativeButtonWithPressState: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.footnote)
             .fontWeight(.medium)
             .textCase(.uppercase)
-            .foregroundColor(configuration.isPressed ? Color.accentColor : .secondary)
+            .foregroundColor(
+                isEnabled
+                ? (configuration.isPressed ? Color.accentColor : Color.secondary)
+                : Color(.tertiaryLabel)
+            )
             .frame(maxWidth: .infinity)
             .padding(.vertical, .tight)
             .background(Color(.systemBackground))
             .overlay(
                 Rectangle()
-                    .stroke(configuration.isPressed ? Color.accentColor : Color(.tertiaryLabel), lineWidth: 0.5)
+                    .stroke(
+                        isEnabled
+                        ? (configuration.isPressed ? Color.accentColor : Color(.tertiaryLabel))
+                        : Color(.tertiaryLabel),
+                        lineWidth: 0.5
+                    )
             )
     }
 }

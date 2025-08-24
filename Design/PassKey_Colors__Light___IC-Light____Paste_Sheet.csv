@@ -1,0 +1,57 @@
+Group,Name,Light,IC-Light
+Backgrounds,SystemBackground,#FFFFFF,#FFFFFF
+Backgrounds,SecondarySystemBackground,#F7F7F8,#F7F7F8
+Backgrounds,TertiarySystemBackground,#EFEFF1,#EFEFF1
+Backgrounds (Grouped),GroupedBackground,#FFFFFF,#FFFFFF
+Backgrounds (Grouped),SecondaryGroupedBackground,#F7F7F8,#F7F7F8
+Backgrounds (Grouped),TertiaryGroupedBackground,#EFEFF1,#EFEFF1
+Colors,Tint,#1D2D44,#1D2D44
+Colors,Link,#2F6F7E,#2F6F7E
+Fills,Red,#C85963,#C85963
+Fills,Orange,#D4833B,#D4833B
+Fills,Yellow,#D9B43B,#D9B43B
+Fills,Green,#4FA566,#4FA566
+Fills,Mint,#59C0AE,#59C0AE
+Fills,Teal,#2F6F7E,#2F6F7E
+Fills,Cyan,#58B6D5,#58B6D5
+Fills,Blue,#3C77C9,#3C77C9
+Fills,Indigo,#4E5FAE,#4E5FAE
+Fills,Purple,#7A5FAF,#7A5FAF
+Fills,Pink,#C176A1,#C176A1
+Fills,Brown,#8A6B57,#8A6B57
+Fills,Gray,#8890A0,#8890A0
+Fills - Vibrant,Red,#C85963,#C85963
+Fills - Vibrant,Orange,#D4833B,#D4833B
+Fills - Vibrant,Yellow,#D9B43B,#D9B43B
+Fills - Vibrant,Green,#4FA566,#4FA566
+Fills - Vibrant,Mint,#59C0AE,#59C0AE
+Fills - Vibrant,Teal,#2F6F7E,#2F6F7E
+Fills - Vibrant,Cyan,#58B6D5,#58B6D5
+Fills - Vibrant,Blue,#3C77C9,#3C77C9
+Fills - Vibrant,Indigo,#4E5FAE,#4E5FAE
+Fills - Vibrant,Purple,#7A5FAF,#7A5FAF
+Fills - Vibrant,Pink,#C176A1,#C176A1
+Fills - Vibrant,Brown,#8A6B57,#8A6B57
+Fills - Vibrant,Gray,#8890A0,#8890A0
+Grays,Gray,#8890A0,#8890A0
+Grays,Gray2,#A8AEBA,#A8AEBA
+Grays,Gray3,#CBCED6,#CBCED6
+Grays,Gray4,#E1E2E6,#E1E2E6
+Grays,Gray5,#EFEFF1,#EFEFF1
+Grays,Gray6,#F7F7F8,#F7F7F8
+Labels,Primary,#212532,#212532
+Labels,Secondary,"rgba(33,37,50,0.6)","rgba(33,37,50,0.8)"
+Labels,Tertiary,"rgba(33,37,50,0.3)","rgba(33,37,50,0.7)"
+Labels,Quaternary,"rgba(33,37,50,0.18)","rgba(33,37,50,0.55)"
+Labels,Placeholder,"rgba(33,37,50,0.3)","rgba(33,37,50,0.55)"
+Labels - Vibrant,Primary,#212532,#212532
+Labels - Vibrant,Secondary,"rgba(33,37,50,0.8)","rgba(33,37,50,0.8)"
+Labels - Vibrant,Tertiary,"rgba(33,37,50,0.7)","rgba(33,37,50,0.7)"
+Labels - Vibrant,Quaternary,"rgba(33,37,50,0.55)","rgba(33,37,50,0.55)"
+Labels - Vibrant,Placeholder,"rgba(33,37,50,0.55)","rgba(33,37,50,0.55)"
+Overlays,SystemFill,"rgba(0,0,0,0.08)","rgba(0,0,0,0.08)"
+Overlays,SecondarySystemFill,"rgba(0,0,0,0.06)","rgba(0,0,0,0.06)"
+Overlays,TertiarySystemFill,"rgba(0,0,0,0.04)","rgba(0,0,0,0.04)"
+Overlays,QuaternarySystemFill,"rgba(0,0,0,0.02)","rgba(0,0,0,0.02)"
+Separators,Separator,"rgba(0,0,0,0.12)","rgba(0,0,0,0.12)"
+Separators,OpaqueSeparator,#E1E2E6,#E1E2E6

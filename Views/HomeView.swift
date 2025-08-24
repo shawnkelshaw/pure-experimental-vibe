@@ -19,6 +19,7 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject var authService: AuthService
     @EnvironmentObject var garageViewModel: GarageViewModel
+    @EnvironmentObject var appointmentService: AppointmentService
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @State private var isLoading = true
     @State private var logoOpacity: Double = 0
@@ -79,6 +80,11 @@ struct HomeView: View {
                     if authService.isAuthenticated {
                         RootTabView()
                             .environmentObject(garageViewModel)
+                            .environmentObject(appointmentService)
+                            .onAppear {
+                                // Clear appointments when user signs in
+                                appointmentService.clearAllAppointments()
+                            }
                             .transition(.asymmetric(
                                 insertion: .opacity.combined(with: .scale(scale: 0.95)),
                                 removal: .opacity.combined(with: .scale(scale: 1.05))

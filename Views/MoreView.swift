@@ -61,14 +61,41 @@ struct MoreView: View {
                 
                 // Appointments Section
                 Section("Appointments") {
-                    SettingsRow(
-                        icon: "calendar.badge.clock", 
-                        title: "Upcoming Events and Appointments", 
-                        subtitle: appointmentService.hasUpcomingAppointments ? "\(appointmentService.upcomingAppointments.count) upcoming" : "No upcoming appointments",
-                        action: {
-                            // TODO: Navigate to appointments view
+                    HStack(spacing: 12) {
+                        Image(systemName: "calendar.badge.clock")
+                            .font(.title3)
+                            .foregroundColor(.accentColor)
+                            .frame(width: 32, height: 32)
+                        
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Upcoming Events and Appointments")
+                                .font(.body)
+                            
+                            Text(appointmentService.hasUpcomingAppointments ? "\(appointmentService.upcomingAppointments.count) upcoming" : "No upcoming appointments")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
                         }
-                    )
+                        
+                        Spacer()
+                        
+                        if appointmentService.hasUpcomingAppointments {
+                            Text("\(appointmentService.upcomingAppointments.count)")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.white)
+                                .frame(minWidth: 20, minHeight: 20)
+                                .background(Circle().fill(Color(.systemRed)))
+                        }
+                        
+                        Image(systemName: "chevron.right")
+                            .font(.caption2)
+                            .foregroundColor(Color(.tertiaryLabel))
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        // TODO: Navigate to appointments view
+                    }
+                    .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
                 }
                 
                 // Settings Section
