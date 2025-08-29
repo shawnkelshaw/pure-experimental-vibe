@@ -6,29 +6,21 @@ struct RootTabView: View {
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            MarketView()
-                .tabItem {
-                    Image(systemName: "chart.line.uptrend.xyaxis")
-                    Text("Market")
-                }
-                .tag(0)
+            Tab("Market", systemImage: "chart.line.uptrend.xyaxis", value: 0) {
+                MarketView()
+            }
             
-            MyGarageView()
-                .tabItem {
-                    Image(systemName: "car.fill")
-                    Text("My Garage")
-                }
-                .tag(1)
+            Tab("My Garage", systemImage: "car.fill", value: 1) {
+                MyGarageView()
+            }
             
-            MoreView()
-                .tabItem {
-                    Image(systemName: "ellipsis.circle")
-                    Text("More")
-                }
-                .badge(appointmentService.hasUpcomingAppointments ? "1" : nil)
-                .tag(2)
+            Tab("More", systemImage: "ellipsis.circle", value: 2) {
+                MoreView()
+            }
+            .badge(appointmentService.hasUpcomingAppointments ? 1 : 0)
         }
         .tint(.accentColor)
+        .tabViewStyle(.sidebarAdaptable)
     }
 }
 

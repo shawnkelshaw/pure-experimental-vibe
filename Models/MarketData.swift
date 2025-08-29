@@ -140,6 +140,7 @@ enum TrendDirection: String, Codable, CaseIterable {
 }
 
 // MARK: - Mock Data Generators
+@MainActor
 class MarketDataService {
     static let shared = MarketDataService()
     
@@ -508,7 +509,8 @@ extension Color {
     // - Use Color(.secondaryLabel) instead of .tabBarUnselectedText
     
     // MARK: - Glass Effect Colors (Semantic)
-    // Note: glassBorder moved to GlassEffectModifiers.swift to avoid duplication
+    /// Glass border color that adapts to light/dark mode
+    static let glassBorder = Color(.separator)
     
     /// Glass highlight color for subtle overlays
     static let glassHighlight = Color(.quaternaryLabel)

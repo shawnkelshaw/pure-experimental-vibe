@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 class GarageViewModel: ObservableObject {
     @Published var vehiclePassports: [VehiclePassport] = []
     @Published var vehicles: [Vehicle] = []
@@ -27,9 +28,7 @@ class GarageViewModel: ObservableObject {
     // MARK: - Data Loading
     
     func loadInitialData() async {
-        await MainActor.run {
-            isLoading = true
-        }
+        isLoading = true
         
         // Reset accept count on fresh login
         acceptCount = 0
@@ -37,60 +36,46 @@ class GarageViewModel: ObservableObject {
         // Test Supabase connection
         await testSupabaseConnection()
         
-        await MainActor.run {
-            isLoading = false
-        }
+        isLoading = false
     }
     
     func loadGarageData() async {
-        await MainActor.run {
-            isLoading = true
-        }
+        isLoading = true
         
         // Simulate network delay
         try? await Task.sleep(nanoseconds: 500_000_000)
         
-        await MainActor.run {
-            isLoading = false
-        }
+        isLoading = false
     }
     
     // MARK: - Bluetooth Notification Handling
     
     func addVehiclePassportFromNotification(_ notification: PendingNotification) async {
-        await MainActor.run {
-            isBluetoothLoading = true
-            errorMessage = nil
-        }
+        isBluetoothLoading = true
+        errorMessage = nil
         
         do {
             let allVehicles = try await vehicleService.fetchVehicles()
             let allPassports = try await vehicleService.fetchVehiclePassports()
             
             guard acceptCount < allVehicles.count, acceptCount < allPassports.count else {
-                await MainActor.run {
-                    isBluetoothLoading = false
-                    errorMessage = "No more vehicles available"
-                }
+                isBluetoothLoading = false
+                errorMessage = "No more vehicles available"
                 return
             }
             
             let vehicle = allVehicles[acceptCount]
             let passport = allPassports[acceptCount]
             
-            await MainActor.run {
-                vehiclePassports.append(passport)
-                vehicles.append(vehicle)
-                acceptCount += 1
-                isBluetoothLoading = false
-                print("✅ Added vehicle: \(vehicle.displayName)")
-            }
+            vehiclePassports.append(passport)
+            vehicles.append(vehicle)
+            acceptCount += 1
+            isBluetoothLoading = false
+            print("✅ Added vehicle: \(vehicle.displayName)")
             
         } catch {
-            await MainActor.run {
-                isBluetoothLoading = false
-                errorMessage = "Failed to add vehicle: \(error.localizedDescription)"
-            }
+            isBluetoothLoading = false
+            errorMessage = "Failed to add vehicle: \(error.localizedDescription)"
             print("❌ Error: \(error)")
         }
     }

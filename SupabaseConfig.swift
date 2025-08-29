@@ -1,6 +1,7 @@
 import Foundation
 import Supabase
 
+@MainActor
 class SupabaseConfig {
     static let shared = SupabaseConfig()
     

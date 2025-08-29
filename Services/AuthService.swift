@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import Supabase
 
+@MainActor
 class AuthService: ObservableObject {
     @Published var user: User?
     @Published var isLoading = false

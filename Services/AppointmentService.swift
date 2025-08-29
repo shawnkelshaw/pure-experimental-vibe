@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 class AppointmentService: ObservableObject {
     @Published var hasUpcomingAppointments = false
     @Published var upcomingAppointments: [Appointment] = []
@@ -20,7 +21,7 @@ class AppointmentService: ObservableObject {
             vehicleInfo: vehicleInfo,
             dealerAgent: dealerAgent,
             scheduledDate: scheduledDate,
-            status: .scheduled
+            status: AppointmentStatus.scheduled
         )
         
         upcomingAppointments.append(appointment)

@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 class VehicleService: ObservableObject {
     
     func fetchVehicles() async throws -> [Vehicle] {

@@ -6,7 +6,7 @@ This project has been **fully migrated** to use exclusively Apple's native iOS s
 
 ## 🎨 Changes Made
 
-### 1. Color Extension System (`Views/Components/GlassEffectModifiers.swift`)
+### 1. Color Extension System (Now in `Models/MarketData.swift`)
 **BEFORE**: Custom hardcoded RGB colors
 ```swift
 static let primaryBlue = Color(red: 0, green: 0.533, blue: 1.0) // #0088FF

@@ -32,7 +32,6 @@ struct MarketView: View {
     @State private var showDealerConfirmation = false
     @State private var selectedVehicle: Vehicle?
     @State private var selectedPassport: VehiclePassport?
-    @State private var showVoiceChat = false
     
     var body: some View {
         NavigationStack {
@@ -234,8 +233,8 @@ struct MarketView: View {
                     foundDealerAgent = nil
                 }
                 Button("Yes, schedule appointment") {
-                    // Handle YES - show voice chat
-                    showVoiceChat = true
+                    // Handle YES - schedule appointment
+                    handleScheduleAppointment()
                 }
             } message: {
                 if let agent = foundDealerAgent {
@@ -259,17 +258,6 @@ struct MarketView: View {
                     .padding(24)
                     .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
                 }
-            }
-        }
-        .sheet(isPresented: $showVoiceChat) {
-            if let vehicle = selectedVehicle, 
-               let passport = selectedPassport,
-               let agent = foundDealerAgent {
-                VoiceChatView(
-                    vehicle: vehicle,
-                    passport: passport,
-                    dealerAgent: agent
-                )
             }
         }
     }

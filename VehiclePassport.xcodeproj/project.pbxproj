@@ -15,9 +15,7 @@
 		A1234567890123456789022 /* MyGarageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789023 /* MyGarageView.swift */; };
 		A1234567890123456789024 /* MoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789025 /* MoreView.swift */; };
 		A1234567890123456789026 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789027 /* RootTabView.swift */; };
-		A1234567890123456789028 /* GlassEffectDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789029 /* GlassEffectDemoView.swift */; };
 		A1234567890123456789030 /* iOS26TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789031 /* iOS26TabBar.swift */; };
-		A1234567890123456789032 /* GlassEffectModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789033 /* GlassEffectModifiers.swift */; };
 		A1234567890123456789034 /* VehiclePassportCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789035 /* VehiclePassportCard.swift */; };
 		A1234567890123456789036 /* BluetoothNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789037 /* BluetoothNotificationView.swift */; };
 		A1234567890123456789038 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789039 /* User.swift */; };
@@ -31,6 +29,9 @@
 		A1234567890123456789054 /* GarageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789055 /* GarageViewModel.swift */; };
 		A1234567890123456789056 /* SupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789057 /* SupabaseConfig.swift */; };
 		A1234567890123456789058 /* SystemSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789059 /* SystemSpacing.swift */; };
+		A1234567890123456789093 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789094 /* ThemeManager.swift */; };
+		A1234567890123456789095 /* AppointmentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789096 /* AppointmentService.swift */; };
+		A1234567890123456789097 /* DealerAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890123456789098 /* DealerAgent.swift */; };
 		A1234567890123456789085 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = A1234567890123456789086 /* Supabase */; };
 		A1234567890123456789087 /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = A1234567890123456789088 /* Auth */; };
 		A1234567890123456789089 /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = A1234567890123456789090 /* PostgREST */; };
@@ -47,9 +48,7 @@
 		A1234567890123456789023 /* MyGarageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyGarageView.swift; sourceTree = "<group>"; };
 		A1234567890123456789025 /* MoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreView.swift; sourceTree = "<group>"; };
 		A1234567890123456789027 /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
-		A1234567890123456789029 /* GlassEffectDemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassEffectDemoView.swift; sourceTree = "<group>"; };
 		A1234567890123456789031 /* iOS26TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOS26TabBar.swift; sourceTree = "<group>"; };
-		A1234567890123456789033 /* GlassEffectModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassEffectModifiers.swift; sourceTree = "<group>"; };
 		A1234567890123456789035 /* VehiclePassportCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehiclePassportCard.swift; sourceTree = "<group>"; };
 		A1234567890123456789037 /* BluetoothNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothNotificationView.swift; sourceTree = "<group>"; };
 		A1234567890123456789039 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -63,6 +62,9 @@
 		A1234567890123456789055 /* GarageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarageViewModel.swift; sourceTree = "<group>"; };
 		A1234567890123456789057 /* SupabaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseConfig.swift; sourceTree = "<group>"; };
 		A1234567890123456789059 /* SystemSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSpacing.swift; sourceTree = "<group>"; };
+		A1234567890123456789094 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
+		A1234567890123456789096 /* AppointmentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppointmentService.swift; sourceTree = "<group>"; };
+		A1234567890123456789098 /* DealerAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DealerAgent.swift; sourceTree = "<group>"; };
 		A1234567890123456789061 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 		A1234567890123456789086 /* Supabase */ = {isa = PBXFileReference; productName = Supabase; productReference = A1234567890123456789084 /* XCRemoteSwiftPackageReference "supabase-swift" */; };
 		A1234567890123456789088 /* Auth */ = {isa = PBXFileReference; productName = Auth; productReference = A1234567890123456789084 /* XCRemoteSwiftPackageReference "supabase-swift" */; };
@@ -121,7 +123,6 @@
 				A1234567890123456789013 /* VehiclePassportApp.swift */,
 
 			);
-			path = App;
 			sourceTree = "<group>";
 		};
 		A1234567890123456789067 /* Views */ = {
@@ -133,7 +134,6 @@
 				A1234567890123456789023 /* MyGarageView.swift */,
 				A1234567890123456789025 /* MoreView.swift */,
 				A1234567890123456789027 /* RootTabView.swift */,
-				A1234567890123456789029 /* GlassEffectDemoView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -142,11 +142,10 @@
 			isa = PBXGroup;
 			children = (
 				A1234567890123456789031 /* iOS26TabBar.swift */,
-				A1234567890123456789033 /* GlassEffectModifiers.swift */,
 				A1234567890123456789035 /* VehiclePassportCard.swift */,
 				A1234567890123456789037 /* BluetoothNotificationView.swift */,
 			);
-			path = Components;
+			path = "Views/Components";
 			sourceTree = "<group>";
 		};
 		A1234567890123456789068 /* Models */ = {
@@ -157,6 +156,7 @@
 				A1234567890123456789043 /* VehiclePassport.swift */,
 				A1234567890123456789045 /* MarketData.swift */,
 				A1234567890123456789047 /* PendingNotification.swift */,
+				A1234567890123456789098 /* DealerAgent.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -167,6 +167,8 @@
 				A1234567890123456789049 /* AuthService.swift */,
 				A1234567890123456789051 /* VehicleService.swift */,
 				A1234567890123456789053 /* NotificationService.swift */,
+				A1234567890123456789094 /* ThemeManager.swift */,
+				A1234567890123456789096 /* AppointmentService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -273,9 +275,7 @@
 				A1234567890123456789022 /* MyGarageView.swift in Sources */,
 				A1234567890123456789024 /* MoreView.swift in Sources */,
 				A1234567890123456789026 /* RootTabView.swift in Sources */,
-				A1234567890123456789028 /* GlassEffectDemoView.swift in Sources */,
 				A1234567890123456789030 /* iOS26TabBar.swift in Sources */,
-				A1234567890123456789032 /* GlassEffectModifiers.swift in Sources */,
 				A1234567890123456789034 /* VehiclePassportCard.swift in Sources */,
 				A1234567890123456789036 /* BluetoothNotificationView.swift in Sources */,
 				A1234567890123456789038 /* User.swift in Sources */,
@@ -289,6 +289,9 @@
 				A1234567890123456789054 /* GarageViewModel.swift in Sources */,
 				A1234567890123456789056 /* SupabaseConfig.swift in Sources */,
 				A1234567890123456789058 /* SystemSpacing.swift in Sources */,
+				A1234567890123456789093 /* ThemeManager.swift in Sources */,
+				A1234567890123456789095 /* AppointmentService.swift in Sources */,
+				A1234567890123456789097 /* DealerAgent.swift in Sources */,
 				A1234567890123456789012 /* VehiclePassportApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -348,7 +351,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -405,7 +408,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -439,7 +442,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.vehiclepassport.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -468,7 +471,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.vehiclepassport.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMPTY_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

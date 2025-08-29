@@ -94,7 +94,7 @@ struct VehiclePassportCard: View {
             }
         }
         .padding(16)
-        .liquidGlassEffect(cornerRadius: 20, material: .ultraThinMaterial)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
     }
 }
 
@@ -139,7 +139,7 @@ struct ActionButton: View {
             .foregroundColor(.primary)
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
-            .ultraThinGlass(cornerRadius: 12)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
         }
         .buttonStyle(PlainButtonStyle())
     }
