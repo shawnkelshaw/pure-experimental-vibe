@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Anam</title>
+    <style>
+        body { margin: 0; padding: 20px; background: #000; color: white; font-family: Arial; }
+        #anamVideo { width: 400px; height: 300px; border: 1px solid white; }
+        .status { margin: 10px 0; padding: 10px; background: #333; }
+    </style>
+</head>
+<body>
+    <h1>Anam Test</h1>
+    <div id="status" class="status">Loading...</div>
+    <video id="anamVideo" autoplay muted></video>
+    
+    <script src="https://unpkg.com/@anam-ai/js-sdk@2.4.4/dist/umd/anam.js"></script>
+    <script>
+        const statusDiv = document.getElementById('status');
+        
+        function updateStatus(message) {
+            statusDiv.textContent = message;
+            console.log(message);
+        }
+        
+        try {
+            updateStatus('SDK loaded, creating client...');
+            
+            const { unsafe_createClientWithApiKey } = window.anam;
+            
+            if (!unsafe_createClientWithApiKey) {
+                throw new Error('unsafe_createClientWithApiKey not found in SDK');
+            }
+            
+            // Test API key validity first
+            const apiKey = 'YTJkMGM0NjUtN2YyOS00YmNlLWJmYjUtZmY4ZmM2ZDBlN2Y2OkdtRlB4TEkwWklndVNvRDhxK1pHaVhNUmk2ZG9GdHpLZjhUTCtSbERqSDA9';
+            
+            // Try to validate API key by making a test request
+            fetch('https://api.anam.ai/v1/auth/session-token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`,
+                },
+                body: JSON.stringify({
+                    personaConfig: {
+                        name: "Test",
+                        avatarId: "bdaaedfa-00f2-417a-8239-8bb89adec682",
+                        voiceId: "b7bf471f-5435-49f8-a979-4483e4ccc10f",
+                        llmId: "ANAM_GPT_4O_MINI_V1",
+                        systemPrompt: "Test"
+                    }
+                })
+            })
+            .then(response => {
+                updateStatus(`API Response: ${response.status} ${response.statusText}`);
+                return response.text();
+            })
+            .then(data => {
+                updateStatus(`API Response Body: ${data}`);
+                
+                // If API key works, try creating client
+                if (data.includes('sessionToken') || data.includes('token')) {
+                    updateStatus('API key is valid, creating client...');
+                    
+                    const anamClient = unsafe_createClientWithApiKey(apiKey, {
+                        name: "Test Avatar",
+                        avatarId: "bdaaedfa-00f2-417a-8239-8bb89adec682",
+                        voiceId: "b7bf471f-5435-49f8-a979-4483e4ccc10f",
+                        llmId: "ANAM_GPT_4O_MINI_V1",
+                        systemPrompt: "You are a test avatar. Say hello when you start."
+                    });
+                    
+                    anamClient.streamToVideoElement('anamVideo');
+                }
+            })
+            .catch(error => {
+                updateStatus('API Key Test Failed: ' + error.message);
+            });
+            
+            // Remove the duplicate client creation code since it's now inside the fetch
+            
+        } catch (error) {
+            updateStatus('JavaScript Error: ' + error.message);
+        }
+    </script>
+</body>
+</html>

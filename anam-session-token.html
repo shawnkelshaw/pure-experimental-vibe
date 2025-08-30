@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alan - Tesla Trade In</title>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background: #000; 
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        #anamVideo { 
+            width: 100vw; 
+            height: 100vh; 
+            object-fit: cover; 
+        }
+        .error {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid red;
+            border-radius: 8px;
+        }
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading" class="loading">
+        <div>Loading Alan...</div>
+    </div>
+    <div id="error" class="error" style="display: none;">
+        <div id="errorMessage"></div>
+    </div>
+    <video id="anamVideo" autoplay muted style="display: none;"></video>
+    
+    <script src="https://unpkg.com/@anam-ai/js-sdk@2.4.4/dist/umd/anam.js"></script>
+    <script>
+        // Get session token from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionToken = urlParams.get('token');
+        
+        const loadingDiv = document.getElementById('loading');
+        const errorDiv = document.getElementById('error');
+        const errorMessage = document.getElementById('errorMessage');
+        const videoElement = document.getElementById('anamVideo');
+        
+        function showError(message) {
+            console.error('Anam Error:', message);
+            loadingDiv.style.display = 'none';
+            errorMessage.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+        
+        function showVideo() {
+            loadingDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+            videoElement.style.display = 'block';
+        }
+        
+        if (!sessionToken) {
+            showError('No session token provided. Please try again.');
+        } else {
+            try {
+                console.log('Creating Anam client with session token:', sessionToken.substring(0, 20) + '...');
+                
+                const { createClientWithSessionToken } = window.anam;
+                
+                if (!createClientWithSessionToken) {
+                    throw new Error('createClientWithSessionToken not found in Anam SDK');
+                }
+                
+                const anamClient = createClientWithSessionToken(sessionToken);
+                
+                anamClient.addListener('VIDEO_PLAY_STARTED', () => {
+                    console.log('Video started successfully');
+                    showVideo();
+                    setTimeout(() => {
+                        anamClient.talk('Hello! I am Alan from Savannah Tesla. How can I help you with your Tesla trade-in today?');
+                    }, 1000);
+                });
+                
+                anamClient.addListener('ERROR', (error) => {
+                    console.error('Anam client error:', error);
+                    showError('Connection failed: ' + (error.message || 'Unknown error'));
+                });
+                
+                anamClient.addListener('CONNECTION_ESTABLISHED', () => {
+                    console.log('Connection established');
+                });
+                
+                anamClient.addListener('CONNECTION_CLOSED', () => {
+                    console.log('Connection closed');
+                });
+                
+                console.log('Starting video stream...');
+                anamClient.streamToVideoElement('anamVideo');
+                
+            } catch (error) {
+                console.error('JavaScript error:', error);
+                showError('Failed to initialize: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

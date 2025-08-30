@@ -105,7 +105,7 @@ struct MyGarageView: View {
                     await garageViewModel.loadInitialData()
                 }
             }
-            .onChange(of: authService.isAuthenticated) { isAuthenticated in
+            .onChange(of: authService.isAuthenticated) { _, isAuthenticated in
                 if !isAuthenticated {
                     // Reset garage state when user signs out
                     garageViewModel.resetState()
@@ -148,10 +148,14 @@ struct MyGarageView: View {
                     BluetoothNotificationView(
                         notification: notification,
                         onConfirm: {
-                            await handleNotificationAcceptance(notification)
+                            Task {
+                                await handleNotificationAcceptance(notification)
+                            }
                         },
                         onDismiss: {
-                            await handleNotificationDismissal(notification)
+                            Task {
+                                await handleNotificationDismissal(notification)
+                            }
                         }
                     )
                     .zIndex(999)

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alan - Tesla Trade In</title>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background: #000; 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        #anamVideo { 
+            width: 100vw; 
+            height: 100vh; 
+            object-fit: cover; 
+        }
+        .loading { 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            color: white; 
+            font-size: 18px;
+            text-align: center;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loadingText">Connecting to Alan...</div>
+    <video id="anamVideo" autoplay playsinline muted></video>
+    
+    <script src="https://unpkg.com/@anam-ai/js-sdk@2.4.4/dist/umd/anam.js"></script>
+    <script>
+        // Get session token from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionToken = urlParams.get('token');
+        
+        if (!sessionToken) {
+            document.getElementById('loadingText').textContent = 'No session token provided';
+            throw new Error('Session token is required');
+        }
+        
+        const { createClient } = window.anam;
+        const anamClient = createClient(sessionToken);
+        
+        anamClient.addListener('VIDEO_PLAY_STARTED', () => {
+            document.getElementById('loadingText').style.display = 'none';
+            setTimeout(() => {
+                anamClient.talk('Hello! I am Alan from Savannah Tesla. How can I help you with your Tesla trade-in today?');
+            }, 1000);
+        });
+        
+        anamClient.streamToVideoElement('anamVideo');
+    </script>
+</body>
+</html>

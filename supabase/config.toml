@@ -1,0 +1,9 @@
+[api]
+enabled = true
+port = 54321
+
+[functions]
+enabled = true
+
+[project]
+project_id = "iegsoumvmhvvhmdyxhxs"

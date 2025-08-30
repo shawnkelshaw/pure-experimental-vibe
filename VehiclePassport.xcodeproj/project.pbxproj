@@ -65,6 +65,8 @@
 		A1234567890123456789094 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		A1234567890123456789096 /* AppointmentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppointmentService.swift; sourceTree = "<group>"; };
 		A1234567890123456789098 /* DealerAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DealerAgent.swift; sourceTree = "<group>"; };
+		A1234567890123456789038 /* AnamWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnamWebView.swift; sourceTree = "<group>"; };
+		A1234567890123456789099 /* AnamService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnamService.swift; sourceTree = "<group>"; };
 		A1234567890123456789061 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 		A1234567890123456789086 /* Supabase */ = {isa = PBXFileReference; productName = Supabase; productReference = A1234567890123456789084 /* XCRemoteSwiftPackageReference "supabase-swift" */; };
 		A1234567890123456789088 /* Auth */ = {isa = PBXFileReference; productName = Auth; productReference = A1234567890123456789084 /* XCRemoteSwiftPackageReference "supabase-swift" */; };
@@ -144,6 +146,7 @@
 				A1234567890123456789031 /* iOS26TabBar.swift */,
 				A1234567890123456789035 /* VehiclePassportCard.swift */,
 				A1234567890123456789037 /* BluetoothNotificationView.swift */,
+				A1234567890123456789038 /* AnamWebView.swift */,
 			);
 			path = "Views/Components";
 			sourceTree = "<group>";
@@ -169,6 +172,7 @@
 				A1234567890123456789053 /* NotificationService.swift */,
 				A1234567890123456789094 /* ThemeManager.swift */,
 				A1234567890123456789096 /* AppointmentService.swift */,
+				A1234567890123456789099 /* AnamService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";

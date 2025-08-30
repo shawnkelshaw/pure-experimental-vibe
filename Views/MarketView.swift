@@ -1,6 +1,7 @@
 import SwiftUI
 import Charts
 import UIKit // For haptic feedback
+import SafariServices
 
 // MARK: - Custom RoundedCorner Shape
 struct RoundedCorner: Shape {
@@ -20,6 +21,7 @@ struct RoundedCorner: Shape {
 struct MarketView: View {
     @EnvironmentObject var garageViewModel: GarageViewModel
     @EnvironmentObject var appointmentService: AppointmentService
+    @StateObject private var anamService = AnamService()
     @State private var currentZipCode = "31405"
     @State private var isEditingZipCode = false
     @State private var tempZipCode = ""
@@ -32,6 +34,10 @@ struct MarketView: View {
     @State private var showDealerConfirmation = false
     @State private var selectedVehicle: Vehicle?
     @State private var selectedPassport: VehiclePassport?
+    
+    // Anam Integration States
+    @State private var showAnamModal = false
+    @State private var anamSessionToken: String?
     
     var body: some View {
         NavigationStack {
@@ -209,8 +215,8 @@ struct MarketView: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Market")
             .navigationBarTitleDisplayMode(.large)
-            .onChange(of: isZipCodeFocused) { focused in
-                if !focused && isEditingZipCode {
+            .onChange(of: isZipCodeFocused) { oldValue, newValue in
+                if !newValue && isEditingZipCode {
                     // User tapped outside or dismissed keyboard
                     cancelZipCodeEdit()
                 }
@@ -223,29 +229,34 @@ struct MarketView: View {
                     }
                 }
             }
-            .alert("Dealer agent found", isPresented: $showDealerConfirmation) {
-                Button("I'm not ready", role: .cancel) {
-                    // Handle NO - dismiss
-                    foundDealerAgent = nil
-                }
-                Button("Search for agents") {
-                    // TODO: Implement different agent selection flow
-                    foundDealerAgent = nil
-                }
-                Button("Yes, schedule appointment") {
-                    // Handle YES - schedule appointment
+            .alert("Dealer Agent Found", isPresented: $showDealerConfirmation) {
+                Button("Yes, Schedule") {
                     handleScheduleAppointment()
                 }
+                Button("Cancel", role: .cancel) {
+                    foundDealerAgent = nil
+                    selectedVehicle = nil
+                    selectedPassport = nil
+                }
             } message: {
-                if let agent = foundDealerAgent {
+                if let agent = foundDealerAgent, let vehicle = selectedVehicle {
                     Text(formatDealerAgentMessage(agent: agent))
                 }
             }
+            .alert("Connection Error", isPresented: .constant(anamService.errorMessage != nil)) {
+                Button("OK") {
+                    anamService.errorMessage = nil
+                }
+            } message: {
+                if let errorMessage = anamService.errorMessage {
+                    Text(errorMessage)
+                }
+            }
+            .fullScreenCover(isPresented: $showAnamModal) {
+                AnamSafariView(sessionToken: "", isPresented: $showAnamModal)
+            }
             .overlay {
                 if isRetrievingDealerAgent {
-                    Color.black.opacity(0.3)
-                        .ignoresSafeArea()
-                    
                     VStack(spacing: 16) {
                         ProgressView()
                             .scaleEffect(1.2)
@@ -281,14 +292,11 @@ struct MarketView: View {
     private func startDealerAgentRetrieval(for vehicle: Vehicle, passport: VehiclePassport) {
         selectedVehicle = vehicle
         selectedPassport = passport
-        isRetrievingDealerAgent = true
         
-        // Simulate 4-6 second retrieval delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + Double.random(in: 4.0...6.0)) {
-            foundDealerAgent = DealerAgent.alanSubran
-            isRetrievingDealerAgent = false
-            showDealerConfirmation = true
-        }
+        // Direct Anam integration - working version
+        print("🚀 Opening Anam interface...")
+        showAnamModal = true
+        print("📱 Modal opened directly")
     }
     
     private func handleScheduleAppointment() {
