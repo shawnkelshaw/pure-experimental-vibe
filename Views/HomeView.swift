@@ -27,11 +27,10 @@ struct HomeView: View {
     
     var body: some View {
         ZStack {
-            // Standard system background
-            Color(.systemBackground)
+            // Background
+            Color(.systemGroupedBackground)
                 .ignoresSafeArea()
             
-            // Content respecting safe areas (status bar will show)
             VStack(spacing: 0) {
                 if isLoading {
                     // Loading screen with logo animation

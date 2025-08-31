@@ -9,43 +9,57 @@
             padding: 0; 
             background: #000; 
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            /* Add padding for iOS status bar */
+            padding-top: env(safe-area-inset-top);
+            height: 100vh;
+            overflow: hidden;
         }
         #persona-video { 
             width: 100vw; 
-            height: 100vh; 
-            object-fit: cover; 
+            height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom)); 
+            object-fit: cover;
+            position: fixed;
+            top: env(safe-area-inset-top);
+            left: 0;
+            z-index: 1;
         }
         #status {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(0,0,0,0.8);
-            padding: 10px;
-            border-radius: 4px;
-            font-size: 14px;
-            z-index: 10;
-        }
-        #start-button {
-            position: absolute;
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 15px 30px;
-            font-size: 18px;
-            background: #007AFF;
-            color: white;
-            border: none;
+            background: rgba(0,0,0,0.8);
+            padding: 15px 20px;
             border-radius: 8px;
-            cursor: pointer;
-            display: none;
+            font-size: 16px;
             z-index: 10;
+            color: white;
+            text-align: center;
+            min-width: 200px;
+        }
+        
+        /* Ensure no content bleeds through */
+        html {
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        /* Hide any background content */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            z-index: 0;
         }
     </style>
 </head>
 <body>
     <video id="persona-video" autoplay playsinline muted></video>
     <div id="status">Loading...</div>
-    <button id="start-button">Click to Start Conversation</button>
 
     <!-- Use UMD version for better Safari compatibility -->
     <script src="https://unpkg.com/@anam-ai/js-sdk@latest/dist/umd/anam.js"></script>
@@ -55,7 +69,6 @@
         
         const videoElement = document.getElementById("persona-video");
         const statusElement = document.getElementById("status");
-        const startButton = document.getElementById("start-button");
         let anamClient = null;
 
         function updateStatus(message, type = 'info') {
@@ -92,8 +105,8 @@
                 body: JSON.stringify({
                     personaConfig: {
                         name: "Sarah Mitchell",
-                        avatarId: "bdaaedfa-00f2-417a-8239-8bb89adec682",
-                        voiceId: "b7bf471f-5435-49f8-a979-4483e4ccc10f", 
+                        avatarId: "30fa96d0-26c4-4e55-94a0-517025942e18",
+                        voiceId: "1c6fa8a7-9aa4-4a17-a75e-3e5eb863fccf", 
                         llmId: "ANAM_GPT_4O_MINI_V1",
                         systemPrompt: `You are Alan Subran's digital assistant, Sarah. You assist Alan by setting appointments on Alan's calendar and collecting vehicle passports from people like Shawn that want to begin the trade-in process. You already know the user's name is Shawn and that Shawn drives a 2023 Tesla. Keep responses conversational and concise. When Shawn confirms an appointment, mention that his Tesla's vehicle passport information will be automatically collected and downloaded in order to calculate an accurrate trade-in valuation. The results of the calculated valuation will be emailed to Shawn and Alan along with the appointment's location, date and time. Shawn does not need to take any action at this time.`,
                     },
@@ -141,8 +154,12 @@
                 
                 await anamClient.streamToVideoElement("persona-video");
                 
-                updateStatus("Ready! Click to start conversation", 'success');
-                startButton.style.display = 'block';
+                updateStatus("Connected! Starting conversation...", 'success');
+                
+                // Auto-start conversation without button
+                setTimeout(() => {
+                    startConversation();
+                }, 1000);
                 
             } catch (error) {
                 console.error("Failed to start chat:", error);
@@ -155,7 +172,6 @@
                 const hasPermission = await requestMicrophonePermission();
                 if (!hasPermission) return;
                 
-                startButton.style.display = 'none';
                 updateStatus("Starting conversation...");
                 
                 // Unmute video for audio output
@@ -186,9 +202,6 @@
                 updateStatus(`Conversation error: ${error.message}`, 'error');
             }
         }
-
-        // Event listeners
-        startButton.addEventListener('click', startConversation);
 
         // Wait for SDK to load, then start
         window.addEventListener('load', () => {

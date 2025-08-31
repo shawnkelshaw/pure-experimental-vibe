@@ -34,6 +34,7 @@ struct VehiclePassportApp: App {
                 .environmentObject(themeManager)
                 .environmentObject(appointmentService)
                 .preferredColorScheme(themeManager.currentColorScheme)
+                .statusBarHidden(false)
         }
     }
 }

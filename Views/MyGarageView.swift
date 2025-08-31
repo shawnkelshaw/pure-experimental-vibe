@@ -78,6 +78,7 @@ struct MyGarageView: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle("My Garage")
             .navigationBarTitleDisplayMode(.large)
+            .navigationBarBackButtonHidden(false)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     // Floating Add Button
@@ -87,8 +88,8 @@ struct MyGarageView: View {
                             Image(systemName: "plus")
                                 .font(.system(size: 16, weight: .medium))
                                 .foregroundColor(.primary)
-                            .frame(width: horizontalSizeClass == .regular ? 44 : 36, 
-                                   height: horizontalSizeClass == .regular ? 44 : 36)
+                            .frame(width: horizontalSizeClass == .regular ? 40 : 32, 
+                                   height: horizontalSizeClass == .regular ? 40 : 32)
                             .background(
                             Circle()
                                     .fill(.ultraThinMaterial)

@@ -253,7 +253,11 @@ struct MarketView: View {
                 }
             }
             .fullScreenCover(isPresented: $showAnamModal) {
-                AnamSafariView(sessionToken: "", isPresented: $showAnamModal)
+                ZStack {
+                    Color.black.ignoresSafeArea(.all)
+                    AnamWebView(sessionToken: "", isPresented: $showAnamModal)
+                        .ignoresSafeArea(.all)
+                }
             }
             .overlay {
                 if isRetrievingDealerAgent {
